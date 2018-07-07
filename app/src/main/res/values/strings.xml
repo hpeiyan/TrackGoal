@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">GoalTrack</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <item name="sub_title" type="id">
+    </item>
+    <item name="parent_title" type="id">
+    </item>
+    <item name="level" type="id">
+    </item>
+</resources>
