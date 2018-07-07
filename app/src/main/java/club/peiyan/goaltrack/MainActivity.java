@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity
 
         initDataBase();
         initView();
-
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,7 +91,10 @@ public class MainActivity extends AppCompatActivity
 
     public void initDataBase() {
         mNearestParentGoal = mDBHelper.getNearestParentGoal();
-        if (mNearestParentGoal == null) return;
+        if (mNearestParentGoal == null) {
+            mSingleAllGoals.clear();
+            return;
+        }
         mSingleAllGoals = mDBHelper.getSingleAllGoal(mNearestParentGoal);
     }
 

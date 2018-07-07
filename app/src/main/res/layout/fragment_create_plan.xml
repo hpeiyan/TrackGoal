@@ -21,19 +21,25 @@
             android:layout_marginBottom="20dp"
             >
 
-            <TextView
-                android:id="@+id/tvCancel"
+            <ImageView
+                android:id="@+id/ivCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="退出"/>
+                android:layout_centerInParent="true"
+                android:padding="2dp"
+                android:src="@mipmap/ic_close_black_24dp"
+                />
 
-            <TextView
-                android:id="@+id/tvSave"
+            <ImageView
+                android:id="@+id/ivSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:text="保存"/>
+                android:layout_centerInParent="true"
+                android:padding="5dp"
+                android:src="@mipmap/ic_check_black_24dp"
+                />
 
         </RelativeLayout>
 
@@ -43,7 +49,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvTitle"
-            android:hint="你的目标是什么"/>
+            android:hint="你的目标是什么"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_input_dimen"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,19 +64,24 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStartTime"
                 android:hint="开始日期"
-
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:textSize="@dimen/text_show_dimen"/>
 
             <TextView
                 android:id="@+id/tvStartTimeShow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_marginLeft="10dp"
                 android:hint="时间"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:textSize="@dimen/text_show_dimen"/>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dividerColor"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -79,34 +92,36 @@
                 android:id="@+id/tvEndDateShow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_below="@+id/btnStartTime"
                 android:hint="结束日期"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:textSize="@dimen/text_show_dimen"/>
 
             <TextView
                 android:id="@+id/tvEndTimeShow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStartTime"
-
                 android:layout_marginLeft="10dp"
                 android:hint="时间"
-                android:padding="10dp"/>
+                android:padding="10dp"
+                android:textSize="@dimen/text_show_dimen"/>
 
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/etItem"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="事件"/>
+            android:layout_height="1px"
+            android:background="@color/dividerColor"/>
 
-        <Button
+        <ImageView
             android:id="@+id/btnAddItem"
             android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
-            android:text="添加事件"/>
+            android:padding="9dp"
+            android:src="@mipmap/ic_fingerprint_black_24dp"
+            />
 
 
     </LinearLayout>

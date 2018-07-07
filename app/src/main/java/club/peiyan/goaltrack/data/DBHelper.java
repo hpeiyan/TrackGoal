@@ -28,10 +28,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_END_TIME = "over";
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
+    private final Context mContext;
 
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
+        mContext = context;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateGoal(Integer id,int level, String parent, String title, String start, String over, String items, long timestamp) {
+    public boolean updateGoal(Integer id, int level, String parent, String title, String start, String over, String items, long timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TRACK_GOAL_LEVEL, level);
@@ -161,7 +163,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public GoalBean getGoal(String title) {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from track_goal where title='" + title + "'", null);
+
+        Cursor res = db.rawQuery("select * from track_goal where title=?", new String[]{title});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -202,10 +205,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<GoalBean> getSubAndContactParentGoal(GoalBean mNearestParentGoal) {
         String[] mItems = mNearestParentGoal.getItems().split("\n");
         ArrayList<GoalBean> mSingleAllGoalBeans = new ArrayList<>();
-        mSingleAllGoalBeans.add(mNearestParentGoal);
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
-                mSingleAllGoalBeans.add(getGoal(item));
+                GoalBean mGoalBean = getGoal(item);
+                if (mGoalBean != null) {
+                    mSingleAllGoalBeans.add(mGoalBean);
+                }
             }
         }
         return mSingleAllGoalBeans;

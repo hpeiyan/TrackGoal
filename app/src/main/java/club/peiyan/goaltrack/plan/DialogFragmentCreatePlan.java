@@ -13,9 +13,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -64,12 +64,14 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     TextView mTvEndDateShow;
     @BindView(R.id.tvEndTimeShow)
     TextView mTvEndTimeShow;
-    @BindView(R.id.etItem)
-    EditText mEtItem;
     @BindView(R.id.btnAddItem)
-    Button mBtnAddItem;
+    ImageView mBtnAddItem;
     @BindView(R.id.llParent)
     LinearLayout mLlParent;
+    @BindView(R.id.ivCancel)
+    ImageView mTvCancel;
+    @BindView(R.id.ivSave)
+    ImageView mTvSave;
 
     private View mRootView;
     private ArrayList<EditText> mItemViewList = new ArrayList<>();
@@ -132,7 +134,6 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     }
 
     private void initView() {
-        mItemViewList.add(mEtItem);
         checkSetText(mTvGoalName, mGoalName);
         checkSetText(mTvStartDateShow, mStartDate);
         checkSetText(mTvStartTimeShow, mStartTime);
@@ -142,11 +143,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             String[] mItems = this.mItems.split("\n");
             if (mItems != null && mItems.length > 0) {
                 for (int i = 0; i < mItems.length; i++) {
-                    if (i == 0) {
-                        mEtItem.setText(mItems[0]);
-                    } else {
-                        addEditItemView(mItems[i]);
-                    }
+                    addEditItemView(mItems[i]);
                 }
             }
         }
@@ -164,16 +161,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
 
     public static void showDialog(FragmentManager fm, GoalBean mBean) {
         String mStart = mBean.getStart();
-        String[] mStartTime = new String[]{};
-        if (!mStart.isEmpty()) {
-            mStartTime = mStart.split("\n");
-        }
         String mOver = mBean.getOver();
-
-        String[] mOverTime = new String[]{};
-        if (!mOver.isEmpty()) {
-            mStartTime = mOver.split("\n");
-        }
         showDialog(fm, mBean.getId(), mBean.getTitle(), mBean.getParent(), mBean.getLevel(), mStart, mOver, mBean.getItems(), true);
     }
 
@@ -229,7 +217,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         mDatePickerDialog.show();
     }
 
-    @OnClick({R.id.tvStartDateShow, R.id.tvStartTimeShow, R.id.tvEndDateShow, R.id.tvEndTimeShow, R.id.btnAddItem, R.id.tvCancel, R.id.tvSave})
+    @OnClick({R.id.tvStartDateShow, R.id.tvStartTimeShow, R.id.tvEndDateShow, R.id.tvEndTimeShow, R.id.btnAddItem, R.id.ivCancel, R.id.ivSave})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvStartDateShow:
@@ -267,7 +255,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             case R.id.btnAddItem:
                 addEditItemView(null);
                 break;
-            case R.id.tvCancel:
+            case R.id.ivCancel:
                 DialogUtil.showDialog(getActivity(), new OnEditListener() {
                     @Override
                     public void onExit() {
@@ -275,19 +263,19 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                     }
                 });
                 break;
-            case R.id.tvSave:
+            case R.id.ivSave:
                 saveData();
                 break;
         }
     }
 
     private void addEditItemView(@Nullable String content) {
-        EditText mEditText = new EditText(getActivity());
-        mItemViewList.add(mEditText);
-        mEditText.setHint("事件");
-        checkSetText(mEditText, content);
+        View mView = View.inflate(getActivity(), R.layout.edit_item_layout, null);
+        EditText editItem = mView.findViewById(R.id.editItem);
+        mItemViewList.add(editItem);
+        checkSetText(editItem, content);
         int mChildCount = mLlParent.getChildCount();
-        mLlParent.addView(mEditText, mChildCount - 1);
+        mLlParent.addView(mView, mChildCount - 1);
     }
 
     private void saveData() {
@@ -299,7 +287,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             String start = mTvStartDateShow.getText().toString().trim() + "\n" + mTvStartTimeShow.getText().toString();
             String end = mTvEndDateShow.getText().toString() + "\n" + mTvEndTimeShow.getText().toString();
             StringBuilder mBuilder = new StringBuilder();
-            String title = mTvGoalName.getText().toString().replace("'", "''").trim();
+            String title = mTvGoalName.getText().toString().trim();
             boolean isSuccess;
             for (EditText met : mItemViewList) {
                 String mItem = met.getText().toString();
@@ -310,7 +298,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                 }
             }
 
-            String mItems = mBuilder.toString().replace("'", "''").trim();
+            String mItems = mBuilder.toString().trim();
             start.trim();
             end.trim();
 

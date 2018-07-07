@@ -123,8 +123,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                                 if (mHasSubGoal) {
                                     ArrayList<GoalBean> mSubAndContactParentGoal
                                             = mMainActivity.getDBHelper().getSubAndContactParentGoal(mBean);
-                                    for (GoalBean bean : mSubAndContactParentGoal) {
-                                        mMainActivity.getDBHelper().deleteGoal(bean.getId());
+                                    if (mSubAndContactParentGoal != null && mSubAndContactParentGoal.size() > 0) {
+                                        for (GoalBean bean : mSubAndContactParentGoal) {
+                                            mMainActivity.getDBHelper().deleteGoal(bean.getId());
+                                        }
                                     }
                                 }
                                 mMainActivity.getDBHelper().deleteGoal(mBean.getId());
