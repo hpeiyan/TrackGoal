@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvTitle"
+            android:gravity="center"
             android:hint="你的目标是什么"
             android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/text_input_dimen"/>
@@ -60,18 +61,22 @@
 
             <TextView
                 android:id="@+id/tvStartDateShow"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStartTime"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:hint="开始日期"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
 
             <TextView
                 android:id="@+id/tvStartTimeShow"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:hint="时间"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
@@ -90,19 +95,23 @@
 
             <TextView
                 android:id="@+id/tvEndDateShow"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStartTime"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:hint="结束日期"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
 
             <TextView
                 android:id="@+id/tvEndTimeShow"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btnStartTime"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:hint="时间"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
@@ -117,8 +126,8 @@
         <ImageView
             android:id="@+id/btnAddItem"
             android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:padding="9dp"
             android:src="@mipmap/ic_fingerprint_black_24dp"
             />

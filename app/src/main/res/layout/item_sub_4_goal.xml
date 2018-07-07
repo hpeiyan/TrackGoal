@@ -3,29 +3,67 @@
               android:id="@+id/llParent"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_marginBottom="8dp"
-              android:layout_marginLeft="90dp"
-              android:layout_marginRight="8dp"
-              android:layout_marginTop="8dp"
+              android:layout_marginBottom="@dimen/item_normal_margin"
+              android:layout_marginLeft="@dimen/item_normal_margin"
+              android:layout_marginRight="120dp"
+              android:layout_marginTop="@dimen/item_normal_margin"
               android:background="@drawable/selector_parent_goal_item"
               android:clickable="true"
               android:focusable="true"
               android:orientation="vertical"
-              android:padding="8dp">
+              android:padding="8dp"
+              android:translationZ="@dimen/translation_z">
 
-    <TextView
-        android:id="@+id/tvGoalName"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="@string/app_name"/>
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvHoldCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="32天"
+            android:textColor="@color/secondTextColor"
+            android:textSize="25sp"
+            />
+
+        <TextView
+            android:id="@+id/tvGoalName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvDownCount"
+            android:layout_toRightOf="@+id/tvHoldCount"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/app_name"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_title_dimen"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvDownCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="32天"
+            android:textColor="@color/secondTextColor"
+            android:textSize="25sp"
+            android:textStyle=""/>
+
+    </RelativeLayout>
+
 
     <TextView
         android:id="@+id/tvTimeSpend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="10dp"
-        android:text="@string/app_name"/>
+        android:text="@string/app_name"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/text_show_dimen"/>
 
 
 </LinearLayout>

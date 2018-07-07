@@ -2,6 +2,8 @@ package club.peiyan.goaltrack.view;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -64,13 +67,58 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         return mHolder;
     }
 
+
     @Override
     public void onBindViewHolder(GoalViewHolder holder, final int position) {
         String[] mItems = new String[0];
         final Context mContext = holder.mLlParent.getContext();
         final GoalBean mBean = mData.get(position);
+        String mStart = mBean.getStart();
+        String mOver = mBean.getOver();
+        StringBuilder mBuilder = new StringBuilder();
+
+        String[] mStartDates = new String[0];
+        String[] mEndDates = new String[0];
+        if (mStart != null && !TextUtils.isEmpty(mStart)) {
+            String[] mStarts = mStart.split("\n");
+            if (mStarts.length == 2) {
+                mBuilder.append(mStarts[0] + "  ⇀  ");
+                mStartDates = mStarts[0].split("/");
+            }
+        }
+        if (mOver != null && !TextUtils.isEmpty(mOver)) {
+            String[] mOvers = mOver.split("\n");
+            if (mBuilder.length() > 5 && mOvers.length == 2) {
+                mBuilder.append(mOvers[0]);
+                mEndDates = mOvers[0].split("/");
+            }
+        }
+        int totalHoldDay = 0;
+        int totalNeedSpend = 0;
+
+        if (mStartDates.length == 3 && mEndDates.length == 3) {
+            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
+            int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            int deltaYear = currentYear - Integer.parseInt(mStartDates[0]);
+            int deltaMonth = currentMonth - Integer.parseInt(mStartDates[1]);
+            int deltaDay = currentDay - Integer.parseInt(mStartDates[2]);
+            totalHoldDay = deltaYear * 365 + deltaMonth * 30 + deltaDay;
+
+            int year = Integer.parseInt(mEndDates[0]) - Integer.parseInt(mStartDates[0]);
+            int month = Integer.parseInt(mEndDates[1]) - Integer.parseInt(mStartDates[1]);
+            int day = Integer.parseInt(mEndDates[2]) - Integer.parseInt(mStartDates[2]);
+            totalNeedSpend = year * 365 + month * 30 + day;
+        }
+
+        holder.mTvTimeSpend.setText(mBuilder.toString().trim());
+
+        String holdHtml = "<small><small><small><small><small><small>坚持的 </small></small></small></small></small></small>" + totalHoldDay + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+        String downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+        holder.mTvDownCount.setText(Html.fromHtml(downHtml));
+        holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
+
         holder.mTvGoalName.setText(mBean.getTitle());
-        holder.mTvTimeSpend.setText(12 + "个月");
         String mTrim = mBean.getItems().trim();
         if (!mTrim.isEmpty()) {
             mItems = mTrim.split("\n");
@@ -156,20 +204,15 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1);
     }
 
-    public void clearAllCustomView() {
-        for (int i = 0; i < mHashMap.size(); i++) {
-            GoalViewHolder mHolder = mHashMap.get(i);
-            int mCount = mHolder.mLlParent.getChildCount();
-            mHolder.mLlParent.removeViews(2, mCount - 2);
-        }
-        mHashMap.clear();
-    }
-
     static class GoalViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvGoalName)
         TextView mTvGoalName;
         @BindView(R.id.tvTimeSpend)
         TextView mTvTimeSpend;
+        @BindView(R.id.tvDownCount)
+        TextView mTvDownCount;
+        @BindView(R.id.tvHoldCount)
+        TextView mTvHoldCount;
         @BindView(R.id.llParent)
         LinearLayout mLlParent;
 

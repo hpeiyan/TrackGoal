@@ -6,10 +6,12 @@
 
     <string name="action_settings">Settings</string>
 
-    <item name="sub_title" type="id">
-    </item>
-    <item name="parent_title" type="id">
-    </item>
-    <item name="level" type="id">
-    </item>
+    <item name="sub_title" type="id"/>
+    <item name="parent_title" type="id"/>
+    <item name="level" type="id"/>
+    <item name="year" type="id"/>
+    <item name="month" type="id"/>
+    <item name="day" type="id"/>
+    <item name="hour" type="id"/>
+    <item name="minute" type="id"/>
 </resources>

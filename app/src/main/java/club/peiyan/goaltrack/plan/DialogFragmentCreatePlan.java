@@ -22,6 +22,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -208,12 +209,18 @@ public class DialogFragmentCreatePlan extends DialogFragment {
 
 
     private void showTimePick(TimePickerDialog.OnTimeSetListener mListener) {
-        TimePickerDialog mTimePickerDialog = new TimePickerDialog(getActivity(), mListener, 12, 0, true);
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        int miu = Calendar.getInstance().get(Calendar.MINUTE);
+        int second = Calendar.getInstance().get(Calendar.SECOND);
+        TimePickerDialog mTimePickerDialog = new TimePickerDialog(getActivity(), mListener, hour, miu, false);
         mTimePickerDialog.show();
     }
 
     private void showDatePick(DatePickerDialog.OnDateSetListener mListener) {
-        DatePickerDialog mDatePickerDialog = new DatePickerDialog(getActivity(), mListener, 2018, 7, 1);
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        DatePickerDialog mDatePickerDialog = new DatePickerDialog(getActivity(), mListener, year, month, day);
         mDatePickerDialog.show();
     }
 
@@ -224,7 +231,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                 showDatePick(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        mTvStartDateShow.setText(year + "年" + month + "月" + dayOfMonth + "日");
+                        month += 1;
+                        mTvStartDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                     }
                 });
                 break;
@@ -240,7 +248,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                 showDatePick(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        mTvEndDateShow.setText(year + "年" + month + "月" + dayOfMonth + "日");
+                        month += 1;
+                        mTvEndDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                     }
                 });
                 break;
