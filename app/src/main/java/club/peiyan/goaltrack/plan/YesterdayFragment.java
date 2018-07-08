@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -28,13 +29,19 @@ import club.peiyan.goaltrack.utils.CalendaUtils;
  */
 
 public class YesterdayFragment extends Fragment {
+
+    Unbinder unbinder;
     @BindView(R.id.tvScoreTitle)
     TextView mTvScoreTitle;
     @BindView(R.id.tvScoreShow)
     TextView mTvScoreShow;
     @BindView(R.id.llScoreLine)
     LinearLayout mLlScoreLine;
-    Unbinder unbinder;
+    @BindView(R.id.llParent)
+    RelativeLayout mLlParent;
+    @BindView(R.id.nonData)
+    View errorView;
+
     private MainActivity mMainActivity;
     private DBHelper mDBHelper;
 
@@ -48,7 +55,7 @@ public class YesterdayFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View mView = inflater.inflate(R.layout.recycle_header_item, null);
+        View mView = inflater.inflate(R.layout.yesterday_main, null);
         unbinder = ButterKnife.bind(this, mView);
         initView();
         return mView;
@@ -70,6 +77,9 @@ public class YesterdayFragment extends Fragment {
                 mLlScoreLine.addView(mView);
             }
             mTvScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
+        } else {
+            mLlParent.setVisibility(View.GONE);
+            errorView.setVisibility(View.VISIBLE);
         }
     }
 

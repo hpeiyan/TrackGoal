@@ -34,6 +34,9 @@ public class TodayFragment extends Fragment {
     MyRecycleView mRvGoal;
     @BindView(R.id.constraintLayout)
     RelativeLayout mConstraintLayout;
+
+    @BindView(R.id.createData)
+    View mCreatePromp;
     Unbinder unbinder;
 
     private GoalsAdapter mAdapter;
@@ -73,9 +76,21 @@ public class TodayFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRvGoal.setLayoutManager(mLayoutManager);
         mAdapter = new GoalsAdapter((MainActivity) getActivity());
+        if (sGoalBeans == null) {
+            hideOrShowPromp(true);
+        } else {
+            if (sGoalBeans.size() <= 0) {
+                hideOrShowPromp(true);
+            }
+        }
         mAdapter.setData(sGoalBeans);
         mRvGoal.setItemAnimator(null);
         mRvGoal.setAdapter(mAdapter);
+    }
+
+    public void hideOrShowPromp(boolean isShow) {
+        mCreatePromp.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        mRvGoal.setVisibility(isShow ? View.GONE : View.VISIBLE);
     }
 
     @Override

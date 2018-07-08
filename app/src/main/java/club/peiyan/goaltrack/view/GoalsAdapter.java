@@ -87,7 +87,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             int score = 0;
             int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
             if (mChildCount > 0) {
-                mViewHolder.mLlScoreLine.removeViews(0, mChildCount);
+                mViewHolder.mLlScoreLine.removeAllViews();
             }
             if (mScoreBeans != null && mScoreBeans.size() > 0) {
                 for (ScoreBean bean : mScoreBeans) {
@@ -169,7 +169,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 TextView tvItem = mView.findViewById(R.id.tvItem);
                 SeekBar sb = mView.findViewById(R.id.sbProgress);
 
-                ScoreBean mScoreBean = mDBHelper.getScoreByTitle(item);
+                final ScoreBean mScoreBean = mDBHelper.getScoreByTitle(item);
                 if (mScoreBean != null) {
                     sb.setProgress(mScoreBean.getScore());
                 }
@@ -187,7 +187,13 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         int mProgress = seekBar.getProgress();
-                        boolean isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
+                        ScoreBean mScoreByTitle = mDBHelper.getScoreByTitle(item);
+                        boolean isSuccess;
+                        if (mScoreByTitle == null) {
+                            isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
+                        } else {
+                            isSuccess = mDBHelper.updateScore(mScoreByTitle.getId(), -1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
+                        }
                         if (isSuccess) {
                             notifyDataSetChanged();
                         }

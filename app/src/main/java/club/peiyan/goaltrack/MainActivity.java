@@ -210,6 +210,11 @@ public class MainActivity extends AppCompatActivity
 
     public void notifyDataSetChange(@Nullable String goalTitle) {
         initDataBase();
+        if (mSingleAllGoals.size() <= 0) {
+            mTodayFragment.hideOrShowPromp(true);
+        } else {
+            mTodayFragment.hideOrShowPromp(false);
+        }
         mTodayFragment.getAdapter().setData(mSingleAllGoals);
         mTodayFragment.getAdapter().notifyDataSetChanged();
         initMenuItem();

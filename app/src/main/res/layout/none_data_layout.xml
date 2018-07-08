@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@mipmap/ic_free_breakfast_black_48dp"
         android:gravity="center"
-        android:text="@string/hadn_create"
+        android:text="@string/non_data"
         android:textColor="@color/secondTextColor"
         android:textSize="@dimen/text_show_dimen"/>
 

@@ -8,4 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <include
+        android:id="@+id/createData"
+        layout="@layout/create_data_layout"
+        android:visibility="gone"/>
+
 </RelativeLayout>
