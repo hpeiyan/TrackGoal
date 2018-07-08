@@ -80,18 +80,15 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
 
         String[] mStartDates = new String[0];
         String[] mEndDates = new String[0];
+
         if (mStart != null && !TextUtils.isEmpty(mStart)) {
-            String[] mStarts = mStart.split("\n");
-            if (mStarts.length == 2) {
-                mBuilder.append(mStarts[0] + "  ⇀  ");
-                mStartDates = mStarts[0].split("/");
-            }
+            mBuilder.append(mStart + "  ⇀  ");
+            mStartDates = mStart.split("/");
         }
         if (mOver != null && !TextUtils.isEmpty(mOver)) {
-            String[] mOvers = mOver.split("\n");
-            if (mBuilder.length() > 5 && mOvers.length == 2) {
-                mBuilder.append(mOvers[0]);
-                mEndDates = mOvers[0].split("/");
+            if (mBuilder.length() > 5) {
+                mBuilder.append(mOver);
+                mEndDates = mOver.split("/");
             }
         }
         int totalHoldDay = 0;
@@ -117,7 +114,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
 
         holder.mTvTimeSpend.setText(mBuilder.toString().trim());
 
-        String holdHtml = "<small><small><small><small><small><small>坚持的 </small></small></small></small></small></small>" + totalHoldDay + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+        String holdHtml = "<small><small><small><small><small><small>" + (totalHoldDay <= 0 ? "离开始" : "坚持的") + "</small></small></small></small></small></small>" + Math.abs(totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
         String downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
         holder.mTvDownCount.setText(Html.fromHtml(downHtml));
         holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));

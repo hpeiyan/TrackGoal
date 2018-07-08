@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvTitle"
             android:gravity="center"
-            android:hint="你的目标是什么"
+            android:hint="起个好听的吧"
             android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/text_input_dimen"/>
 
@@ -66,32 +66,15 @@
                 android:layout_below="@+id/btnStartTime"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:hint="开始日期"
+                android:hint="开始"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
 
             <TextView
-                android:id="@+id/tvStartTimeShow"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:text=" ⇀ "
                 android:gravity="center"
-                android:hint="时间"
-                android:padding="10dp"
-                android:textSize="@dimen/text_show_dimen"/>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/dividerColor"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                android:layout_height="match_parent"/>
 
             <TextView
                 android:id="@+id/tvEndDateShow"
@@ -100,19 +83,7 @@
                 android:layout_below="@+id/btnStartTime"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:hint="结束日期"
-                android:padding="10dp"
-                android:textSize="@dimen/text_show_dimen"/>
-
-            <TextView
-                android:id="@+id/tvEndTimeShow"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/btnStartTime"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:hint="时间"
+                android:hint="结束"
                 android:padding="10dp"
                 android:textSize="@dimen/text_show_dimen"/>
 

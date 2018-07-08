@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -53,9 +51,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     private static final String GOAL_PRENT = "goal_parent";
     public static final String ROOT_PARENT = "rootParent";
     private static final String GOAL_START_DATE = "startDate";
-    private static final String GOAL_START_TIME = "startTime";
     private static final String GOAL_END_DATE = "endDate";
-    private static final String GOAL_END_TIME = "endTime";
     private static final String GOAL_ITEMS = "items";
     private static final String GOAL_ID = "id";
     private static final String EDIT_MODE = "isEditMode";
@@ -64,12 +60,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     EditText mTvGoalName;
     @BindView(R.id.tvStartDateShow)
     TextView mTvStartDateShow;
-    @BindView(R.id.tvStartTimeShow)
-    TextView mTvStartTimeShow;
     @BindView(R.id.tvEndDateShow)
     TextView mTvEndDateShow;
-    @BindView(R.id.tvEndTimeShow)
-    TextView mTvEndTimeShow;
     @BindView(R.id.btnAddItem)
     ImageView mBtnAddItem;
     @BindView(R.id.llParent)
@@ -84,12 +76,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     private String mGoalName;
     private int mLevel = -1;
     private String mParent;
-    private String mStartDate;
     private String mStart;
-    private String mStartTime;
-    private String mEndDate;
     private String mEnd;
-    private String mEndTime;
     private String mItems;
     private int mId = -1;
     private boolean isEditMode = false;
@@ -104,22 +92,6 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         mEnd = mBundle.getString(GOAL_END_DATE);
         mItems = mBundle.getString(GOAL_ITEMS);
         isEditMode = mBundle.getBoolean(EDIT_MODE, false);
-
-        if (mStart != null && !mStart.isEmpty()) {
-            String[] mSplit = mStart.split("\n");
-            if (mSplit.length == 2) {
-                mStartDate = mSplit[0];
-                mStartTime = mSplit[1];
-            }
-        }
-
-        if (mEnd != null && !mEnd.isEmpty()) {
-            String[] mSplit = mEnd.split("\n");
-            if (mSplit.length == 2) {
-                mEndDate = mSplit[0];
-                mEndTime = mSplit[1];
-            }
-        }
 
         if (parent != null && !parent.isEmpty()) {
             mParent = parent;
@@ -141,10 +113,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
 
     private void initView() {
         checkSetText(mTvGoalName, mGoalName);
-        checkSetText(mTvStartDateShow, mStartDate);
-        checkSetText(mTvStartTimeShow, mStartTime);
-        checkSetText(mTvEndDateShow, mEndDate);
-        checkSetText(mTvEndTimeShow, mEndTime);
+        checkSetText(mTvStartDateShow, mStart);
+        checkSetText(mTvEndDateShow, mEnd);
         if (mItems != null && !mItems.isEmpty()) {
             String[] mItems = this.mItems.split("\n");
             if (mItems != null && mItems.length > 0) {
@@ -212,15 +182,6 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         unbinder.unbind();
     }
 
-
-    private void showTimePick(TimePickerDialog.OnTimeSetListener mListener) {
-        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        int miu = Calendar.getInstance().get(Calendar.MINUTE);
-        int second = Calendar.getInstance().get(Calendar.SECOND);
-        TimePickerDialog mTimePickerDialog = new TimePickerDialog(getActivity(), mListener, hour, miu, false);
-        mTimePickerDialog.show();
-    }
-
     private void showDatePick(DatePickerDialog.OnDateSetListener mListener) {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH);
@@ -229,7 +190,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         mDatePickerDialog.show();
     }
 
-    @OnClick({R.id.tvStartDateShow, R.id.tvStartTimeShow, R.id.tvEndDateShow, R.id.tvEndTimeShow, R.id.btnAddItem, R.id.ivCancel, R.id.ivSave})
+    @OnClick({R.id.tvStartDateShow, R.id.tvEndDateShow, R.id.btnAddItem, R.id.ivCancel, R.id.ivSave})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvStartDateShow:
@@ -241,28 +202,12 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                     }
                 });
                 break;
-            case R.id.tvStartTimeShow:
-                showTimePick(new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        mTvStartTimeShow.setText(hourOfDay + " : " + minute);
-                    }
-                });
-                break;
             case R.id.tvEndDateShow:
                 showDatePick(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         month += 1;
                         mTvEndDateShow.setText(year + "/" + month + "/" + dayOfMonth);
-                    }
-                });
-                break;
-            case R.id.tvEndTimeShow:
-                showTimePick(new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        mTvEndTimeShow.setText(hourOfDay + " : " + minute);
                     }
                 });
                 break;
@@ -298,8 +243,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             MainActivity mMainActivity = (MainActivity) mActivity;
             DBHelper mDBHelper = mMainActivity.getDBHelper();
 
-            String start = mTvStartDateShow.getText().toString().trim() + "\n" + mTvStartTimeShow.getText().toString();
-            String end = mTvEndDateShow.getText().toString() + "\n" + mTvEndTimeShow.getText().toString();
+            String start = mTvStartDateShow.getText().toString().trim();
+            String end = mTvEndDateShow.getText().toString();
             StringBuilder mBuilder = new StringBuilder();
             String title = mTvGoalName.getText().toString().trim();
             boolean isSuccess;
