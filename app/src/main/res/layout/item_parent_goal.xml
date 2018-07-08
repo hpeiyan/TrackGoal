@@ -8,8 +8,18 @@
               android:clickable="true"
               android:focusable="true"
               android:orientation="vertical"
-              android:padding="8dp"
+              android:paddingBottom="8dp"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp"
               android:translationZ="@dimen/translation_z">
+
+    <ProgressBar
+        android:id="@+id/pbGoal"
+        style="@style/MyProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:secondaryProgressTint="@color/colorAccent"
+        android:secondaryProgressTintMode="src_atop"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,11 +43,11 @@
             android:layout_toLeftOf="@+id/tvDownCount"
             android:layout_toRightOf="@+id/tvHoldCount"
             android:gravity="center"
-            android:textStyle="bold"
             android:padding="5dp"
             android:text="@string/app_name"
             android:textColor="@color/primaryTextColor"
-            android:textSize="@dimen/text_title_dimen"/>
+            android:textSize="@dimen/text_title_dimen"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/tvDownCount"
@@ -50,7 +60,6 @@
             android:textStyle=""/>
 
     </RelativeLayout>
-
 
     <TextView
         android:id="@+id/tvTimeSpend"

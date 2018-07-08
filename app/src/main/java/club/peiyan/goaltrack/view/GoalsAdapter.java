@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -111,21 +112,23 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             totalNeedSpend = year * 365 + month * 30 + day;
         }
 
+        holder.mPbGoal.setMax(totalNeedSpend);
+        holder.mPbGoal.setSecondaryProgress(totalHoldDay);
+
         holder.mTvTimeSpend.setText(mBuilder.toString().trim());
 
         String holdHtml = "<small><small><small><small><small><small>坚持的 </small></small></small></small></small></small>" + totalHoldDay + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
         String downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
         holder.mTvDownCount.setText(Html.fromHtml(downHtml));
         holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
-
         holder.mTvGoalName.setText(mBean.getTitle());
         String mTrim = mBean.getItems().trim();
         if (!mTrim.isEmpty()) {
             mItems = mTrim.split("\n");
         }
         int mChildCount = holder.mLlParent.getChildCount();
-        if (mChildCount > 2) {
-            holder.mLlParent.removeViews(2, mChildCount - 2);
+        if (mChildCount > 3) {
+            holder.mLlParent.removeViews(3, mChildCount - 3);
         }
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
@@ -215,6 +218,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         TextView mTvHoldCount;
         @BindView(R.id.llParent)
         LinearLayout mLlParent;
+        @BindView(R.id.pbGoal)
+        ProgressBar mPbGoal;
 
         GoalViewHolder(View view) {
             super(view);

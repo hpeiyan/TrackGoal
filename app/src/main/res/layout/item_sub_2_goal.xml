@@ -11,8 +11,21 @@
               android:clickable="true"
               android:focusable="true"
               android:orientation="vertical"
-              android:padding="8dp"
+              android:paddingBottom="8dp"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp"
               android:translationZ="@dimen/translation_z">
+
+    <ProgressBar
+        android:id="@+id/pbGoal"
+        style="@style/MyProgressBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:secondaryProgress="20"
+        android:secondaryProgressTint="@color/colorAccent"
+        android:secondaryProgressTintMode="src_atop"/>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
