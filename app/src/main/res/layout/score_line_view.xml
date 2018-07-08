@@ -8,7 +8,6 @@
         android:id="@+id/tvItemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/selector_goal_item"
         android:ellipsize="end"
         android:maxLines="1"
         android:maxWidth="120dp"

@@ -31,6 +31,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="夫君子，静以修身，俭以养德！"/>
+        android:text="静以修身，俭以养德！"/>
 
 </LinearLayout>

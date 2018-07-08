@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity
     private MenuItem mModeMenu;
 
     private static final int[] titleRes = new int[]{R.string.yesterday, R.string.today, R.string.tomorrow};
+    private static final int[] imgRes = new int[]{R.mipmap.ic_headset_black_24dp, R.mipmap.ic_toys_black_24dp,
+            R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
+            R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +116,10 @@ public class MainActivity extends AppCompatActivity
     private void initMenuItem() {
         mGoalSubMenu.clear();
         if (mParentGoals != null && mParentGoals.size() > 0) {
-            for (GoalBean bean : mParentGoals) {
+            for (int i = 0; i < mParentGoals.size(); i++) {
+                GoalBean bean = mParentGoals.get(i);
                 MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
-                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+                mItem.setIcon(imgRes[i % 6]);
             }
         }
     }
