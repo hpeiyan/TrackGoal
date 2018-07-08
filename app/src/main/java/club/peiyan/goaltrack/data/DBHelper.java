@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+
+import club.peiyan.goaltrack.utils.CalendaUtils;
 
 /**
  * Created by HPY.
@@ -390,4 +390,28 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{title});
     }
 
+    public ArrayList<ScoreBean> getScoreByTime() {
+        String mToday = CalendaUtils.getCurrntDate();
+        ArrayList<ScoreBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_score where date=?", new String[]{mToday});
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            ScoreBean mBean = new ScoreBean();
+            mBean.setId(res.getInt(res.getColumnIndex(GOAL_SCORE_ID)));
+            mBean.setLevel(res.getInt(res.getColumnIndex(GOAL_SCORE_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
+            mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setScore(res.getInt(res.getColumnIndex(GOAL_SCORE_SCORE)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        if (array_list.size() > 0)
+            return array_list;
+        return null;
+    }
 }

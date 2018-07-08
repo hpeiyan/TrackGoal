@@ -25,5 +25,6 @@
     <string name="today">今日</string>
     <string name="yesterday">昨日</string>
     <string name="tomorrow">明日</string>
+    <string name="today_score">今日得分榜</string>
 
 </resources>

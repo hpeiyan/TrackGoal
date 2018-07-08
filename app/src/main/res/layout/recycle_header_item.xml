@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/item_normal_margin"
+        android:background="@drawable/selector_parent_goal_item"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:translationZ="@dimen/translation_z">
+
+        <TextView
+            android:id="@+id/tvScoreTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/today_score"
+            android:layout_marginLeft="8dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_show_dimen"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvScoreShow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_big_dimen"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:id="@+id/llScoreLine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvScoreShow"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:src="@mipmap/ic_label_outline_black_24dp"
+        android:translationZ="@dimen/translation_z"
+        tools:ignore="NotSibling"/>
+
+</RelativeLayout>

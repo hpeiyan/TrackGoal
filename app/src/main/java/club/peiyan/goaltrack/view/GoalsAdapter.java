@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,12 +35,12 @@ import static android.view.View.inflate;
  * Desc:
  */
 
-public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHolder> implements View.OnClickListener {
+public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder> implements View.OnClickListener {
 
     private static final String TAG = "GoalsAdapter";
+    private static final int TYPE_HEADER = -1;
     private ArrayList<GoalBean> mData;
     private final MainActivity mMainActivity;
-    private HashMap<Integer, GoalViewHolder> mHashMap = new HashMap<>();
     private static long clickTimestamp = System.currentTimeMillis();
     private final DBHelper mDBHelper;
 
@@ -56,7 +54,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
     }
 
     @Override
-    public GoalViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         GoalViewHolder mHolder;
         switch (viewType) {
             case 1:
@@ -71,6 +69,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             case 4:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_4_goal, parent, false));
                 break;
+            case TYPE_HEADER:
+                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_header_item, parent, false));
             default:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
         }
@@ -79,7 +79,34 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
 
 
     @Override
-    public void onBindViewHolder(GoalViewHolder holder, final int position) {
+    public void onBindViewHolder(MyViewHolder mHolder, int position) {
+        if (getItemViewType(position) == TYPE_HEADER) {
+            HeaderViewHolder mViewHolder = (HeaderViewHolder) mHolder;
+
+            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime();
+            int score = 0;
+            int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
+            if (mChildCount > 0) {
+                mViewHolder.mLlScoreLine.removeViews(0, mChildCount);
+            }
+            if (mScoreBeans != null && mScoreBeans.size() > 0) {
+                for (ScoreBean bean : mScoreBeans) {
+                    if (bean == null) continue;
+                    score += bean.getScore();
+                    View mView = View.inflate(mMainActivity, R.layout.score_line_view, null);
+                    TextView itemName = mView.findViewById(R.id.tvItemName);
+                    itemName.setText(bean.getTitle());
+                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
+                    pb.setProgress(bean.getScore());
+                    mViewHolder.mLlScoreLine.addView(mView);
+                }
+            }
+            mViewHolder.mScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
+            return;
+        }
+
+        position -= 1;
+        GoalViewHolder holder = (GoalViewHolder) mHolder;
         String[] mItems = new String[0];
         final Context mContext = holder.mLlParent.getContext();
         final GoalBean mBean = mData.get(position);
@@ -161,7 +188,9 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                     public void onStopTrackingTouch(SeekBar seekBar) {
                         int mProgress = seekBar.getProgress();
                         boolean isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                        Log.i(TAG, "mString: " + isSuccess);
+                        if (isSuccess) {
+                            notifyDataSetChanged();
+                        }
                     }
                 });
 
@@ -230,12 +259,13 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position).getLevel();
+        if (position == 0) return TYPE_HEADER;
+        return mData.get(position - 1).getLevel();
     }
 
     @Override
     public int getItemCount() {
-        return mData.size();
+        return mData.size() + 1;
     }
 
     @Override
@@ -257,7 +287,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         }
     }
 
-    static class GoalViewHolder extends RecyclerView.ViewHolder {
+
+    static class GoalViewHolder extends MyViewHolder {
         @BindView(R.id.tvGoalName)
         TextView mTvGoalName;
         @BindView(R.id.tvTimeSpend)
@@ -277,4 +308,23 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         }
     }
 
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+
+        MyViewHolder(View view) {
+            super(view);
+        }
+    }
+
+    static class HeaderViewHolder extends MyViewHolder {
+        @BindView(R.id.llScoreLine)
+        LinearLayout mLlScoreLine;
+
+        @BindView(R.id.tvScoreShow)
+        TextView mScoreShow;
+
+        HeaderViewHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
+        }
+    }
 }
