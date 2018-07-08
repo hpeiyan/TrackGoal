@@ -99,7 +99,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         if (mStartDates.length == 3 && mEndDates.length == 3) {
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-            int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            int currentDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             int deltaYear = currentYear - Integer.parseInt(mStartDates[0]);
             int deltaMonth = currentMonth - Integer.parseInt(mStartDates[1]);
             int deltaDay = currentDay - Integer.parseInt(mStartDates[2]);
