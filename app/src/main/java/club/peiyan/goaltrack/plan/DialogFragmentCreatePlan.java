@@ -334,8 +334,11 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                     if (mSubMenu != null) {
                         GoalBean mBean = mDBHelper.getGoalByTitle(title);
                         if (mBean != null) {
-                            MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
-                            mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+                            MenuItem mMenuItem = mSubMenu.findItem(mBean.getId());
+                            if (mMenuItem == null) {
+                                MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
+                                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+                            }
                         }
                     }
                 }

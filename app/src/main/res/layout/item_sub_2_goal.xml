@@ -21,10 +21,7 @@
         style="@style/MyProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:secondaryProgress="20"
-        android:secondaryProgressTint="@color/colorAccent"
-        android:secondaryProgressTintMode="src_atop"/>
+        />
 
 
     <RelativeLayout

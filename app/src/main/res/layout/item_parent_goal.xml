@@ -18,8 +18,7 @@
         style="@style/MyProgressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:secondaryProgressTint="@color/colorAccent"
-        android:secondaryProgressTintMode="src_atop"/>
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"

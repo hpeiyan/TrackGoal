@@ -113,7 +113,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         }
 
         holder.mPbGoal.setMax(totalNeedSpend);
-        holder.mPbGoal.setSecondaryProgress(totalHoldDay);
+        holder.mPbGoal.setProgress(totalHoldDay);
 
         holder.mTvTimeSpend.setText(mBuilder.toString().trim());
 
