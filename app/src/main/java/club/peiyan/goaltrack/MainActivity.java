@@ -1,15 +1,14 @@
 package club.peiyan.goaltrack;
 
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +22,11 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
+import club.peiyan.goaltrack.plan.TodayFragment;
+import club.peiyan.goaltrack.plan.TomorrowFragment;
+import club.peiyan.goaltrack.plan.YesterdayFragment;
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.view.GoalsAdapter;
-import club.peiyan.goaltrack.view.MyRecycleView;
+import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
@@ -34,24 +35,25 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.rvGoal)
-    MyRecycleView mRvGoal;
     @BindView(R.id.fab)
     FloatingActionButton mFab;
     @BindView(R.id.nav_view)
     NavigationView mNavView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.container)
+    ViewPager mContainer;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
 
     private DBHelper mDBHelper;
-    private GoalsAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     private ArrayList<GoalBean> mSingleAllGoals = new ArrayList<>();
     private GoalBean mLatestParentGoal;
     private ArrayList<GoalBean> mParentGoals;
     private SubMenu mGoalSubMenu;
     private boolean mMode = true;//False预览模式, True编辑模式
+    private TodayFragment mTodayFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
-        initRecycleView();
         setSupportActionBar(mToolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -86,27 +87,26 @@ public class MainActivity extends AppCompatActivity
                 mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
             }
         }
+
+        TomorrowFragment mTomorrowFragment = new TomorrowFragment();
+        YesterdayFragment mYesterdayFragment = new YesterdayFragment();
+        mTodayFragment = new TodayFragment();
+        mTodayFragment.setData(mSingleAllGoals);
+
+        ArrayList<Fragment> mFragments = new ArrayList<>();
+        mFragments.add(mYesterdayFragment);
+        mFragments.add(mTodayFragment);
+        mFragments.add(mTomorrowFragment);
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter.setData(mFragments);
+        mContainer.setAdapter(mSectionsPagerAdapter);
+        mContainer.setCurrentItem(1);
+
     }
 
     public SubMenu getGoalSubMenu() {
         return mGoalSubMenu;
-    }
-
-    private void initRecycleView() {
-        mRvGoal.setHasFixedSize(true);
-        mRvGoal.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                super.getItemOffsets(outRect, view, parent, state);
-                outRect.set(4, 4, 4, 4);//设置itemView中内容相对边框左，上，右，下距离
-            }
-        });
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRvGoal.setLayoutManager(mLayoutManager);
-        mAdapter = new GoalsAdapter(this);
-        mAdapter.setData(mSingleAllGoals);
-        mRvGoal.setItemAnimator(null);
-        mRvGoal.setAdapter(mAdapter);
     }
 
     public void initDataBase() {
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity
                 mMode = item.isChecked();//触发开关之后的状态
                 item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
                 mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-                mRvGoal.setEditMode(!mMode);
+                mTodayFragment.getRvGoal().setEditMode(!mMode);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -186,8 +186,11 @@ public class MainActivity extends AppCompatActivity
 
     public void notifyDataSetChange() {
         initDataBase();
-        mAdapter.setData(mSingleAllGoals);
-        mAdapter.notifyDataSetChanged();
+        mTodayFragment.getAdapter().setData(mSingleAllGoals);
+        mTodayFragment.getAdapter().notifyDataSetChanged();
+        if (mContainer.getCurrentItem() != 1) {
+            mContainer.setCurrentItem(1, true);
+        }
     }
 
     /**
@@ -213,9 +216,6 @@ public class MainActivity extends AppCompatActivity
         AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
     }
 
-    public GoalsAdapter getAdapter() {
-        return mAdapter;
-    }
 
     @Override
     protected void onDestroy() {

@@ -21,4 +21,7 @@
     <item name="about" type="id"/>
     <item name="nav_share" type="id"/>
     <item name="nav_about" type="id"/>
+
+    <string name="section_format">Hello World from section: %1$d</string>
+
 </resources>
