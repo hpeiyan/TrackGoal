@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.container)
     ViewPager mContainer;
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
-
     private DBHelper mDBHelper;
 
     private ArrayList<GoalBean> mSingleAllGoals = new ArrayList<>();
@@ -55,6 +53,8 @@ public class MainActivity extends AppCompatActivity
     private boolean mMode = true;//False预览模式, True编辑模式
     private TodayFragment mTodayFragment;
     private MenuItem mModeMenu;
+
+    private static final int[] titleRes = new int[]{R.string.yesterday, R.string.today, R.string.yesterday};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        getSupportActionBar().setTitle(titleRes[1]);
 
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
@@ -241,6 +242,7 @@ public class MainActivity extends AppCompatActivity
             mModeMenu.setVisible(true);
             mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
         }
+        getSupportActionBar().setTitle(titleRes[position]);
     }
 
     @Override

@@ -22,6 +22,8 @@
     <item name="nav_share" type="id"/>
     <item name="nav_about" type="id"/>
 
-    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="today">今日</string>
+    <string name="yesterday">昨日</string>
+    <string name="tomorrow">明日</string>
 
 </resources>
