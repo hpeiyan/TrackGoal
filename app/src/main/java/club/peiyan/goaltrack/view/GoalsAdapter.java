@@ -181,7 +181,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                                     }
                                 }
                                 mMainActivity.getDBHelper().deleteGoal(mBean.getId());
-                                mMainActivity.notifyDataSetChange();
+                                mMainActivity.notifyDataSetChange(null);
                             }
                         });
                 return true;
@@ -210,7 +210,12 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             Toast.makeText(mMainActivity, "计划太细了，适可而止", Toast.LENGTH_SHORT).show();
             return;
         }
-        DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1, start, over);
+        GoalBean mGoalBean = mMainActivity.getDBHelper().getGoalByTitle(subTitle);
+        if (mGoalBean != null) {
+            DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mGoalBean);
+        } else {
+            DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1, start, over);
+        }
     }
 
     static class GoalViewHolder extends RecyclerView.ViewHolder {

@@ -298,7 +298,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                     }
                 }
                 dismiss();
-                mMainActivity.notifyDataSetChange();
+                mMainActivity.notifyDataSetChange(title);
             }
         }
     }

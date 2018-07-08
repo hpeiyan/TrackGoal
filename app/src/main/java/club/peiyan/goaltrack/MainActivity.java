@@ -1,6 +1,7 @@
 package club.peiyan.goaltrack;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -83,13 +85,7 @@ public class MainActivity extends AppCompatActivity
 
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
-        if (mParentGoals != null && mParentGoals.size() > 0) {
-            for (GoalBean bean : mParentGoals) {
-                MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
-                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
-            }
-        }
-
+        initMenuItem();
         TomorrowFragment mTomorrowFragment = new TomorrowFragment();
         YesterdayFragment mYesterdayFragment = new YesterdayFragment();
         mTodayFragment = new TodayFragment();
@@ -108,18 +104,31 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void initMenuItem() {
+        mGoalSubMenu.clear();
+        if (mParentGoals != null && mParentGoals.size() > 0) {
+            for (GoalBean bean : mParentGoals) {
+                MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
+                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+            }
+        }
+    }
+
     public SubMenu getGoalSubMenu() {
         return mGoalSubMenu;
     }
 
     public void initDataBase() {
-        mLatestParentGoal = mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, ""));
+        mParentGoals = mDBHelper.getGoalByLevel(1);
+        setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, "")));
+        if (mLatestParentGoal == null) {
+            setLatestParentGoal(mDBHelper.getNearestParentGoal());
+        }
         if (mLatestParentGoal == null) {
             mSingleAllGoals.clear();
             return;
         }
         mSingleAllGoals = mDBHelper.getSingleAllGoal(mLatestParentGoal);
-        mParentGoals = mDBHelper.getGoalByLevel(1);
     }
 
 
@@ -177,7 +186,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                     }
                 }
-                notifyDataSetChange();
+                notifyDataSetChange(null);
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -187,12 +196,21 @@ public class MainActivity extends AppCompatActivity
         return mDBHelper;
     }
 
-    public void notifyDataSetChange() {
+    public void notifyDataSetChange(@Nullable String goalTitle) {
         initDataBase();
         mTodayFragment.getAdapter().setData(mSingleAllGoals);
         mTodayFragment.getAdapter().notifyDataSetChanged();
+        initMenuItem();
         if (mContainer.getCurrentItem() != 1) {
             mContainer.setCurrentItem(1, true);
+        }
+        if (goalTitle != null && !TextUtils.isEmpty(goalTitle)) {
+            for (int i = 0; i < mSingleAllGoals.size(); i++) {
+                if (goalTitle.equals(mSingleAllGoals.get(i).getTitle())) {
+                    mTodayFragment.getRvGoal().scrollToPosition(i);
+                    break;
+                }
+            }
         }
     }
 
@@ -216,7 +234,9 @@ public class MainActivity extends AppCompatActivity
 
     public void setLatestParentGoal(GoalBean mLatestParentGoal) {
         this.mLatestParentGoal = mLatestParentGoal;
-        AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
+        if (mLatestParentGoal != null) {
+            AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
+        }
     }
 
 
