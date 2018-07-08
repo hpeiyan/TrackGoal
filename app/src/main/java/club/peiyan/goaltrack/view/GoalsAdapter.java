@@ -84,23 +84,31 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             HeaderViewHolder mViewHolder = (HeaderViewHolder) mHolder;
 
             ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getCurrntDate());
-            int score = 0;
             int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
             if (mChildCount > 0) {
                 mViewHolder.mLlScoreLine.removeAllViews();
             }
+
+            int score = 0;
+            int totalSie = 0;
             if (mScoreBeans != null && mScoreBeans.size() > 0) {
                 for (ScoreBean bean : mScoreBeans) {
                     if (bean == null) continue;
-                    score += bean.getScore();
                     View mView = View.inflate(mMainActivity, R.layout.score_line_view, null);
                     TextView itemName = mView.findViewById(R.id.tvItemName);
                     itemName.setText(bean.getTitle());
                     ProgressBar pb = mView.findViewById(R.id.pbGoal);
                     pb.setProgress(bean.getScore());
                     mViewHolder.mLlScoreLine.addView(mView);
+                    score += bean.getScore();
+                    totalSie++;
                 }
-                mViewHolder.mScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
+            }
+            if (totalSie == 0) {
+                View mView = View.inflate(mMainActivity, R.layout.dont_caculate, null);
+                mViewHolder.mLlScoreLine.addView(mView);
+            } else {
+                mViewHolder.mScoreShow.setText(score + "/" + 10 * totalSie);
             }
             return;
         }
