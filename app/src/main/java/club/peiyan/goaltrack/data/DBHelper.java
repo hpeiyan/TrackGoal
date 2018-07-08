@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 
@@ -65,7 +66,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<GoalBean> getGoal(int level) {
+    public ArrayList<GoalBean> getGoalByLevel(int level) {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from track_goal where level=" + level + "", null);
@@ -85,6 +86,31 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return array_list;
+    }
+
+    public GoalBean getGoalByID(int id) {
+        ArrayList<GoalBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from track_goal where id=" + id + "", null);
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            GoalBean mBean = new GoalBean();
+            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+            mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
+            mBean.setStart(res.getString(res.getColumnIndex(TRACK_GOAL_START_TIME)));
+            mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
+            mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        if (array_list.size() > 0) {
+            return array_list.get(0);
+        }
+        return null;
     }
 
     public ArrayList<GoalBean> getParentGoal() {
@@ -160,7 +186,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Nullable
-    public GoalBean getGoal(String title) {
+    public GoalBean getGoalByTitle(String title) {
+        if (title == null || TextUtils.isEmpty(title)) return null;
+
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -186,7 +214,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public GoalBean getNearestParentGoal() {
-        ArrayList<GoalBean> mParentGoals = getGoal(1);
+        ArrayList<GoalBean> mParentGoals = getGoalByLevel(1);
         if (mParentGoals == null || mParentGoals.size() == 0) return null;
 
         int index = 0;
@@ -207,7 +235,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<GoalBean> mSingleAllGoalBeans = new ArrayList<>();
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
-                GoalBean mGoalBean = getGoal(item);
+                GoalBean mGoalBean = getGoalByTitle(item);
                 if (mGoalBean != null) {
                     mSingleAllGoalBeans.add(mGoalBean);
                 }
@@ -224,28 +252,28 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mItems != null && mItems.length > 0) {
             for (String title1 : mItems) {
                 // level 2
-                GoalBean mGoal2 = getGoal(title1);
+                GoalBean mGoal2 = getGoalByTitle(title1);
                 if (mGoal2 == null) continue;
                 mSingleAllGoalBeans.add(mGoal2);
 
                 String[] mSplit2 = mGoal2.getItems().split("\n");
                 for (String title2 : mSplit2) {
                     //level 3
-                    GoalBean mGoal3 = getGoal(title2);
+                    GoalBean mGoal3 = getGoalByTitle(title2);
                     if (mGoal3 == null) continue;
                     mSingleAllGoalBeans.add(mGoal3);
 
                     String[] mSplit3 = mGoal3.getItems().split("\n");
                     for (String title3 : mSplit3) {
                         //level 4
-                        GoalBean mGoal4 = getGoal(title3);
+                        GoalBean mGoal4 = getGoalByTitle(title3);
                         if (mGoal4 == null) continue;
                         mSingleAllGoalBeans.add(mGoal4);
 
                         String[] mSplit4 = mGoal4.getItems().split("\n");
                         for (String title4 : mSplit4) {
                             //level 5
-                            GoalBean mGoal5 = getGoal(title4);
+                            GoalBean mGoal5 = getGoalByTitle(title4);
                             if (mGoal5 == null) continue;
                             mSingleAllGoalBeans.add(mGoal5);
                         }
@@ -260,7 +288,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] mItems = mGoalBean.getItems().split("\n");
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
-                GoalBean mGoal = getGoal(item);
+                GoalBean mGoal = getGoalByTitle(item);
                 if (mGoal != null) return true;
             }
         }
@@ -269,7 +297,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public boolean isHadInDB(String mItem) {
-        GoalBean mGoal = getGoal(mItem);
+        GoalBean mGoal = getGoalByTitle(mItem);
         return mGoal != null;
     }
 }

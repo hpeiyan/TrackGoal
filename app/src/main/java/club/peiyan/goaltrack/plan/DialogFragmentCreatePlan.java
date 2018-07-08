@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -30,9 +32,12 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
-import club.peiyan.goaltrack.Utils.DialogUtil;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.DialogUtil;
+
+import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 /**
  * Created by HPY.
@@ -219,7 +224,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     private void showDatePick(DatePickerDialog.OnDateSetListener mListener) {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH);
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int day = Calendar.getInstance().get(Calendar.DATE);
         DatePickerDialog mDatePickerDialog = new DatePickerDialog(getActivity(), mListener, year, month, day);
         mDatePickerDialog.show();
     }
@@ -323,6 +328,17 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             }
             Toast.makeText(mActivity, isSuccess ? "已保存" : "保存异常", Toast.LENGTH_SHORT).show();
             if (isSuccess) {
+                if (mLevel == 1) {
+                    AppSp.putString(LATEST_GOAL, title);
+                    SubMenu mSubMenu = mMainActivity.getGoalSubMenu();
+                    if (mSubMenu != null) {
+                        GoalBean mBean = mDBHelper.getGoalByTitle(title);
+                        if (mBean != null) {
+                            MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
+                            mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+                        }
+                    }
+                }
                 dismiss();
                 mMainActivity.notifyDataSetChange();
             }

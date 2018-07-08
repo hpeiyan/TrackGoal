@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
-import club.peiyan.goaltrack.Utils.DialogUtil;
+import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 
@@ -99,7 +99,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         if (mStartDates.length == 3 && mEndDates.length == 3) {
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-            int currentDay = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            int currentDay = Calendar.getInstance().get(Calendar.DATE);
             int deltaYear = currentYear - Integer.parseInt(mStartDates[0]);
             int deltaMonth = currentMonth - Integer.parseInt(mStartDates[1]);
             int deltaDay = currentDay - Integer.parseInt(mStartDates[2]);

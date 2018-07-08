@@ -1,4 +1,4 @@
-package club.peiyan.goaltrack.Utils;
+package club.peiyan.goaltrack.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;

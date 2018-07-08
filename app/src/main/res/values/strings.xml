@@ -14,4 +14,8 @@
     <item name="day" type="id"/>
     <item name="hour" type="id"/>
     <item name="minute" type="id"/>
+    <item name="goal" type="id"/>
+    <item name="about" type="id"/>
+    <item name="nav_share" type="id"/>
+    <item name="nav_about" type="id"/>
 </resources>

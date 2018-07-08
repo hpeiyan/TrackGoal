@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -22,7 +23,10 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
+import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.view.GoalsAdapter;
+
+import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,8 +45,11 @@ public class MainActivity extends AppCompatActivity
     private DBHelper mDBHelper;
     private GoalsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
     private ArrayList<GoalBean> mSingleAllGoals = new ArrayList<>();
-    private GoalBean mNearestParentGoal;
+    private GoalBean mLatestParentGoal;
+    private ArrayList<GoalBean> mParentGoals;
+    private SubMenu mGoalSubMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,23 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         mNavView.setNavigationItemSelectedListener(this);
+        mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
+        if (mParentGoals != null && mParentGoals.size() > 0) {
+            for (GoalBean bean : mParentGoals) {
+                MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
+                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
+            }
+        }
+        final SubMenu aboutMenu = mNavView.getMenu().addSubMenu("关于");
+        MenuItem mAboutMenu = aboutMenu.add(R.id.about, R.id.nav_about, 1, "App");
+        mAboutMenu.setIcon(R.drawable.ic_menu_share);
+        MenuItem mShareMenu = aboutMenu.add(R.id.about, R.id.nav_share, 2, "分享");
+        mShareMenu.setIcon(R.drawable.ic_menu_send);
+
+    }
+
+    public SubMenu getGoalSubMenu() {
+        return mGoalSubMenu;
     }
 
     private void initRecycleView() {
@@ -90,12 +114,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initDataBase() {
-        mNearestParentGoal = mDBHelper.getNearestParentGoal();
-        if (mNearestParentGoal == null) {
+        mLatestParentGoal = mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, ""));
+        if (mLatestParentGoal == null) {
             mSingleAllGoals.clear();
             return;
         }
-        mSingleAllGoals = mDBHelper.getSingleAllGoal(mNearestParentGoal);
+        mSingleAllGoals = mDBHelper.getSingleAllGoal(mLatestParentGoal);
+        mParentGoals = mDBHelper.getGoalByLevel(1);
     }
 
 
@@ -122,12 +147,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -140,23 +160,21 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        switch (id) {
+            case R.id.nav_about:
+                break;
+            case R.id.nav_share:
+                break;
+            default:
+                for (GoalBean bean : mParentGoals) {
+                    if (bean.getId() == id) {
+                        AppSp.putString(LATEST_GOAL, bean.getTitle());
+                        break;
+                    }
+                }
+                notifyDataSetChange();
         }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -184,11 +202,24 @@ public class MainActivity extends AppCompatActivity
      *
      * @return
      */
-    public GoalBean getNearestParentGoal() {
-        return mNearestParentGoal;
+    public GoalBean getLatestParentGoal() {
+        return mLatestParentGoal;
+    }
+
+    public void setLatestParentGoal(GoalBean mLatestParentGoal) {
+        this.mLatestParentGoal = mLatestParentGoal;
+        AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
     }
 
     public GoalsAdapter getAdapter() {
         return mAdapter;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mLatestParentGoal != null) {
+            AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
+        }
     }
 }
