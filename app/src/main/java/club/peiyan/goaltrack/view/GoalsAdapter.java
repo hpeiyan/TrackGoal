@@ -83,7 +83,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         if (getItemViewType(position) == TYPE_HEADER) {
             HeaderViewHolder mViewHolder = (HeaderViewHolder) mHolder;
 
-            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime();
+            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getCurrntDate());
             int score = 0;
             int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
             if (mChildCount > 0) {
@@ -100,8 +100,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                     pb.setProgress(bean.getScore());
                     mViewHolder.mLlScoreLine.addView(mView);
                 }
+                mViewHolder.mScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
             }
-            mViewHolder.mScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
             return;
         }
 

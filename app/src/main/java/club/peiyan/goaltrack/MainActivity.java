@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     private TodayFragment mTodayFragment;
     private MenuItem mModeMenu;
 
-    private static final int[] titleRes = new int[]{R.string.yesterday, R.string.today, R.string.yesterday};
+    private static final int[] titleRes = new int[]{R.string.yesterday, R.string.today, R.string.tomorrow};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -15,4 +15,14 @@ public class CalendaUtils {
         int day = Calendar.getInstance().get(Calendar.DATE);
         return year + "/" + month + "/" + day;
     }
+
+    public static String getYesterday() {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.add(Calendar.DATE, -1);
+        int year = mCalendar.get(Calendar.YEAR);
+        int month = mCalendar.get(Calendar.MONTH);
+        int day = mCalendar.get(Calendar.DATE);
+        return year + "/" + month + "/" + day;
+    }
+
 }

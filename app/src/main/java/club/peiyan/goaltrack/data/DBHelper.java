@@ -390,12 +390,11 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{title});
     }
 
-    public ArrayList<ScoreBean> getScoreByTime() {
-        String mToday = CalendaUtils.getCurrntDate();
+    public ArrayList<ScoreBean> getScoreByTime(String mDay) {
         ArrayList<ScoreBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from goal_score where date=?", new String[]{mToday});
+        Cursor res = db.rawQuery("select * from goal_score where date=?", new String[]{mDay});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
