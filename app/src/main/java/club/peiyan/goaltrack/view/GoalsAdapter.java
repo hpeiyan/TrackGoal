@@ -161,7 +161,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             public boolean onLongClick(View v) {
                 final boolean mHasSubGoal = mMainActivity.getDBHelper().isHasSubGoal(mBean);
                 DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s计划？",
-                        mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的二级计划也将被移除。" : "",
+                        mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的子计划将全部被移除。" : "",
                         "开玩笑",
                         "认真脸", new DialogUtil.DialogListener() {
                             @Override

@@ -18,6 +18,7 @@ import android.view.SubMenu;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +36,7 @@ import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
+    private static final String TAG = "MainActivity";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fab)
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mDBHelper = new DBHelper(this);
+        setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
 
         initDataBase();
         initView();
@@ -101,7 +104,10 @@ public class MainActivity extends AppCompatActivity
         mContainer.setAdapter(mSectionsPagerAdapter);
         mContainer.setCurrentItem(1);
         mContainer.addOnPageChangeListener(this);
+    }
 
+    public void setMode(boolean mMode) {
+        this.mMode = mMode;
     }
 
     private void initMenuItem() {
@@ -151,6 +157,7 @@ public class MainActivity extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         mModeMenu = menu.getItem(0);
+        initAppMode(mModeMenu);
         return true;
     }
 
@@ -160,13 +167,17 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_mode:
                 item.setChecked(!item.isChecked());
-                mMode = item.isChecked();//触发开关之后的状态
-                item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
-                mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-                mTodayFragment.getRvGoal().setEditMode(!mMode);
+                setMode(item.isChecked());//触发开关之后的状态
+                initAppMode(item);
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initAppMode(MenuItem item) {
+        item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
+        mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
+        mTodayFragment.getRvGoal().setEditMode(!mMode);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
