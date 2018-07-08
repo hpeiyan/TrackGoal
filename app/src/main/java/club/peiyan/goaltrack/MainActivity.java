@@ -25,6 +25,7 @@ import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.view.GoalsAdapter;
+import club.peiyan.goaltrack.view.MyRecycleView;
 
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.rvGoal)
-    RecyclerView mRvGoal;
+    MyRecycleView mRvGoal;
     @BindView(R.id.fab)
     FloatingActionButton mFab;
     @BindView(R.id.nav_view)
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity
     private GoalBean mLatestParentGoal;
     private ArrayList<GoalBean> mParentGoals;
     private SubMenu mGoalSubMenu;
+    private boolean mMode = true;//False预览模式, True编辑模式
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +86,6 @@ public class MainActivity extends AppCompatActivity
                 mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
             }
         }
-        final SubMenu aboutMenu = mNavView.getMenu().addSubMenu("关于");
-        MenuItem mAboutMenu = aboutMenu.add(R.id.about, R.id.nav_about, 1, "App");
-        mAboutMenu.setIcon(R.drawable.ic_menu_share);
-        MenuItem mShareMenu = aboutMenu.add(R.id.about, R.id.nav_share, 2, "分享");
-        mShareMenu.setIcon(R.drawable.ic_menu_send);
-
     }
 
     public SubMenu getGoalSubMenu() {
@@ -148,10 +144,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_mode:
+                item.setChecked(!item.isChecked());
 
+                mMode = item.isChecked();//触发开关之后的状态
+                item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
+                mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
+                mRvGoal.setEditMode(!mMode);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

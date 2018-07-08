@@ -9,7 +9,7 @@
     tools:context="club.peiyan.goaltrack.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <android.support.v7.widget.RecyclerView
+    <club.peiyan.goaltrack.view.MyRecycleView
         android:id="@+id/rvGoal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
