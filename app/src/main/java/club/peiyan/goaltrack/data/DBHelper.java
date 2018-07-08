@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by HPY.
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "UserTrackGoal.db";
     public static final String TRACK_GOAL_TABLE = "track_goal";
+    public static final String GOAL_SCORE_TABLE = "goal_score";
 
     public static final String TRACK_GOAL_ID = "id";
     public static final String TRACK_GOAL_PARENT = "parent";
@@ -29,6 +32,16 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_END_TIME = "over";
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
+
+    public static final String GOAL_SCORE_ID = "id";
+    public static final String GOAL_SCORE_DATE = "date";
+    public static final String GOAL_SCORE_PARENT = "parent";
+    public static final String GOAL_SCORE_LEVEL = "level";
+    public static final String GOAL_SCORE_TITLE = "title";
+    public static final String GOAL_SCORE_SCORE = "score";
+    public static final String GOAL_SCORE_TIMESTAMP = "timestamp";
+
+    private static final String TAG = "DBHelper";
     private final Context mContext;
 
 
@@ -43,12 +56,17 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table track_goal " +
                         "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer)"
         );
+
+        db.execSQL(
+                "create table goal_score " +
+                        "(id integer primary key, date text,parent text,level integer,title text,score integer,timestamp integer)"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS track_goal");
-        onCreate(db);
+//        db.execSQL("DROP TABLE IF EXISTS track_goal");
+//        onCreate(db);
     }
 
     public boolean insertGoal(int level, String parent, String title, String start, String over, String items, long timestamp) {
@@ -300,4 +318,76 @@ public class DBHelper extends SQLiteOpenHelper {
         GoalBean mGoal = getGoalByTitle(mItem);
         return mGoal != null;
     }
+
+    /**
+     * 以上是 track_goal 的表操作
+     * 以下是 goal_score 的操作
+     */
+    /*
+    *  db.execSQL(
+                "create table goal_achieve " +
+                        "(id integer primary key, date text,parent text,level integer,title text,score integer,timestamp integer)"
+        );
+    * */
+    public boolean insertScore(int level, String parent, String title, String date, int score, long timestamp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GOAL_SCORE_DATE, date);
+        contentValues.put(GOAL_SCORE_LEVEL, level);
+        contentValues.put(GOAL_SCORE_PARENT, parent);
+        contentValues.put(GOAL_SCORE_TITLE, title);
+        contentValues.put(GOAL_SCORE_SCORE, score);
+        contentValues.put(GOAL_SCORE_TIMESTAMP, timestamp);
+        db.insert(GOAL_SCORE_TABLE, null, contentValues);
+        return true;
+    }
+
+    public boolean updateScore(Integer id, int level, String parent, String title, String date, int score, long timestamp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GOAL_SCORE_DATE, date);
+        contentValues.put(GOAL_SCORE_LEVEL, level);
+        contentValues.put(GOAL_SCORE_PARENT, parent);
+        contentValues.put(GOAL_SCORE_TITLE, title);
+        contentValues.put(GOAL_SCORE_SCORE, score);
+        contentValues.put(GOAL_SCORE_TIMESTAMP, timestamp);
+        db.update(GOAL_SCORE_TABLE, contentValues, "id = ? ", new String[]{Integer.toString(id)});
+        return true;
+    }
+
+
+    @Nullable
+    public ScoreBean getScoreByTitle(String title) {
+        if (title == null || TextUtils.isEmpty(title)) return null;
+
+        ArrayList<ScoreBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_score where title=?", new String[]{title});
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            ScoreBean mBean = new ScoreBean();
+            mBean.setId(res.getInt(res.getColumnIndex(GOAL_SCORE_ID)));
+            mBean.setLevel(res.getInt(res.getColumnIndex(GOAL_SCORE_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
+            mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setScore(res.getInt(res.getColumnIndex(GOAL_SCORE_SCORE)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        if (array_list.size() > 0)
+            return array_list.get(0);
+        return null;
+    }
+
+    public Integer deleteScore(String title) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(GOAL_SCORE_TABLE,
+                "title = ? ",
+                new String[]{title});
+    }
+
 }

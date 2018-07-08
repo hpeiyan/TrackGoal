@@ -1,5 +1,7 @@
 package club.peiyan.goaltrack.data;
 
+import android.text.TextUtils;
+
 /**
  * Created by HPY.
  * Time: 2018/7/6.
@@ -78,5 +80,12 @@ public class GoalBean {
 
     public void setTimestamp(long mTimestamp) {
         timestamp = mTimestamp;
+    }
+
+    public String[] getItemSplit() {
+        if (items != null && !TextUtils.isEmpty(items)) {
+            return items.split("\n");
+        }
+        return null;
     }
 }

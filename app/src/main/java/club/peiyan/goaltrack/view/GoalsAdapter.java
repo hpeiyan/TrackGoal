@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,9 +22,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
-import club.peiyan.goaltrack.utils.DialogUtil;
+import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
+import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.utils.DialogUtil;
 
 import static android.view.View.inflate;
 
@@ -34,13 +39,16 @@ import static android.view.View.inflate;
 
 public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHolder> implements View.OnClickListener {
 
+    private static final String TAG = "GoalsAdapter";
     private ArrayList<GoalBean> mData;
     private final MainActivity mMainActivity;
     private HashMap<Integer, GoalViewHolder> mHashMap = new HashMap<>();
     private static long clickTimestamp = System.currentTimeMillis();
+    private final DBHelper mDBHelper;
 
     public GoalsAdapter(MainActivity mMainActivity) {
         this.mMainActivity = mMainActivity;
+        mDBHelper = mMainActivity.getDBHelper();
     }
 
     public void setData(ArrayList<GoalBean> mData) {
@@ -129,9 +137,34 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             holder.mLlParent.removeViews(3, mChildCount - 3);
         }
         if (mItems != null && mItems.length > 0) {
-            for (String item : mItems) {
+            for (final String item : mItems) {
                 View mView = inflate(mContext, R.layout.sub_item_check, null);
                 TextView tvItem = mView.findViewById(R.id.tvItem);
+                SeekBar sb = mView.findViewById(R.id.sbProgress);
+
+                ScoreBean mScoreBean = mDBHelper.getScoreByTitle(item);
+                if (mScoreBean != null) {
+                    sb.setProgress(mScoreBean.getScore());
+                }
+                sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        int mProgress = seekBar.getProgress();
+                        boolean isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
+                        Log.i(TAG, "mString: " + isSuccess);
+                    }
+                });
+
                 tvItem.setText(item);
                 tvItem.setOnClickListener(this);
                 tvItem.setTag(R.id.sub_title, item);
@@ -176,9 +209,15 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                                             = mMainActivity.getDBHelper().getSubAndContactParentGoal(mBean);
                                     if (mSubAndContactParentGoal != null && mSubAndContactParentGoal.size() > 0) {
                                         for (GoalBean bean : mSubAndContactParentGoal) {
+                                            for (String item : bean.getItemSplit()) {
+                                                mDBHelper.deleteScore(item);
+                                            }
                                             mMainActivity.getDBHelper().deleteGoal(bean.getId());
                                         }
                                     }
+                                }
+                                for (String item : mBean.getItemSplit()) {
+                                    mDBHelper.deleteScore(item);
                                 }
                                 mMainActivity.getDBHelper().deleteGoal(mBean.getId());
                                 mMainActivity.notifyDataSetChange(null);

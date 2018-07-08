@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initAppMode(MenuItem item) {
+        item.setChecked(mMode);
         item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
         mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
         mTodayFragment.getRvGoal().setEditMode(!mMode);
