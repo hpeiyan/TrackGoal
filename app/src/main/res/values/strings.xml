@@ -9,6 +9,9 @@
     <item name="sub_title" type="id"/>
     <item name="parent_title" type="id"/>
     <item name="level" type="id"/>
+    <item name="startDate" type="id"/>
+    <item name="overDate" type="id"/>
+
     <item name="year" type="id"/>
     <item name="month" type="id"/>
     <item name="day" type="id"/>

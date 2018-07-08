@@ -136,6 +136,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                 tvItem.setTag(R.id.sub_title, item);
                 tvItem.setTag(R.id.parent_title, mBean.getTitle());
                 tvItem.setTag(R.id.level, mBean.getLevel());
+                tvItem.setTag(R.id.startDate, mBean.getStart());
+                tvItem.setTag(R.id.overDate, mBean.getOver());
                 holder.mLlParent.addView(mView);
             }
         }
@@ -201,7 +203,9 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
         String subTitle = (String) v.getTag(R.id.sub_title);
         String parentTitle = (String) v.getTag(R.id.parent_title);
         int level = (int) v.getTag(R.id.level);
-        DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1);
+        String start = (String) v.getTag(R.id.startDate);
+        String over = (String) v.getTag(R.id.overDate);
+        DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1, start, over);
     }
 
     static class GoalViewHolder extends RecyclerView.ViewHolder {

@@ -141,8 +141,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         showDialog(fm, mBean.getId(), mBean.getTitle(), mBean.getParent(), mBean.getLevel(), mStart, mOver, mBean.getItems(), true);
     }
 
-    public static void showDialog(FragmentManager fm, String mSubTitle, String mParentTitle, int mLevel) {
-        showDialog(fm, -1, mSubTitle, mParentTitle, mLevel, null, null, null, false);
+    public static void showDialog(FragmentManager fm, String mSubTitle, String mParentTitle, int mLevel, String start, String end) {
+        showDialog(fm, -1, mSubTitle, mParentTitle, mLevel, start, end, null, false);
     }
 
     public static void showDialog(FragmentManager fm, int id, @Nullable String goalName, @Nullable String mParent, int level,
@@ -182,10 +182,20 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         unbinder.unbind();
     }
 
-    private void showDatePick(DatePickerDialog.OnDateSetListener mListener) {
+    private void showDatePick(DatePickerDialog.OnDateSetListener mListener, String client) {
         int year = Calendar.getInstance().get(Calendar.YEAR);
         int month = Calendar.getInstance().get(Calendar.MONTH);
         int day = Calendar.getInstance().get(Calendar.DATE);
+
+        if (client != null && !TextUtils.isEmpty(client)) {
+            String[] mStrings = client.split("/");
+            if (mStrings != null && mStrings.length == 3) {
+                year = Integer.parseInt(mStrings[0]);
+                month = Integer.parseInt(mStrings[1]) - 1;
+                day = Integer.parseInt(mStrings[2]);
+            }
+        }
+
         DatePickerDialog mDatePickerDialog = new DatePickerDialog(getActivity(), mListener, year, month, day);
         mDatePickerDialog.show();
     }
@@ -200,7 +210,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                         month += 1;
                         mTvStartDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                     }
-                });
+                }, mStart);
                 break;
             case R.id.tvEndDateShow:
                 showDatePick(new DatePickerDialog.OnDateSetListener() {
@@ -209,7 +219,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                         month += 1;
                         mTvEndDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                     }
-                });
+                }, mEnd);
                 break;
             case R.id.btnAddItem:
                 addEditItemView(null);
