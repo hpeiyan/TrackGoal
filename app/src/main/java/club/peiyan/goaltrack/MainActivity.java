@@ -31,7 +31,7 @@ import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     private SubMenu mGoalSubMenu;
     private boolean mMode = true;//False预览模式, True编辑模式
     private TodayFragment mTodayFragment;
+    private MenuItem mModeMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity
         mSectionsPagerAdapter.setData(mFragments);
         mContainer.setAdapter(mSectionsPagerAdapter);
         mContainer.setCurrentItem(1);
+        mContainer.addOnPageChangeListener(this);
 
     }
 
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        mModeMenu = menu.getItem(0);
         return true;
     }
 
@@ -147,7 +150,6 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_mode:
                 item.setChecked(!item.isChecked());
-
                 mMode = item.isChecked();//触发开关之后的状态
                 item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
                 mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
@@ -223,5 +225,26 @@ public class MainActivity extends AppCompatActivity
         if (mLatestParentGoal != null) {
             AppSp.putString(LATEST_GOAL, mLatestParentGoal.getTitle());
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        if (position != 1) {
+            mModeMenu.setVisible(false);
+            mFab.setVisibility(View.GONE);
+        } else {
+            mModeMenu.setVisible(true);
+            mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 }
