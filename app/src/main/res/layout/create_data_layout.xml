@@ -4,24 +4,59 @@
                 android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tvArrowUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:drawableLeft="@mipmap/ic_free_breakfast_black_48dp"
-        android:gravity="center"
-        android:text="@string/need_create_data"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="25dp"
+        android:padding="5dp"
+        android:text="⤴︎"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_title_dimen"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvArrowUp"
+        android:layout_marginRight="25dp"
+        android:text="编辑/预览"
         android:textColor="@color/secondTextColor"
         android:textSize="@dimen/text_show_dimen"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableLeft="@mipmap/pic"
+        android:gravity="center"
+        android:text="@string/click_promp"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_show_dimen"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tvArrowDown"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="25dp"
+        android:text="创建计划︎"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_show_dimen"
+        />
+
+    <TextView
+        android:id="@+id/tvArrowDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="80dp"
+        android:layout_marginRight="25dp"
+        android:padding="5dp"
         android:text="⤵︎"
-        android:layout_marginRight="29dp"
         android:textColor="@color/secondTextColor"
-        android:textSize="50sp"/>
+        android:textSize="@dimen/text_title_dimen"/>
 
 </RelativeLayout>
