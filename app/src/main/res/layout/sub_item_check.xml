@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:background="@drawable/selector_goal_item"
+        android:background="@drawable/selector_goal_white_item"
         android:ellipsize="end"
         android:maxLines="1"
         android:maxWidth="120dp"
