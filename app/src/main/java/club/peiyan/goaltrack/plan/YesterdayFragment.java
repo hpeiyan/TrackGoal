@@ -65,6 +65,7 @@ public class YesterdayFragment extends Fragment {
         mTvScoreTitle.setText(getString(R.string.yesterday_score));
         ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getYesterday());
         int score = 0;
+        int totalSie = 0;
         if (mScoreBeans != null && mScoreBeans.size() > 0) {
             for (ScoreBean bean : mScoreBeans) {
                 if (bean == null) continue;
@@ -75,11 +76,16 @@ public class YesterdayFragment extends Fragment {
                 ProgressBar pb = mView.findViewById(R.id.pbGoal);
                 pb.setProgress(bean.getScore());
                 mLlScoreLine.addView(mView);
+                totalSie++;
             }
-            mTvScoreShow.setText(score / 10 + "/" + 10 * mScoreBeans.size());
-        } else {
+        }
+        if (totalSie == 0) {
+//            View mView = View.inflate(mMainActivity, R.layout.dont_caculate, null);
+//            mViewHolder.mLlScoreLine.addView(mView);
             mLlParent.setVisibility(View.GONE);
             errorView.setVisibility(View.VISIBLE);
+        } else {
+            mTvScoreShow.setText(score + "/" + 10 * totalSie);
         }
     }
 

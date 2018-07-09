@@ -69,8 +69,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mDBHelper = new DBHelper(this);
-        setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
-
         initDataBase();
         initView();
         mFab.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +80,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
+        if (mSingleAllGoals.size() > 0) {
+            setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
+        }
         setSupportActionBar(mToolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
