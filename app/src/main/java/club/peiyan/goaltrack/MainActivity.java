@@ -177,7 +177,9 @@ public class MainActivity extends AppCompatActivity
                 initAppMode(item);
                 break;
             case R.id.action_sync:
-                new Thread(new SyncDataTask()).start();
+                SyncDataTask mTask = new SyncDataTask();
+                mTask.setSyncData(mDBHelper.getAllGoals());
+                new Thread(mTask).start();
         }
         return super.onOptionsItemSelected(item);
     }

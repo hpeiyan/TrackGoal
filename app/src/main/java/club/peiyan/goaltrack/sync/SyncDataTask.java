@@ -2,11 +2,14 @@ package club.peiyan.goaltrack.sync;
 
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,7 +30,8 @@ public class SyncDataTask implements Runnable {
     private static final String TAG = "SyncDataTask";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-    private static String url = "http://120.79.79.63:8080/login";
+    private static String url = "http://120.79.79.63:8080/api/sync";
+    private ArrayList<GoalBean> mGoalBeans;
 
     @Override
     public void run() {
@@ -54,14 +58,26 @@ public class SyncDataTask implements Runnable {
     }
 
     private String createJson() {
-        JSONObject mJSONObject = new JSONObject();
-        try {
-            mJSONObject.put("email", "huang@gmail.com");
-            mJSONObject.put("password", "huancom");
-
-        } catch (JSONException mE) {
-            mE.printStackTrace();
+        JSONArray mJSONArray = new JSONArray();
+        JSONObject mJSONObject = null;
+        for (GoalBean bean : mGoalBeans) {
+            mJSONObject = new JSONObject();
+            try {
+                mJSONObject.put("title", bean.getTitle());
+                mJSONObject.put("level", bean.getLevel());
+                mJSONObject.put("parent", bean.getParent());
+                mJSONObject.put("start", bean.getStart());
+                mJSONObject.put("over", bean.getOver());
+                mJSONObject.put("timestamp", bean.getTimestamp());
+            } catch (JSONException mE) {
+                mE.printStackTrace();
+            }
+            mJSONArray.put(mJSONObject);
         }
-        return mJSONObject.toString();
+        return mJSONArray.toString();
+    }
+
+    public void setSyncData(ArrayList<GoalBean> mAllGoals) {
+        mGoalBeans = mAllGoals;
     }
 }
