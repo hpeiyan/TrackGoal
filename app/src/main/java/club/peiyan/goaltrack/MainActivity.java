@@ -28,6 +28,7 @@ import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.TodayFragment;
 import club.peiyan.goaltrack.plan.TomorrowFragment;
 import club.peiyan.goaltrack.plan.YesterdayFragment;
+import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        mModeMenu = menu.getItem(0);
+        mModeMenu = menu.getItem(1);
         initAppMode(mModeMenu);
         return true;
     }
@@ -175,6 +176,8 @@ public class MainActivity extends AppCompatActivity
                 setMode(item.isChecked());//触发开关之后的状态
                 initAppMode(item);
                 break;
+            case R.id.action_sync:
+                new Thread(new SyncDataTask()).start();
         }
         return super.onOptionsItemSelected(item);
     }

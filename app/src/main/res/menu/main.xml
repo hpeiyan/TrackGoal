@@ -2,6 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_sync"
+        android:icon="@mipmap/ic_cloud_circle_white_24dp"
+        android:orderInCategory="100"
+        android:title="同步"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/action_mode"
         android:checked="true"
         android:icon="@mipmap/ic_lock_open_white_24dp"
