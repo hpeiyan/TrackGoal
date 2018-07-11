@@ -27,7 +27,7 @@ public class SyncDataTask implements Runnable {
     private static final String TAG = "SyncDataTask";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-    private static String url = "http://120.79.79.63:3389/login";
+    private static String url = "http://120.79.79.63:8080/login";
 
     @Override
     public void run() {
