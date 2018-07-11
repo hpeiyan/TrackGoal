@@ -17,6 +17,15 @@ public class GoalBean {
     private String over;
     private String items;
     private long timestamp;
+    private int status = 1;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int mStatus) {
+        status = mStatus;
+    }
 
     public int getId() {
         return id;

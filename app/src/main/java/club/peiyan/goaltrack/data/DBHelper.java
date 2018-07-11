@@ -55,7 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table track_goal " +
-                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer)"
+                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer,status integer)"
         );
 
         db.execSQL(

@@ -69,6 +69,7 @@ public class SyncDataTask implements Runnable {
                 mJSONObject.put("start", bean.getStart());
                 mJSONObject.put("over", bean.getOver());
                 mJSONObject.put("timestamp", bean.getTimestamp());
+                mJSONObject.put("status", bean.getStatus());
             } catch (JSONException mE) {
                 mE.printStackTrace();
             }
