@@ -23,6 +23,7 @@ import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
 
-    public static void startMainActivity(ReLoginActivity mActivity) {
+    public static void startMainActivity(ReLoginActivity mActivity, String mName) {
+        AppSp.putString(Constants.USER_NAME, mName);
         Intent mIntent = new Intent(mActivity, MainActivity.class);
         mActivity.startActivity(mIntent);
         if (!mActivity.isDestroyed()) {

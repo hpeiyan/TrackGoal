@@ -29,6 +29,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
     EditText mEtPass;
     @BindView(R.id.btnRegister)
     Button mBtnRegister;
+    private String mName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,14 +37,14 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
         setContentView(R.layout.layout_login);
         ButterKnife.bind(this);
         if (!AppSp.getString(Constants.USER_NAME, "").isEmpty()) {
-            MainActivity.startMainActivity(ReLoginActivity.this);
+            MainActivity.startMainActivity(ReLoginActivity.this, AppSp.getString(Constants.USER_NAME, ""));
         }
     }
 
 
     @OnClick({R.id.btnRegister, R.id.btnLogin})
     public void onViewClicked(View view) {
-        String mName = mEtName.getText().toString().trim();
+        mName = mEtName.getText().toString().trim();
         String mPass = mEtPass.getText().toString().trim();
         switch (view.getId()) {
             case R.id.btnRegister:
@@ -65,7 +66,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
 
     @Override
     public void onVerifySuccess() {
-        MainActivity.startMainActivity(ReLoginActivity.this);
+        MainActivity.startMainActivity(ReLoginActivity.this, mName);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
 
     @Override
     public void onRegisterSuccess() {
-        MainActivity.startMainActivity(ReLoginActivity.this);
+        MainActivity.startMainActivity(ReLoginActivity.this, mName);
     }
 
     @Override

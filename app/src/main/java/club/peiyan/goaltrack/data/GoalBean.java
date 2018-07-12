@@ -20,7 +20,7 @@ public class GoalBean {
     private String start;
     private String over;
     private String items;
-    private String user_name = AppSp.getString(USER_NAME, "");
+    private String username = AppSp.getString(USER_NAME, "");
     private long timestamp;
     private int status;
 
@@ -104,11 +104,11 @@ public class GoalBean {
         return null;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser_name(String mUser_name) {
-        user_name = mUser_name;
+    public void setUsername(String mUsername) {
+        username = mUsername;
     }
 }

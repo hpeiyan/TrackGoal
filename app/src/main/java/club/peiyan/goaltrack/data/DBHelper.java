@@ -8,14 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
-
 import java.util.ArrayList;
 
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.utils.CalendaUtils;
-
-import static club.peiyan.goaltrack.data.Constants.USER_ID;
 import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
 /**
@@ -29,7 +24,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_TABLE = "track_goal";
     public static final String GOAL_SCORE_TABLE = "goal_score";
 
-    public static final String TRACK_GOAL_ID = "id";
     public static final String TRACK_GOAL_PARENT = "parent";
     public static final String TRACK_GOAL_LEVEL = "level";
     public static final String TRACK_GOAL_TITLE = "title";
@@ -38,7 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
     public static final String TRACK_GOAL_STATUS = "status";
-    public static final String TRACK_GOAL_USER_NAME = "user_name";
+    public static final String TRACK_GOAL_USER_NAME = "username";
 
     public static final String GOAL_SCORE_ID = "id";
     public static final String GOAL_SCORE_DATE = "date";
@@ -61,7 +55,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table track_goal " +
-                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer,status integer,user_id text)"
+                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer,status integer,username text)"
         );
 
         db.execSQL(
