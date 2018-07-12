@@ -33,6 +33,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_END_TIME = "over";
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
+    public static final String TRACK_GOAL_STATUS = "status";
 
     public static final String GOAL_SCORE_ID = "id";
     public static final String GOAL_SCORE_DATE = "date";
@@ -80,6 +81,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_END_TIME, over);
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
+        contentValues.put(TRACK_GOAL_STATUS, 1);
         db.insert(TRACK_GOAL_TABLE, null, contentValues);
         return true;
     }
@@ -101,6 +103,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
             mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
             array_list.add(mBean);
             res.moveToNext();
         }
@@ -123,6 +126,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
             mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
             array_list.add(mBean);
             res.moveToNext();
         }
@@ -148,6 +152,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
             mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
             array_list.add(mBean);
             res.moveToNext();
         }
@@ -170,6 +175,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_END_TIME, over);
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
+        contentValues.put(TRACK_GOAL_STATUS, 3);
         db.update(TRACK_GOAL_TABLE, contentValues, "id = ? ", new String[]{Integer.toString(id)});
         return true;
     }
@@ -198,6 +204,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
             mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
             array_list.add(mBean);
             res.moveToNext();
         }
@@ -224,6 +231,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
             mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
+            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
             array_list.add(mBean);
             res.moveToNext();
         }
