@@ -277,9 +277,9 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             }
 
             if (!isEditMode) {
-                isSuccess = mDBHelper.insertGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(),1);
+                isSuccess = mDBHelper.insertGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 1);
             } else {
-                isSuccess = mDBHelper.updateGoal(mId, mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 3);
+                isSuccess = mDBHelper.updateGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 3);
             }
             Toast.makeText(mActivity, isSuccess ? "已保存" : "保存异常", Toast.LENGTH_SHORT).show();
             if (isSuccess) {

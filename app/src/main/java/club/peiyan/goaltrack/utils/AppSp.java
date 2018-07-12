@@ -34,4 +34,12 @@ public class AppSp {
     public static int getInt(String key, int defaultValue) {
         return mSP.getInt(key, defaultValue);
     }
+
+    public static void putBoolean(String key, boolean value) {
+        mEditor.putBoolean(key, value).apply();
+    }
+
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        return mSP.getBoolean(key, defaultValue);
+    }
 }

@@ -1,5 +1,6 @@
 package club.peiyan.goaltrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -63,6 +64,14 @@ public class MainActivity extends AppCompatActivity
     private static final int[] imgRes = new int[]{R.mipmap.ic_headset_black_24dp, R.mipmap.ic_toys_black_24dp,
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
+
+    public static void startMainActivity(ReLoginActivity mActivity) {
+        Intent mIntent = new Intent(mActivity, MainActivity.class);
+        mActivity.startActivity(mIntent);
+        if (!mActivity.isDestroyed()) {
+            mActivity.finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
