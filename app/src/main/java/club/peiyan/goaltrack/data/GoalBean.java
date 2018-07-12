@@ -2,6 +2,10 @@ package club.peiyan.goaltrack.data;
 
 import android.text.TextUtils;
 
+import club.peiyan.goaltrack.utils.AppSp;
+
+import static club.peiyan.goaltrack.data.Constants.USER_ID;
+
 /**
  * Created by HPY.
  * Time: 2018/7/6.
@@ -16,8 +20,10 @@ public class GoalBean {
     private String start;
     private String over;
     private String items;
+    private String user_id = AppSp.getString(USER_ID,"");
     private long timestamp;
     private int status;
+
 
     public int getStatus() {
         return status;
@@ -89,6 +95,14 @@ public class GoalBean {
 
     public void setTimestamp(long mTimestamp) {
         timestamp = mTimestamp;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String mUser_id) {
+        user_id = mUser_id;
     }
 
     public String[] getItemSplit() {

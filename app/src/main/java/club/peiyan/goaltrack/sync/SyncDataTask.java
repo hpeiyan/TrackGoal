@@ -26,6 +26,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static club.peiyan.goaltrack.data.Constants.HOST;
+
 /**
  * Created by HPY.
  * Time: 2018/7/10.
@@ -37,7 +39,7 @@ public class SyncDataTask implements Runnable {
     private static final String TAG = "SyncDataTask";
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
-    private static String url = "http://120.79.79.63:8080/api/sync";
+    private static String url = HOST + "api/sync";
     private ArrayList<GoalBean> mGoalBeans;
     private MainActivity mMainActivity;
     private final DBHelper mDBHelper;
@@ -106,6 +108,7 @@ public class SyncDataTask implements Runnable {
                 mJSONObject.put("over", bean.getOver());
                 mJSONObject.put("timestamp", bean.getTimestamp());
                 mJSONObject.put("status", bean.getStatus());
+                mJSONObject.put("user_id", bean.getUser_id());
             } catch (JSONException mE) {
                 mE.printStackTrace();
             }

@@ -12,7 +12,10 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
+
+import static club.peiyan.goaltrack.data.Constants.USER_ID;
 
 /**
  * Created by HPY.
@@ -34,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
     public static final String TRACK_GOAL_STATUS = "status";
+    public static final String TRACK_GOAL_USER_ID = "user_id";
 
     public static final String GOAL_SCORE_ID = "id";
     public static final String GOAL_SCORE_DATE = "date";
@@ -56,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(
                 "create table track_goal " +
-                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer,status integer)"
+                        "(id integer primary key, parent text,level integer,title text,start text, over text,items text,timestamp integer,status integer,user_id text)"
         );
 
         db.execSQL(
@@ -82,6 +86,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
         contentValues.put(TRACK_GOAL_STATUS, status);
+        contentValues.put(TRACK_GOAL_USER_ID, AppSp.getString(USER_ID, ""));
         db.insert(TRACK_GOAL_TABLE, null, contentValues);
         return true;
     }
@@ -95,7 +100,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -110,7 +115,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-    public GoalBean getGoalByID(int id) {
+    /*public GoalBean getGoalByID(int id) {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from track_goal where id=" + id + "", null);
@@ -118,7 +123,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -134,7 +139,7 @@ public class DBHelper extends SQLiteOpenHelper {
             return array_list.get(0);
         }
         return null;
-    }
+    }*/
 
     public ArrayList<GoalBean> getParentGoal() {
         ArrayList<GoalBean> array_list = new ArrayList<>();
@@ -144,7 +149,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -171,11 +176,11 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void updateGoal(GoalBean mBean) {
-        updateGoal(mBean.getId(), mBean.getLevel(), mBean.getParent(), mBean.getTitle(), mBean.getStart(),
+        updateGoal(mBean.getLevel(), mBean.getParent(), mBean.getTitle(), mBean.getStart(),
                 mBean.getOver(), mBean.getItems(), mBean.getTimestamp(), mBean.getStatus());
     }
 
-    public boolean updateGoal(Integer id, int level, String parent, String title, String start, String over, String items, long timestamp, int status) {
+    public boolean updateGoal(int level, String parent, String title, String start, String over, String items, long timestamp, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TRACK_GOAL_LEVEL, level);
@@ -186,15 +191,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
         contentValues.put(TRACK_GOAL_STATUS, status);
-        db.update(TRACK_GOAL_TABLE, contentValues, "id = ? ", new String[]{Integer.toString(id)});
+        contentValues.put(TRACK_GOAL_USER_ID, AppSp.getString(Constants.USER_ID, ""));
+        db.update(TRACK_GOAL_TABLE, contentValues, "title = ? ", new String[]{title});
         return true;
-    }
-
-    public Integer deleteGoal(Integer id) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TRACK_GOAL_TABLE,
-                "id = ? ",
-                new String[]{Integer.toString(id)});
     }
 
     public Integer deleteGoal(String mTitle) {
@@ -213,7 +212,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -240,7 +239,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
