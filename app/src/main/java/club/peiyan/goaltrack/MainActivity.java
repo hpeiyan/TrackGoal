@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
-        if (mSingleAllGoals.size() > 0) {
+        if (mSingleAllGoals != null && mSingleAllGoals.size() > 0) {
             setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
         }
         setSupportActionBar(mToolbar);
@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initDataBase() {
+        if (mParentGoals != null) mParentGoals.clear();
         mParentGoals = mDBHelper.getGoalByLevel(1);
         setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, "")));
         if (mLatestParentGoal == null) {
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                 initAppMode(item);
                 break;
             case R.id.action_sync:
-                SyncDataTask mTask = new SyncDataTask();
+                SyncDataTask mTask = new SyncDataTask(MainActivity.this);
                 mTask.setSyncData(mDBHelper.getAllGoals());
                 new Thread(mTask).start();
         }

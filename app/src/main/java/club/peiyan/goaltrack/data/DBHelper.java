@@ -71,7 +71,7 @@ public class DBHelper extends SQLiteOpenHelper {
 //        onCreate(db);
     }
 
-    public boolean insertGoal(int level, String parent, String title, String start, String over, String items, long timestamp) {
+    public boolean insertGoal(int level, String parent, String title, String start, String over, String items, long timestamp, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TRACK_GOAL_LEVEL, level);
@@ -81,7 +81,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_END_TIME, over);
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
-        contentValues.put(TRACK_GOAL_STATUS, 1);
+        contentValues.put(TRACK_GOAL_STATUS, status);
         db.insert(TRACK_GOAL_TABLE, null, contentValues);
         return true;
     }
@@ -165,7 +165,17 @@ public class DBHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateGoal(Integer id, int level, String parent, String title, String start, String over, String items, long timestamp) {
+    public void insertGoal(GoalBean mBean) {
+        insertGoal(mBean.getLevel(), mBean.getParent(), mBean.getTitle(), mBean.getStart(),
+                mBean.getOver(), mBean.getItems(), mBean.getTimestamp(), mBean.getStatus());
+    }
+
+    public void updateGoal(GoalBean mBean) {
+        updateGoal(mBean.getId(), mBean.getLevel(), mBean.getParent(), mBean.getTitle(), mBean.getStart(),
+                mBean.getOver(), mBean.getItems(), mBean.getTimestamp(), mBean.getStatus());
+    }
+
+    public boolean updateGoal(Integer id, int level, String parent, String title, String start, String over, String items, long timestamp, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TRACK_GOAL_LEVEL, level);
@@ -175,7 +185,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_END_TIME, over);
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
-        contentValues.put(TRACK_GOAL_STATUS, 3);
+        contentValues.put(TRACK_GOAL_STATUS, status);
         db.update(TRACK_GOAL_TABLE, contentValues, "id = ? ", new String[]{Integer.toString(id)});
         return true;
     }
@@ -185,6 +195,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete(TRACK_GOAL_TABLE,
                 "id = ? ",
                 new String[]{Integer.toString(id)});
+    }
+
+    public Integer deleteGoal(String mTitle) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TRACK_GOAL_TABLE,
+                "title = ? ",
+                new String[]{mTitle});
     }
 
     public ArrayList<GoalBean> getAllGoals() {
@@ -218,7 +235,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from track_goal where title=?", new String[]{title});
+        Cursor res = db.rawQuery("select * from track_goal where title=? ", new String[]{title});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -272,6 +289,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<GoalBean> getSingleAllGoal(GoalBean mNearestParentGoal) {
+        if (mNearestParentGoal.getItems() == null) return null;
         String[] mItems = mNearestParentGoal.getItems().split("\n");
         ArrayList<GoalBean> mSingleAllGoalBeans = new ArrayList<>();
         mSingleAllGoalBeans.add(mNearestParentGoal);// level 1
@@ -422,4 +440,6 @@ public class DBHelper extends SQLiteOpenHelper {
             return array_list;
         return null;
     }
+
+
 }

@@ -1,6 +1,9 @@
 package club.peiyan.goaltrack.sync;
 
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -8,7 +11,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import club.peiyan.goaltrack.MainActivity;
+import club.peiyan.goaltrack.data.SyncBean;
+import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
 import okhttp3.Call;
@@ -32,6 +39,13 @@ public class SyncDataTask implements Runnable {
             = MediaType.parse("application/json; charset=utf-8");
     private static String url = "http://120.79.79.63:8080/api/sync";
     private ArrayList<GoalBean> mGoalBeans;
+    private MainActivity mMainActivity;
+    private final DBHelper mDBHelper;
+
+    public SyncDataTask(MainActivity mMainActivity) {
+        this.mMainActivity = mMainActivity;
+        mDBHelper = mMainActivity.getDBHelper();
+    }
 
     @Override
     public void run() {
@@ -43,7 +57,7 @@ public class SyncDataTask implements Runnable {
         mBuilder.url(url);
         Request mRequest = mBuilder.build();
 
-        OkHttpClient mClient = HttpClientUtil.getClient();
+        final OkHttpClient mClient = HttpClientUtil.getClient();
         mClient.newCall(mRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -52,7 +66,27 @@ public class SyncDataTask implements Runnable {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.i(TAG, "onResponse: " + response.body().string());
+                String mResult = response.body().string();
+                Log.i(TAG, "onResponse: " + mResult);
+                Gson mGson = new Gson();
+                SyncBean mSyncBean = mGson.fromJson(mResult, SyncBean.class);
+                int mCode = mSyncBean.getCode();
+                if (mCode == 200) {
+                    List<GoalBean> mGoalBeans = mSyncBean.getData();
+                    if (mGoalBeans != null && mGoalBeans.size() > 0) {
+                        for (GoalBean mBean : mGoalBeans) {
+                            mDBHelper.deleteGoal(mBean.getTitle());
+                            mDBHelper.insertGoal(mBean);
+                        }
+                        mMainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMainActivity.notifyDataSetChange(null);
+                                Toast.makeText(mMainActivity, "更新成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
             }
         });
     }
@@ -63,9 +97,11 @@ public class SyncDataTask implements Runnable {
         for (GoalBean bean : mGoalBeans) {
             mJSONObject = new JSONObject();
             try {
+                mJSONObject.put("id", bean.getId());
                 mJSONObject.put("title", bean.getTitle());
                 mJSONObject.put("level", bean.getLevel());
                 mJSONObject.put("parent", bean.getParent());
+                mJSONObject.put("items", bean.getItems());
                 mJSONObject.put("start", bean.getStart());
                 mJSONObject.put("over", bean.getOver());
                 mJSONObject.put("timestamp", bean.getTimestamp());
