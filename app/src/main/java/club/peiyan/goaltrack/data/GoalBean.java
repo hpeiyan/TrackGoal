@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import club.peiyan.goaltrack.utils.AppSp;
 
-import static club.peiyan.goaltrack.data.Constants.USER_ID;
+import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
 /**
  * Created by HPY.
@@ -20,7 +20,7 @@ public class GoalBean {
     private String start;
     private String over;
     private String items;
-    private String user_id = AppSp.getString(USER_ID,"");
+    private String user_name = AppSp.getString(USER_NAME, "");
     private long timestamp;
     private int status;
 
@@ -97,18 +97,18 @@ public class GoalBean {
         timestamp = mTimestamp;
     }
 
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String mUser_id) {
-        user_id = mUser_id;
-    }
-
     public String[] getItemSplit() {
         if (items != null && !TextUtils.isEmpty(items)) {
             return items.split("\n");
         }
         return null;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String mUser_name) {
+        user_name = mUser_name;
     }
 }

@@ -16,6 +16,7 @@ import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
 
 import static club.peiyan.goaltrack.data.Constants.USER_ID;
+import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
 /**
  * Created by HPY.
@@ -37,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TRACK_GOAL_ITEMS = "items";
     public static final String TRACK_GOAL_TIMESTAMP = "timestamp";
     public static final String TRACK_GOAL_STATUS = "status";
-    public static final String TRACK_GOAL_USER_ID = "user_id";
+    public static final String TRACK_GOAL_USER_NAME = "user_name";
 
     public static final String GOAL_SCORE_ID = "id";
     public static final String GOAL_SCORE_DATE = "date";
@@ -86,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
         contentValues.put(TRACK_GOAL_STATUS, status);
-        contentValues.put(TRACK_GOAL_USER_ID, AppSp.getString(USER_ID, ""));
+        contentValues.put(TRACK_GOAL_USER_NAME, AppSp.getString(USER_NAME, ""));
         db.insert(TRACK_GOAL_TABLE, null, contentValues);
         return true;
     }
@@ -191,7 +192,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(TRACK_GOAL_ITEMS, items);
         contentValues.put(TRACK_GOAL_TIMESTAMP, timestamp);
         contentValues.put(TRACK_GOAL_STATUS, status);
-        contentValues.put(TRACK_GOAL_USER_ID, AppSp.getString(Constants.USER_ID, ""));
+        contentValues.put(TRACK_GOAL_USER_NAME, AppSp.getString(Constants.USER_NAME, ""));
         db.update(TRACK_GOAL_TABLE, contentValues, "title = ? ", new String[]{title});
         return true;
     }
