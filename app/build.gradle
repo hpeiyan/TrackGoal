@@ -15,13 +15,13 @@ android {
         release {
             keyAlias 'BenChur'
             keyPassword 'Abc@5122'
-            storeFile file('/Users/zzc20160628-14/goalTrackKeyStore')
+            storeFile file('../goalTrackKeyStore')
             storePassword 'Abc@5122'
         }
         debug {
             keyAlias 'BenChur'
             keyPassword 'Abc@5122'
-            storeFile file('/Users/zzc20160628-14/goalTrackKeyStore')
+            storeFile file('../goalTrackKeyStore')
             storePassword 'Abc@5122'
         }
     }
