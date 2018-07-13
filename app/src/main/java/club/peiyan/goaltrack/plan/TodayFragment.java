@@ -3,12 +3,13 @@ package club.peiyan.goaltrack.plan;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,7 @@ import butterknife.Unbinder;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.view.GoalsAdapter;
 import club.peiyan.goaltrack.view.MyRecycleView;
 
@@ -27,21 +29,26 @@ import club.peiyan.goaltrack.view.MyRecycleView;
  * Desc:
  */
 
-public class TodayFragment extends Fragment {
+public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     @BindView(R.id.rvGoal)
     MyRecycleView mRvGoal;
-    @BindView(R.id.constraintLayout)
-    RelativeLayout mConstraintLayout;
 
     @BindView(R.id.createData)
     View mCreatePromp;
     Unbinder unbinder;
+    @BindView(R.id.tvArrowUp)
+    TextView mTvArrowUp;
+    @BindView(R.id.tvArrowDown)
+    TextView mTvArrowDown;
+    @BindView(R.id.constraintLayout)
+    SwipeRefreshLayout mConstraintLayout;
 
     private GoalsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private static ArrayList<GoalBean> sGoalBeans;
+    private MainActivity mActivity;
 
     public TodayFragment() {
     }
@@ -62,6 +69,8 @@ public class TodayFragment extends Fragment {
 
     private void initView() {
         initRecycleView();
+        mConstraintLayout.setColorSchemeResources(R.color.colorAccent);
+        mConstraintLayout.setOnRefreshListener(this);
     }
 
     private void initRecycleView() {
@@ -91,6 +100,7 @@ public class TodayFragment extends Fragment {
     public void hideOrShowPromp(boolean isShow) {
         mCreatePromp.setVisibility(isShow ? View.VISIBLE : View.GONE);
         mRvGoal.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        mConstraintLayout.setEnabled(!isShow);
     }
 
     @Override
@@ -105,5 +115,24 @@ public class TodayFragment extends Fragment {
 
     public GoalsAdapter getAdapter() {
         return mAdapter;
+    }
+
+    @Override
+    public void onRefresh() {
+        mActivity.startSync(this);
+    }
+
+    @Override
+    public void onSuccess() {
+        mConstraintLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onFail() {
+        mConstraintLayout.setRefreshing(false);
+    }
+
+    public void setActivity(MainActivity mMainActivity) {
+        mActivity = mMainActivity;
     }
 }

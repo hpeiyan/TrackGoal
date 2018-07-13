@@ -4,12 +4,33 @@
                 android:layout_height="match_parent">
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="85dp"
+        android:padding="5dp"
+        android:text="↗︎"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_title_dimen"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tvArrowUp"
+        android:layout_marginRight="100dp"
+        android:text="同步"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_show_dimen"/>
+
+    <TextView
         android:id="@+id/tvArrowUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginRight="20dp"
         android:padding="5dp"
         android:text="⤴︎"
         android:textColor="@color/secondTextColor"
@@ -20,7 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tvArrowUp"
-        android:layout_marginRight="25dp"
+        android:layout_marginRight="20dp"
         android:text="编辑/预览"
         android:textColor="@color/secondTextColor"
         android:textSize="@dimen/text_show_dimen"/>
@@ -40,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/tvArrowDown"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="25dp"
+        android:layout_marginRight="20dp"
         android:text="创建计划︎"
         android:textColor="@color/secondTextColor"
         android:textSize="@dimen/text_show_dimen"

@@ -1,12 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <club.peiyan.goaltrack.view.MyRecycleView
-        android:id="@+id/rvGoal"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <club.peiyan.goaltrack.view.MyRecycleView
+            android:id="@+id/rvGoal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/createData"

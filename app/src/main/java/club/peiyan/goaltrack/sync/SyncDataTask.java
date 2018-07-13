@@ -1,7 +1,6 @@
 package club.peiyan.goaltrack.sync;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -15,9 +14,9 @@ import java.util.List;
 
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.data.Constants;
-import club.peiyan.goaltrack.data.SyncBean;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.data.SyncBean;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
 import okhttp3.Call;
@@ -45,6 +44,7 @@ public class SyncDataTask implements Runnable {
     private ArrayList<GoalBean> mGoalBeans;
     private MainActivity mMainActivity;
     private final DBHelper mDBHelper;
+    private OnSyncListener mOnSyncListener;
 
     public SyncDataTask(MainActivity mMainActivity) {
         this.mMainActivity = mMainActivity;
@@ -65,6 +65,7 @@ public class SyncDataTask implements Runnable {
         mClient.newCall(mRequest).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
+                mOnSyncListener.onFail();
                 Log.e(TAG, "onFailure: " + e.getMessage());
             }
 
@@ -82,11 +83,11 @@ public class SyncDataTask implements Runnable {
                             mDBHelper.deleteGoal(mBean.getTitle());
                             mDBHelper.insertGoal(mBean);
                         }
+                        mOnSyncListener.onSuccess();
                         mMainActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 mMainActivity.notifyDataSetChange(null);
-                                Toast.makeText(mMainActivity, "更新成功", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -124,5 +125,15 @@ public class SyncDataTask implements Runnable {
 
     public void setSyncData(ArrayList<GoalBean> mAllGoals) {
         mGoalBeans = mAllGoals;
+    }
+
+    public void setOnSyncListener(OnSyncListener mListener) {
+        mOnSyncListener = mListener;
+    }
+
+    public interface OnSyncListener {
+        void onSuccess();
+
+        void onFail();
     }
 }

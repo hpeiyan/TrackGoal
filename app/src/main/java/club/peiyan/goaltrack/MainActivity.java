@@ -32,12 +32,13 @@ import club.peiyan.goaltrack.plan.TomorrowFragment;
 import club.peiyan.goaltrack.plan.YesterdayFragment;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, SyncDataTask.OnSyncListener {
 
     private static final String TAG = "MainActivity";
     @BindView(R.id.toolbar)
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity
         TomorrowFragment mTomorrowFragment = new TomorrowFragment();
         YesterdayFragment mYesterdayFragment = new YesterdayFragment();
         mTodayFragment = new TodayFragment();
+        mTodayFragment.setActivity(this);
         mTodayFragment.setData(mSingleAllGoals);
 
         ArrayList<Fragment> mFragments = new ArrayList<>();
@@ -189,11 +191,16 @@ public class MainActivity extends AppCompatActivity
                 initAppMode(item);
                 break;
             case R.id.action_sync:
-                SyncDataTask mTask = new SyncDataTask(MainActivity.this);
-                mTask.setSyncData(mDBHelper.getAllGoals());
-                new Thread(mTask).start();
+                startSync(this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void startSync(SyncDataTask.OnSyncListener mListener) {
+        SyncDataTask mTask = new SyncDataTask(MainActivity.this);
+        mTask.setOnSyncListener(mListener);
+        mTask.setSyncData(mDBHelper.getAllGoals());
+        new Thread(mTask).start();
     }
 
     private void initAppMode(MenuItem item) {
@@ -307,5 +314,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Override
+    public void onSuccess() {
+        ToastUtil.toast("同步成功");
+    }
+
+    @Override
+    public void onFail() {
+        ToastUtil.toast("同步失败");
     }
 }
