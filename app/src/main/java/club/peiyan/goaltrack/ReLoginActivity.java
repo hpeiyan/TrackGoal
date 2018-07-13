@@ -37,7 +37,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
         setContentView(R.layout.layout_login);
         ButterKnife.bind(this);
         if (!AppSp.getString(Constants.USER_NAME, "").isEmpty()) {
-            MainActivity.startMainActivity(ReLoginActivity.this, AppSp.getString(Constants.USER_NAME, ""));
+            MainActivity.startMainActivity(ReLoginActivity.this, AppSp.getString(Constants.USER_NAME, ""), false);
         }
     }
 
@@ -66,7 +66,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
 
     @Override
     public void onVerifySuccess() {
-        MainActivity.startMainActivity(ReLoginActivity.this, mName);
+        MainActivity.startMainActivity(ReLoginActivity.this, mName, true);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
 
     @Override
     public void onRegisterSuccess() {
-        MainActivity.startMainActivity(ReLoginActivity.this, mName);
+        MainActivity.startMainActivity(ReLoginActivity.this, mName, false);
     }
 
     @Override

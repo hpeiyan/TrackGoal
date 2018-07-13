@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, SyncDataTask.OnSyncListener {
 
     private static final String TAG = "MainActivity";
+    private static final String SYNC_DATA = "sync_data";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fab)
@@ -51,6 +54,8 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout mDrawerLayout;
     @BindView(R.id.container)
     ViewPager mContainer;
+    @BindView(R.id.rlSyncPB)
+    RelativeLayout mRlSyncPB;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private DBHelper mDBHelper;
 
@@ -66,10 +71,12 @@ public class MainActivity extends AppCompatActivity
     private static final int[] imgRes = new int[]{R.mipmap.ic_headset_black_24dp, R.mipmap.ic_toys_black_24dp,
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
+    private TextView mTvUserName;
 
-    public static void startMainActivity(ReLoginActivity mActivity, String mName) {
+    public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
         Intent mIntent = new Intent(mActivity, MainActivity.class);
+        mIntent.putExtra(SYNC_DATA, isSyncData);
         mActivity.startActivity(mIntent);
         if (!mActivity.isDestroyed()) {
             mActivity.finish();
@@ -90,6 +97,15 @@ public class MainActivity extends AppCompatActivity
                 createParentPlan();
             }
         });
+        boolean isSyncData = getIntent().getBooleanExtra(SYNC_DATA, false);
+        if (isSyncData) {
+            setSyncPBVisible(true);
+            startSync(this);
+        }
+    }
+
+    private void setSyncPBVisible(boolean isShow) {
+        mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     private void initView() {
@@ -122,6 +138,10 @@ public class MainActivity extends AppCompatActivity
         mContainer.setAdapter(mSectionsPagerAdapter);
         mContainer.setCurrentItem(1);
         mContainer.addOnPageChangeListener(this);
+
+        View mHeaderView = mNavView.getHeaderView(0);
+        mTvUserName = mHeaderView.findViewById(R.id.tvUserName);
+        mTvUserName.setText(AppSp.getString(Constants.USER_NAME, "BenChur"));
     }
 
     public void setMode(boolean mMode) {
@@ -319,10 +339,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSuccess() {
         ToastUtil.toast("同步成功");
+        setSyncPBVisible(false);
     }
 
     @Override
     public void onFail() {
         ToastUtil.toast("同步失败");
+        setSyncPBVisible(false);
     }
 }
