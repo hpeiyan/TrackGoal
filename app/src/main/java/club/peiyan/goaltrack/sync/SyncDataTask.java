@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import club.peiyan.goaltrack.MainActivity;
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.SyncBean;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -94,12 +96,13 @@ public class SyncDataTask implements Runnable {
     }
 
     private String createJson() {
+        JSONObject mContentJO = new JSONObject();
         JSONArray mJSONArray = new JSONArray();
         JSONObject mJSONObject = null;
-        for (GoalBean bean : mGoalBeans) {
-            mJSONObject = new JSONObject();
-            try {
-                mJSONObject.put("id", bean.getId());
+        try {
+            for (GoalBean bean : mGoalBeans) {
+                mJSONObject = new JSONObject();
+
                 mJSONObject.put("title", bean.getTitle());
                 mJSONObject.put("level", bean.getLevel());
                 mJSONObject.put("parent", bean.getParent());
@@ -109,12 +112,14 @@ public class SyncDataTask implements Runnable {
                 mJSONObject.put("timestamp", bean.getTimestamp());
                 mJSONObject.put("status", bean.getStatus());
                 mJSONObject.put("username", bean.getUsername());
-            } catch (JSONException mE) {
-                mE.printStackTrace();
+                mJSONArray.put(mJSONObject);
             }
-            mJSONArray.put(mJSONObject);
+            mContentJO.put("username", AppSp.getString(Constants.USER_NAME, ""));
+            mContentJO.put("goals", mJSONArray);
+        } catch (JSONException mE) {
+            mE.printStackTrace();
         }
-        return mJSONArray.toString();
+        return mContentJO.toString();
     }
 
     public void setSyncData(ArrayList<GoalBean> mAllGoals) {
