@@ -49,6 +49,7 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
         String mPass = mEtPass.getText().toString().trim();
         if (mName.isEmpty() || mPass.isEmpty()) {
             Toast.makeText(this, "信息缺失", Toast.LENGTH_SHORT).show();
+            return;
         }
         switch (view.getId()) {
             case R.id.btnRegister:
