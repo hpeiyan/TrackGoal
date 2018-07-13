@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             default:
                 for (GoalBean bean : mParentGoals) {
-                    if (bean.getId() == id) {
+                    if (item.getTitle().equals(bean.getTitle())) {
                         AppSp.putString(LATEST_GOAL, bean.getTitle());
                         break;
                     }
