@@ -124,12 +124,21 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onSuccess() {
-        mConstraintLayout.setRefreshing(false);
+        setPullStatus(false);
+    }
+
+    private void setPullStatus(final boolean isStop) {
+        mConstraintLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mConstraintLayout.setRefreshing(isStop);
+            }
+        });
     }
 
     @Override
     public void onFail() {
-        mConstraintLayout.setRefreshing(false);
+        setPullStatus(false);
     }
 
     public void setActivity(MainActivity mMainActivity) {

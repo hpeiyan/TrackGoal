@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +47,9 @@ public class ReLoginActivity extends Activity implements RegisterTask.OnRegister
     public void onViewClicked(View view) {
         mName = mEtName.getText().toString().trim();
         String mPass = mEtPass.getText().toString().trim();
+        if (mName.isEmpty() || mPass.isEmpty()) {
+            Toast.makeText(this, "信息缺失", Toast.LENGTH_SHORT).show();
+        }
         switch (view.getId()) {
             case R.id.btnRegister:
                 RegisterTask mTask = new RegisterTask(ReLoginActivity.this);
