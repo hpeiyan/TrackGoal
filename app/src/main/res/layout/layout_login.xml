@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:padding="40dp"
                 android:orientation="vertical">
 
     <ImageView
@@ -9,17 +10,21 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="30dp"
         android:src="@mipmap/logo"/>
 
     <EditText
         android:id="@+id/etName"
         android:layout_width="match_parent"
+        android:hint="用户名"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_above="@+id/etPass"/>
 
     <EditText
         android:id="@+id/etPass"
+        android:hint="密码"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"/>

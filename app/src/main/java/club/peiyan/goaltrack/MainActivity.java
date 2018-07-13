@@ -104,8 +104,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void setSyncPBVisible(boolean isShow) {
-        mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    private void setSyncPBVisible(final boolean isShow) {
+        mRlSyncPB.post(new Runnable() {
+            @Override
+            public void run() {
+                mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     private void initView() {
