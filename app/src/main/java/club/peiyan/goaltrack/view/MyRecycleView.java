@@ -30,13 +30,15 @@ public class MyRecycleView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (e.getAction() != MotionEvent.ACTION_MOVE && isEditMode) {
-            return true;
-        }
+//        if (e.getAction() != MotionEvent.ACTION_MOVE && isEditMode) {
+//            return true;
+//        }
         return super.onTouchEvent(e);
+
     }
 
     public void setEditMode(boolean mEditMode) {
         isEditMode = mEditMode;
     }
+
 }

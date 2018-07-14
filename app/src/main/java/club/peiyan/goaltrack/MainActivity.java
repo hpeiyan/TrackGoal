@@ -3,6 +3,7 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,15 +40,18 @@ import club.peiyan.goaltrack.plan.YesterdayFragment;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.ToastUtil;
+import club.peiyan.goaltrack.view.MyFrameLayout;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, SyncDataTask.OnSyncListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, SyncDataTask.OnSyncListener, GestureDetector.OnGestureListener, TodayFragment.OnBarShowListener {
 
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
+    private static final int FLING_MIN_DISTANCE = 30;
+    private static final int FLING_MIN_VELOCITY = 0;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fab)
@@ -56,6 +64,11 @@ public class MainActivity extends AppCompatActivity
     ViewPager mContainer;
     @BindView(R.id.rlSyncPB)
     RelativeLayout mRlSyncPB;
+    @BindView(R.id.abLayout)
+    AppBarLayout mAbLayout;
+    @BindView(R.id.flTouch)
+    MyFrameLayout mFlTouch;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private DBHelper mDBHelper;
 
@@ -72,6 +85,10 @@ public class MainActivity extends AppCompatActivity
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
     private TextView mTvUserName;
+    private MotionEvent mMotionEvent;
+    private GestureDetector mGestureDetector;
+    private int mContainerTopMargin;
+    private boolean mIsBarShow;
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
@@ -132,6 +149,12 @@ public class MainActivity extends AppCompatActivity
         mTodayFragment = new TodayFragment();
         mTodayFragment.setActivity(this);
         mTodayFragment.setData(mSingleAllGoals);
+        mTodayFragment.setListener(this);
+
+        mGestureDetector = new GestureDetector(this, this);
+        mFlTouch.setGestureDetector(mGestureDetector);
+        RelativeLayout.LayoutParams mLayoutParams = (RelativeLayout.LayoutParams) mContainer.getLayoutParams();
+        mContainerTopMargin = mLayoutParams.topMargin;
 
         ArrayList<Fragment> mFragments = new ArrayList<>();
         mFragments.add(mYesterdayFragment);
@@ -351,5 +374,103 @@ public class MainActivity extends AppCompatActivity
     public void onFail() {
         ToastUtil.toast("同步失败");
         setSyncPBVisible(false);
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        mMotionEvent = e;
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                            float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                           float velocityY) {
+
+        if (e1 == null) e1 = mMotionEvent;
+        if (e1 == null || e2 == null) return false;
+        if (e1.getY() - e2.getY() > FLING_MIN_DISTANCE
+                && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+
+            RelativeLayout.LayoutParams mLayoutParams = (RelativeLayout.LayoutParams) mContainer.getLayoutParams();
+            if (mLayoutParams.topMargin == 0) return false;
+            mLayoutParams.setMargins(mLayoutParams.leftMargin, 0, mLayoutParams.rightMargin, mLayoutParams.bottomMargin);
+            mContainer.setLayoutParams(mLayoutParams);
+            AlphaAnimation mAlphaAnimation = new AlphaAnimation(1, 0);
+            mAlphaAnimation.setDuration(500);
+            mAlphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mAbLayout.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            mAbLayout.setAnimation(mAlphaAnimation);
+
+        } else if (e2.getY() - e1.getY() > FLING_MIN_DISTANCE
+                && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+            // 显示
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        super.dispatchTouchEvent(ev);
+        return mGestureDetector.onTouchEvent(ev);
+    }
+
+    @Override
+    public void onBarShow() {
+        RelativeLayout.LayoutParams mLayoutParams = (RelativeLayout.LayoutParams) mContainer.getLayoutParams();
+        mLayoutParams.setMargins(mLayoutParams.leftMargin, mContainerTopMargin, mLayoutParams.rightMargin, mLayoutParams.bottomMargin);
+        mContainer.setLayoutParams(mLayoutParams);
+        AlphaAnimation mAlphaAnimation = new AlphaAnimation(0, 1);
+        mAlphaAnimation.setDuration(500);
+        mAlphaAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mAbLayout.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        mAbLayout.setAnimation(mAlphaAnimation);
     }
 }

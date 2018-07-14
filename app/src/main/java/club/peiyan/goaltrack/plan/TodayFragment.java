@@ -49,6 +49,7 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private RecyclerView.LayoutManager mLayoutManager;
     private static ArrayList<GoalBean> sGoalBeans;
     private MainActivity mActivity;
+    private OnBarShowListener mListener;
 
     public TodayFragment() {
     }
@@ -95,6 +96,52 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mAdapter.setData(sGoalBeans);
         mRvGoal.setItemAnimator(null);
         mRvGoal.setAdapter(mAdapter);
+        mRvGoal.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int lastVisibleItemPosition;
+            private int firstVisibleItemPosition;
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+                //得到当前界面可见数据的大小
+                int visibleItemCount = layoutManager.getChildCount();
+
+                //得到RecyclerView对应所有数据的大小
+                int totalItemCount = layoutManager.getItemCount();
+
+                //判断条件可按实际需要调整
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && visibleItemCount > 0) {
+
+                    //最后视图对应的position等于总数-1时，说明上一次滑动结束时，触底了
+                    if (lastVisibleItemPosition == totalItemCount - 1) {
+                        //按需进行业务
+
+                        //第一个视图的position等于0，说明上一次滑动结束时，触顶了
+                    } else if (firstVisibleItemPosition == 0) {
+                        mListener.onBarShow();
+                    }
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+
+                if (layoutManager instanceof LinearLayoutManager) {
+                    //得到当前界面，最后一个子视图对应的position
+                    lastVisibleItemPosition = ((LinearLayoutManager) layoutManager)
+                            .findLastVisibleItemPosition();
+
+                    //得到当前界面，第一个子视图的position
+                    firstVisibleItemPosition = ((LinearLayoutManager) layoutManager)
+                            .findFirstVisibleItemPosition();
+
+                }
+            }
+        });
     }
 
     public void hideOrShowPromp(boolean isShow) {
@@ -143,5 +190,13 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void setActivity(MainActivity mMainActivity) {
         mActivity = mMainActivity;
+    }
+
+    public void setListener(OnBarShowListener mListener) {
+        this.mListener = mListener;
+    }
+
+    public interface OnBarShowListener {
+        void onBarShow();
     }
 }
