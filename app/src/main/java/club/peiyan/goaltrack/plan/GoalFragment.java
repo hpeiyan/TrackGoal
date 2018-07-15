@@ -21,7 +21,6 @@ import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.view.GoalsAdapter;
-import club.peiyan.goaltrack.view.MyRecycleView;
 
 /**
  * Created by HPY.
@@ -29,11 +28,11 @@ import club.peiyan.goaltrack.view.MyRecycleView;
  * Desc:
  */
 
-public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
+public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     @BindView(R.id.rvGoal)
-    MyRecycleView mRvGoal;
+    RecyclerView mRvGoal;
 
     @BindView(R.id.createData)
     View mCreatePromp;
@@ -47,15 +46,15 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private GoalsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private static ArrayList<GoalBean> sGoalBeans;
+    private ArrayList<GoalBean> mGoalBeans;
     private MainActivity mActivity;
 
-    public TodayFragment() {
+    public GoalFragment() {
     }
 
 
-    public static void setData(ArrayList<GoalBean> mSingleAllGoals) {
-        sGoalBeans = mSingleAllGoals;
+    public void setData(ArrayList<GoalBean> mSingleAllGoals) {
+        mGoalBeans = mSingleAllGoals;
     }
 
     @Override
@@ -85,14 +84,14 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRvGoal.setLayoutManager(mLayoutManager);
         mAdapter = new GoalsAdapter((MainActivity) getActivity());
-        if (sGoalBeans == null) {
+        if (mGoalBeans == null) {
             hideOrShowPromp(true);
         } else {
-            if (sGoalBeans.size() <= 0) {
+            if (mGoalBeans.size() <= 0) {
                 hideOrShowPromp(true);
             }
         }
-        mAdapter.setData(sGoalBeans);
+        mAdapter.setData(mGoalBeans);
         mRvGoal.setItemAnimator(null);
         mRvGoal.setAdapter(mAdapter);
     }
@@ -109,9 +108,6 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         unbinder.unbind();
     }
 
-    public MyRecycleView getRvGoal() {
-        return mRvGoal;
-    }
 
     public GoalsAdapter getAdapter() {
         return mAdapter;

@@ -28,7 +28,7 @@ import club.peiyan.goaltrack.utils.CalendaUtils;
  * Desc:
  */
 
-public class YesterdayFragment extends Fragment {
+public class MyScoreFragment extends Fragment {
 
     Unbinder unbinder;
     @BindView(R.id.tvScoreTitle)

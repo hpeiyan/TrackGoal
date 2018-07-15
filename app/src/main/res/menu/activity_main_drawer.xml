@@ -2,5 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
+    <group>
+        <item
+            android:id="@+id/goal"
+            android:checked="true"
+            android:icon="@mipmap/ic_toys_black_24dp"
+            android:title="目标"/>
+
+        <item
+            android:id="@+id/prompt"
+            android:icon="@mipmap/ic_local_offer_black_24dp"
+            android:title="提示"/>
+
+        <item
+            android:id="@+id/setting"
+            android:icon="@mipmap/ic_headset_black_24dp"
+            android:title="设置"/>
+        <item
+            android:id="@+id/policy"
+            android:icon="@mipmap/ic_beenhere_black_24dp"
+            android:title="隐私"/>
+        <item
+            android:id="@+id/feedback"
+            android:icon="@mipmap/ic_send_black_24dp"
+            android:title="反馈"/>
+
+    </group>
 
 </menu>

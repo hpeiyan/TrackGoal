@@ -38,7 +38,7 @@ import static android.view.View.inflate;
 public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder> implements View.OnClickListener {
 
     private static final String TAG = "GoalsAdapter";
-    private static final int TYPE_HEADER = -1;
+    //    private static final int TYPE_HEADER = -1;
     private ArrayList<GoalBean> mData;
     private final MainActivity mMainActivity;
     private static long clickTimestamp = System.currentTimeMillis();
@@ -69,8 +69,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             case 4:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_4_goal, parent, false));
                 break;
-            case TYPE_HEADER:
-                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_header_item, parent, false));
+//            case TYPE_HEADER:
+//                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_header_item, parent, false));
             default:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
         }
@@ -80,40 +80,40 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder mHolder, int position) {
-        if (getItemViewType(position) == TYPE_HEADER) {
-            HeaderViewHolder mViewHolder = (HeaderViewHolder) mHolder;
+//        if (getItemViewType(position) == TYPE_HEADER) {
+//            HeaderViewHolder mViewHolder = (HeaderViewHolder) mHolder;
+//
+//            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getCurrntDate());
+//            int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
+//            if (mChildCount > 0) {
+//                mViewHolder.mLlScoreLine.removeAllViews();
+//            }
+//
+//            int score = 0;
+//            int totalSie = 0;
+//            if (mScoreBeans != null && mScoreBeans.size() > 0) {
+//                for (ScoreBean bean : mScoreBeans) {
+//                    if (bean == null) continue;
+//                    View mView = View.inflate(mMainActivity, R.layout.score_line_view, null);
+//                    TextView itemName = mView.findViewById(R.id.tvItemName);
+//                    itemName.setText(bean.getTitle());
+//                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
+//                    pb.setProgress(bean.getScore());
+//                    mViewHolder.mLlScoreLine.addView(mView);
+//                    score += bean.getScore();
+//                    totalSie++;
+//                }
+//            }
+//            if (totalSie == 0) {
+//                View mView = View.inflate(mMainActivity, R.layout.dont_caculate, null);
+//                mViewHolder.mLlScoreLine.addView(mView);
+//            } else {
+//                mViewHolder.mScoreShow.setText(score + "/" + 10 * totalSie);
+//            }
+//            return;
+//        }
 
-            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getCurrntDate());
-            int mChildCount = mViewHolder.mLlScoreLine.getChildCount();
-            if (mChildCount > 0) {
-                mViewHolder.mLlScoreLine.removeAllViews();
-            }
-
-            int score = 0;
-            int totalSie = 0;
-            if (mScoreBeans != null && mScoreBeans.size() > 0) {
-                for (ScoreBean bean : mScoreBeans) {
-                    if (bean == null) continue;
-                    View mView = View.inflate(mMainActivity, R.layout.score_line_view, null);
-                    TextView itemName = mView.findViewById(R.id.tvItemName);
-                    itemName.setText(bean.getTitle());
-                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
-                    pb.setProgress(bean.getScore());
-                    mViewHolder.mLlScoreLine.addView(mView);
-                    score += bean.getScore();
-                    totalSie++;
-                }
-            }
-            if (totalSie == 0) {
-                View mView = View.inflate(mMainActivity, R.layout.dont_caculate, null);
-                mViewHolder.mLlScoreLine.addView(mView);
-            } else {
-                mViewHolder.mScoreShow.setText(score + "/" + 10 * totalSie);
-            }
-            return;
-        }
-
-        position -= 1;
+//        position -= 1;
         GoalViewHolder holder = (GoalViewHolder) mHolder;
         String[] mItems = new String[0];
         final Context mContext = holder.mLlParent.getContext();
@@ -273,13 +273,13 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) return TYPE_HEADER;
-        return mData.get(position - 1).getLevel();
+//        if (position == 0) return TYPE_HEADER;
+        return mData.get(position).getLevel();
     }
 
     @Override
     public int getItemCount() {
-        return mData.size() + 1;
+        return mData.size();
     }
 
     @Override
