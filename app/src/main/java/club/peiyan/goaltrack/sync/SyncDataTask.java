@@ -54,7 +54,7 @@ public class SyncDataTask implements Runnable {
     @Override
     public void run() {
         String json = createJson();
-        Log.e(TAG, "json: " + json);
+//        Log.e(TAG, "json: " + json);
         Request.Builder mBuilder = new Request.Builder();
         RequestBody mBody = RequestBody.create(JSON, json);
         mBuilder.post(mBody);
