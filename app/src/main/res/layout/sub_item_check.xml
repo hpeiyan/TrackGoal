@@ -9,40 +9,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
         android:background="@drawable/selector_goal_white_item"
         android:ellipsize="end"
         android:maxLines="1"
-        android:maxWidth="120dp"
         android:padding="8dp"
         android:text="@string/app_name"
         android:textColor="@color/primaryTextColor"
         android:textSize="@dimen/text_show_dimen"
         />
 
-    <RelativeLayout
-        android:layout_width="130dp"
+    <TextView
+        android:id="@+id/tvNote"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="true"
-        >
-
-        <SeekBar
-            android:id="@+id/sbProgress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="10"
-            android:min="0"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/sbProgress"
-            android:layout_marginRight="33dp"
-            android:layout_marginTop="11dp"
-            android:text="8"
-            android:textSize="@dimen/text_show_tiny"/>
-
-    </RelativeLayout>
+        android:layout_below="@+id/tvItem"
+        android:maxLines="5"
+        android:padding="10dp"
+        android:text="备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注备注"
+        android:textColor="@color/secondTextColor"
+        android:textSize="@dimen/text_show_dimen"/>
 
 </RelativeLayout>

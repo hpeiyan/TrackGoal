@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +21,7 @@ import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
-import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
-import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 
 import static android.view.View.inflate;
@@ -56,7 +53,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         GoalViewHolder mHolder;
-        switch (viewType) {
+        mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
+        /*switch (viewType) {
             case 1:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
                 break;
@@ -73,7 +71,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 //                return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_header_item, parent, false));
             default:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
-        }
+        }*/
         return mHolder;
     }
 
@@ -175,39 +173,6 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             for (final String item : mItems) {
                 View mView = inflate(mContext, R.layout.sub_item_check, null);
                 TextView tvItem = mView.findViewById(R.id.tvItem);
-                SeekBar sb = mView.findViewById(R.id.sbProgress);
-
-                final ScoreBean mScoreBean = mDBHelper.getScoreByTitle(item);
-                if (mScoreBean != null) {
-                    sb.setProgress(mScoreBean.getScore());
-                }
-                sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        int mProgress = seekBar.getProgress();
-                        ScoreBean mScoreByTitle = mDBHelper.getScoreByTitle(item);
-                        boolean isSuccess;
-                        if (mScoreByTitle == null) {
-                            isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                        } else {
-                            isSuccess = mDBHelper.updateScore(mScoreByTitle.getId(), -1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                        }
-                        if (isSuccess) {
-                            notifyDataSetChanged();
-                        }
-                    }
-                });
-
                 tvItem.setText(item);
                 tvItem.setOnClickListener(this);
                 tvItem.setTag(R.id.sub_title, item);
