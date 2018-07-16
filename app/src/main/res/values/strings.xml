@@ -32,5 +32,7 @@
     <string name="hadn_create">还没想好要做什么啦</string>
     <string name="dontCaculate">暂未统计</string>
     <string name="click_promp">长按删除\n双击编辑</string>
+    <string name="goal">目标</string>
+    <string name="score">分数</string>
 
 </resources>

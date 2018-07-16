@@ -30,7 +30,6 @@ import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.TodayFragment;
-import club.peiyan.goaltrack.plan.TomorrowFragment;
 import club.peiyan.goaltrack.plan.YesterdayFragment;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity
     private TodayFragment mTodayFragment;
     private MenuItem mModeMenu;
 
-    private static final int[] titleRes = new int[]{R.string.yesterday, R.string.today, R.string.tomorrow};
+    private static final int[] titleRes = new int[]{R.string.score, R.string.goal};
     private static final int[] imgRes = new int[]{R.mipmap.ic_headset_black_24dp, R.mipmap.ic_toys_black_24dp,
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
         initMenuItem();
-        TomorrowFragment mTomorrowFragment = new TomorrowFragment();
         YesterdayFragment mYesterdayFragment = new YesterdayFragment();
         mTodayFragment = new TodayFragment();
         mTodayFragment.setActivity(this);
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Fragment> mFragments = new ArrayList<>();
         mFragments.add(mYesterdayFragment);
         mFragments.add(mTodayFragment);
-        mFragments.add(mTomorrowFragment);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.setData(mFragments);
@@ -146,7 +143,7 @@ public class MainActivity extends AppCompatActivity
 
         View mHeaderView = mNavView.getHeaderView(0);
         mTvUserName = mHeaderView.findViewById(R.id.tvUserName);
-        mTvUserName.setText(AppSp.getString(Constants.USER_NAME, "BenChur"));
+        mTvUserName.setText(AppSp.getString(Constants.USER_NAME, "佚名"));
     }
 
     public void setMode(boolean mMode) {

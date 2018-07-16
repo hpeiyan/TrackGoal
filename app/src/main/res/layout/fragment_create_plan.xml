@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:padding="9dp"
-            android:src="@mipmap/ic_fingerprint_black_24dp"
+            android:src="@mipmap/ic_add_black_24dp"
             />
 
 
