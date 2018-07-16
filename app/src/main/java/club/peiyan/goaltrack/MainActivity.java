@@ -19,7 +19,6 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
+    private static final int FEEDBACKID = 1024;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fab)
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         mAppSubMenu.clear();
-        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, 1, 1, getString(R.string.feedback));
+        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
         mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
     }
 
@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
-            case R.id.app:
-                Toast.makeText(this, "app", Toast.LENGTH_SHORT).show();
+            case FEEDBACKID:
+                FeedBackActivity.startFeedbackActivity(MainActivity.this);
                 break;
             default:
                 for (GoalBean bean : mParentGoals) {

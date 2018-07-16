@@ -1,8 +1,8 @@
 package club.peiyan.goaltrack;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +22,7 @@ import club.peiyan.goaltrack.utils.AppSp;
  * Desc:
  */
 
-public class ReLoginActivity extends Activity implements RegisterTask.OnRegisterListener, VerifyTask.OnVerifyListener {
+public class ReLoginActivity extends AppCompatActivity implements RegisterTask.OnRegisterListener, VerifyTask.OnVerifyListener {
 
     @BindView(R.id.etName)
     EditText mEtName;

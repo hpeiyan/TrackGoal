@@ -18,6 +18,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity android:name=".FeedBackActivity"/>
+
         <activity android:name=".ReLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
