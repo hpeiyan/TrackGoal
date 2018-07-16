@@ -18,6 +18,7 @@
     <item name="hour" type="id"/>
     <item name="minute" type="id"/>
     <item name="goal" type="id"/>
+    <item name="app" type="id"/>
     <item name="about" type="id"/>
     <item name="nav_share" type="id"/>
     <item name="nav_about" type="id"/>
@@ -34,5 +35,6 @@
     <string name="click_promp">长按删除\n双击编辑</string>
     <string name="goal">目标</string>
     <string name="score">分数</string>
+    <string name="feedback">反馈</string>
 
 </resources>

@@ -19,6 +19,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
     private TextView mTvUserName;
+    private SubMenu mAppSubMenu;
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
@@ -125,7 +127,9 @@ public class MainActivity extends AppCompatActivity
 
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
-        initMenuItem();
+        mAppSubMenu = mNavView.getMenu().addSubMenu("App");
+        initMenuItem("");
+
         YesterdayFragment mYesterdayFragment = new YesterdayFragment();
         mTodayFragment = new TodayFragment();
         mTodayFragment.setActivity(this);
@@ -150,15 +154,24 @@ public class MainActivity extends AppCompatActivity
         this.mMode = mMode;
     }
 
-    private void initMenuItem() {
+    private void initMenuItem(String mGoalTitle) {
         mGoalSubMenu.clear();
         if (mParentGoals != null && mParentGoals.size() > 0) {
             for (int i = 0; i < mParentGoals.size(); i++) {
                 GoalBean bean = mParentGoals.get(i);
                 MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
                 mItem.setIcon(imgRes[i % 6]);
+                if (bean.getTitle().equals(mGoalTitle)) {
+                    mItem.setChecked(true);
+                }
+                if (i == 0 && TextUtils.isEmpty(mGoalTitle)) {
+                    mItem.setChecked(true);
+                }
             }
         }
+        mAppSubMenu.clear();
+        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, 1, 1, getString(R.string.feedback));
+        mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
     }
 
     public SubMenu getGoalSubMenu() {
@@ -238,18 +251,18 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
-            case R.id.nav_about:
-                break;
-            case R.id.nav_share:
+            case R.id.app:
+                Toast.makeText(this, "app", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 for (GoalBean bean : mParentGoals) {
                     if (item.getTitle().equals(bean.getTitle())) {
+                        item.setChecked(true);
                         AppSp.putString(LATEST_GOAL, bean.getTitle());
+                        notifyDataSetChange(bean.getTitle());
                         break;
                     }
                 }
-                notifyDataSetChange(null);
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -268,7 +281,7 @@ public class MainActivity extends AppCompatActivity
         }
         mTodayFragment.getAdapter().setData(mSingleAllGoals);
         mTodayFragment.getAdapter().notifyDataSetChanged();
-        initMenuItem();
+        initMenuItem(goalTitle);
         if (mContainer.getCurrentItem() != 1) {
             mContainer.setCurrentItem(1, true);
         }
