@@ -12,7 +12,9 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.netTask.FeedbackTask;
+import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
 
 /**
@@ -59,6 +61,7 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
                     public void onPosClickListener() {
                         FeedbackTask mTask = new FeedbackTask(FeedBackActivity.this);
                         mTask.setNote(mTrim);
+                        mTask.setUserName(AppSp.getString(Constants.USER_NAME,""));
                         mTask.setRegisterListener(FeedBackActivity.this);
                         new Thread(mTask).start();
                         finish();
@@ -68,7 +71,7 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
 
     @Override
     public void onFeedbackSuccess() {
-        
+
     }
 
     @Override
