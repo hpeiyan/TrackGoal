@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +29,8 @@ import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
-import club.peiyan.goaltrack.plan.TodayFragment;
-import club.peiyan.goaltrack.plan.YesterdayFragment;
+import club.peiyan.goaltrack.plan.GoalFragment;
+import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<GoalBean> mParentGoals;
     private SubMenu mGoalSubMenu;
     private boolean mMode = true;//False预览模式, True编辑模式
-    private TodayFragment mTodayFragment;
+    private GoalFragment mGoalFragment;
     private MenuItem mModeMenu;
 
     private static final int[] titleRes = new int[]{R.string.score, R.string.goal};
@@ -115,9 +114,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
-        if (mSingleAllGoals != null && mSingleAllGoals.size() > 0) {
-            setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
-        }
+//        if (mSingleAllGoals != null && mSingleAllGoals.size() > 0) {
+//            setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
+//        }
         setSupportActionBar(mToolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -130,14 +129,14 @@ public class MainActivity extends AppCompatActivity
         mAppSubMenu = mNavView.getMenu().addSubMenu("App");
         initMenuItem("");
 
-        YesterdayFragment mYesterdayFragment = new YesterdayFragment();
-        mTodayFragment = new TodayFragment();
-        mTodayFragment.setActivity(this);
-        mTodayFragment.setData(mSingleAllGoals);
+        ScoreFragment mScoreFragment = new ScoreFragment();
+        mGoalFragment = new GoalFragment();
+        mGoalFragment.setActivity(this);
+        mGoalFragment.setData(mSingleAllGoals);
 
         ArrayList<Fragment> mFragments = new ArrayList<>();
-        mFragments.add(mYesterdayFragment);
-        mFragments.add(mTodayFragment);
+        mFragments.add(mScoreFragment);
+        mFragments.add(mGoalFragment);
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.setData(mFragments);
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity
         item.setChecked(mMode);
         item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
         mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-        mTodayFragment.getRvGoal().setEditMode(!mMode);
+        mGoalFragment.getRvGoal().setEditMode(!mMode);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -275,12 +274,12 @@ public class MainActivity extends AppCompatActivity
     public void notifyDataSetChange(@Nullable String goalTitle) {
         initDataBase();
         if (mSingleAllGoals.size() <= 0) {
-            mTodayFragment.hideOrShowPromp(true);
+            mGoalFragment.hideOrShowPromp(true);
         } else {
-            mTodayFragment.hideOrShowPromp(false);
+            mGoalFragment.hideOrShowPromp(false);
         }
-        mTodayFragment.getAdapter().setData(mSingleAllGoals);
-        mTodayFragment.getAdapter().notifyDataSetChanged();
+        mGoalFragment.getAdapter().setData(mSingleAllGoals);
+        mGoalFragment.getAdapter().notifyDataSetChanged();
         initMenuItem(goalTitle);
         if (mContainer.getCurrentItem() != 1) {
             mContainer.setCurrentItem(1, true);
@@ -288,7 +287,7 @@ public class MainActivity extends AppCompatActivity
         if (goalTitle != null && !TextUtils.isEmpty(goalTitle)) {
             for (int i = 0; i < mSingleAllGoals.size(); i++) {
                 if (goalTitle.equals(mSingleAllGoals.get(i).getTitle())) {
-                    mTodayFragment.getRvGoal().scrollToPosition(i);
+                    mGoalFragment.getRvGoal().scrollToPosition(i);
                     break;
                 }
             }

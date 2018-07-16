@@ -29,7 +29,7 @@ import club.peiyan.goaltrack.view.MyRecycleView;
  * Desc:
  */
 
-public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
+public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
     @BindView(R.id.rvGoal)
@@ -50,7 +50,7 @@ public class TodayFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private static ArrayList<GoalBean> sGoalBeans;
     private MainActivity mActivity;
 
-    public TodayFragment() {
+    public GoalFragment() {
     }
 
 

@@ -8,9 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+
 import java.util.ArrayList;
 
 import club.peiyan.goaltrack.utils.AppSp;
+
 import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
 /**
@@ -404,6 +406,33 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    @Nullable
+    public ScoreBean getScoreByTitleDate(String title, String date) {
+        if (title == null || TextUtils.isEmpty(title)) return null;
+
+        ArrayList<ScoreBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_score where title=? and date=?", new String[]{title, date});
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            ScoreBean mBean = new ScoreBean();
+            mBean.setId(res.getInt(res.getColumnIndex(GOAL_SCORE_ID)));
+            mBean.setLevel(res.getInt(res.getColumnIndex(GOAL_SCORE_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
+            mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setScore(res.getInt(res.getColumnIndex(GOAL_SCORE_SCORE)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        if (array_list.size() > 0)
+            return array_list.get(0);
+        return null;
+    }
+
     public Integer deleteScore(String title) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(GOAL_SCORE_TABLE,
@@ -436,4 +465,23 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
+    public ArrayList<ScoreBean> getAllScore() {
+        ArrayList<ScoreBean> array_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from goal_score", null);
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            ScoreBean mBean = new ScoreBean();
+            mBean.setLevel(res.getInt(res.getColumnIndex(GOAL_SCORE_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
+            mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        return array_list;
+    }
 }

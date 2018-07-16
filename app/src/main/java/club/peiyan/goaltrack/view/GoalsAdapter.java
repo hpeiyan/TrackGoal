@@ -177,7 +177,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 TextView tvItem = mView.findViewById(R.id.tvItem);
                 SeekBar sb = mView.findViewById(R.id.sbProgress);
 
-                final ScoreBean mScoreBean = mDBHelper.getScoreByTitle(item);
+                final ScoreBean mScoreBean = mDBHelper.getScoreByTitleDate(item, CalendaUtils.getCurrntDate());
                 if (mScoreBean != null) {
                     sb.setProgress(mScoreBean.getScore());
                 }
@@ -236,10 +236,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             @Override
             public boolean onLongClick(View v) {
                 final boolean mHasSubGoal = mMainActivity.getDBHelper().isHasSubGoal(mBean);
-                DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s计划？",
+                DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s？",
                         mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的子计划将全部被移除。" : "",
-                        "开玩笑",
-                        "认真脸", new DialogUtil.DialogListener() {
+                        "否",
+                        "我要删除", new DialogUtil.DialogListener() {
                             @Override
                             public void onNegClickListener() {
 

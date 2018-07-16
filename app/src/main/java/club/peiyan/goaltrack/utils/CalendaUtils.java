@@ -25,4 +25,12 @@ public class CalendaUtils {
         return year + "/" + month + "/" + day;
     }
 
+    public static String getDate(int deltaDate) {
+        Calendar mCalendar = Calendar.getInstance();
+        mCalendar.add(Calendar.DATE, -deltaDate);
+        int year = mCalendar.get(Calendar.YEAR);
+        int month = mCalendar.get(Calendar.MONTH);
+        int day = mCalendar.get(Calendar.DATE);
+        return year + "/" + month + "/" + day;
+    }
 }
