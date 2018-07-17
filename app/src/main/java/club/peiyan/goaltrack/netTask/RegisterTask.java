@@ -1,8 +1,6 @@
 package club.peiyan.goaltrack.netTask;
 
 import android.app.Activity;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -14,6 +12,7 @@ import java.io.IOException;
 import club.peiyan.goaltrack.data.RegisterBean;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
+import club.peiyan.goaltrack.utils.ToastUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -53,23 +52,22 @@ public class RegisterTask implements Runnable {
             @Override
             public void onFailure(Call call, IOException e) {
                 mRegisterListener.onRegisterFail();
+                ToastUtil.toast("注册失败");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.i(TAG, "onResponse: " + response.code());
                 String mResult = response.body().string();
                 Gson mGson = new Gson();
                 RegisterBean mBean = mGson.fromJson(mResult, RegisterBean.class);
-                String mName = mBean.getUsername();
-                AppSp.putString(USER_NAME, mName);
-                mRegisterListener.onRegisterSuccess();
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(mActivity, "注册成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (mBean != null && mBean.getCode() == 200) {
+                    AppSp.putString(USER_NAME, mBean.getData().getUsername());
+                    mRegisterListener.onRegisterSuccess();
+                    ToastUtil.toast("注册成功");
+                } else {
+                    mRegisterListener.onRegisterFail();
+                    ToastUtil.toast(mBean.getMsg());
+                }
             }
         });
     }
@@ -93,11 +91,11 @@ public class RegisterTask implements Runnable {
         return mJSONObject.toString();
     }
 
-    public void setRegisterListener(OnRegisterListener mListener){
+    public void setRegisterListener(OnRegisterListener mListener) {
         mRegisterListener = mListener;
     }
 
-    public interface OnRegisterListener{
+    public interface OnRegisterListener {
         void onRegisterSuccess();
 
         void onRegisterFail();

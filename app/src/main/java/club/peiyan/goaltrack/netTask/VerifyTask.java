@@ -3,13 +3,15 @@ package club.peiyan.goaltrack.netTask;
 import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import java.io.IOException;
 
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.VerifyBean;
+import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.ToastUtil;
 import okhttp3.Authenticator;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -57,6 +59,7 @@ public class VerifyTask implements Runnable {
             @Override
             public void onFailure(Call call, IOException e) {
                 mVerifyListener.onVerifyFail();
+                ToastUtil.toast("登录失败");
             }
 
             @Override
@@ -65,13 +68,14 @@ public class VerifyTask implements Runnable {
                 String mResult = response.body().string();
                 Gson mGson = new Gson();
                 VerifyBean mBean = mGson.fromJson(mResult, VerifyBean.class);
-                mVerifyListener.onVerifySuccess();
-                mActivity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(mActivity, "登录成功", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (mBean !=null && mBean.getCode() == 200) {
+                    mVerifyListener.onVerifySuccess();
+                    AppSp.putString(Constants.USER_NAME, userName);
+                    ToastUtil.toast("登录成功");
+                }else {
+                    mVerifyListener.onVerifyFail();
+                    ToastUtil.toast("登录失败");
+                }
             }
         });
     }
