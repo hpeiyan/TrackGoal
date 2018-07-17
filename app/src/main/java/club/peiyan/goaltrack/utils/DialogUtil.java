@@ -1,8 +1,10 @@
 package club.peiyan.goaltrack.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
 
 import club.peiyan.goaltrack.plan.OnEditListener;
 
@@ -56,6 +58,39 @@ public class DialogUtil {
                     }
                 }).create();
         mAlertDialog.show();
+    }
+
+
+    public static void showDialogWithView(Activity mActivity, View mV, String negBtn, String posBtn, final DialogListener mListener) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
+        mBuilder.setView(mV);
+        AlertDialog mAlertDialog = mBuilder
+                .setNegativeButton(negBtn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.onNegClickListener();
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton(posBtn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mListener.onPosClickListener();
+                        dialog.dismiss();
+                    }
+                }).create();
+        if (mAlertDialog != null) {
+            mAlertDialog.show();
+        }
+    }
+
+    public static AlertDialog showDolViewWithoutButton(Activity mActivity, View mV) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
+        mBuilder.setView(mV);
+        AlertDialog mAlertDialog = mBuilder.create();
+        if (mAlertDialog != null) {
+            mAlertDialog.show();
+        }
+        return mAlertDialog;
     }
 
     public interface DialogListener {

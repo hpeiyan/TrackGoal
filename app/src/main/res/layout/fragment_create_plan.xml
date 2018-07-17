@@ -72,9 +72,9 @@
 
             <TextView
                 android:layout_width="wrap_content"
-                android:text=" ⇀ "
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:layout_height="match_parent"/>
+                android:text=" ⇀ "/>
 
             <TextView
                 android:id="@+id/tvEndDateShow"
@@ -88,6 +88,13 @@
                 android:textSize="@dimen/text_show_dimen"/>
 
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/dividerColor"/>
+
+        <include layout="@layout/note_layout"/>
 
         <View
             android:layout_width="match_parent"

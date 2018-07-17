@@ -1,28 +1,40 @@
 package club.peiyan.goaltrack.plan;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.TimePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,6 +48,7 @@ import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
 
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
+import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
 /**
  * Created by HPY.
@@ -43,7 +56,7 @@ import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
  * Desc:
  */
 
-public class DialogFragmentCreatePlan extends DialogFragment {
+public class DialogFragmentCreatePlan extends DialogFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private static final String FRAG_TAG = "DialogFragmentCreatePlan";
     private static final String GOAL_NAME = "goal_name";
@@ -70,6 +83,12 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     ImageView mTvCancel;
     @BindView(R.id.ivSave)
     ImageView mTvSave;
+    @BindView(R.id.tvNotion)
+    CheckedTextView mTvNotion;
+    @BindView(R.id.swNotion)
+    Switch mSwNotion;
+    @BindView(R.id.llNotion)
+    LinearLayout mLlNotion;
 
     private View mRootView;
     private ArrayList<EditText> mItemViewList = new ArrayList<>();
@@ -81,6 +100,8 @@ public class DialogFragmentCreatePlan extends DialogFragment {
     private String mItems;
     private int mId = -1;
     private boolean isEditMode = false;
+    private AlertDialog mSelectModeDialog;
+    private TextView mTvNotionDate;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +144,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
                 }
             }
         }
+        mSwNotion.setOnCheckedChangeListener(this);
     }
 
     private void checkSetText(TextView mTextView, String content) {
@@ -200,7 +222,7 @@ public class DialogFragmentCreatePlan extends DialogFragment {
         mDatePickerDialog.show();
     }
 
-    @OnClick({R.id.tvStartDateShow, R.id.tvEndDateShow, R.id.btnAddItem, R.id.ivCancel, R.id.ivSave})
+    @OnClick({R.id.tvStartDateShow, R.id.tvEndDateShow, R.id.btnAddItem, R.id.ivCancel, R.id.ivSave, R.id.tvNotion})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvStartDateShow:
@@ -235,7 +257,36 @@ public class DialogFragmentCreatePlan extends DialogFragment {
             case R.id.ivSave:
                 saveData();
                 break;
+            case R.id.tvNotion:
+                if (mSwNotion.isChecked() && mTvNotion.isChecked()) {
+                    addNotionView();
+                }
+                break;
         }
+    }
+
+    private void addNotionView() {
+        final View mView = View.inflate(getActivity(), R.layout.layout_add_notion, null);
+        mView.findViewById(R.id.ivCutNotion).setOnClickListener(this);
+        TextView tvNotionTime = mView.findViewById(R.id.tvNotionTime);
+        tvNotionTime.setOnClickListener(this);
+
+        mTvNotionDate = mView.findViewById(R.id.tvNotionDate);
+        mTvNotionDate.setOnClickListener(this);
+
+        mLlNotion.addView(mView);
+    }
+
+    private void showTimePickerDialog(final View mV) {
+        int hour = Calendar.getInstance().get(Calendar.HOUR);
+        int minute = Calendar.getInstance().get(Calendar.MINUTE);
+        TimePickerDialog mDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                ((TextView) mV).setText(hourOfDay + ":" + minute);
+            }
+        }, hour, minute, false);
+        mDialog.show();
     }
 
     private void addEditItemView(@Nullable String content) {
@@ -305,5 +356,73 @@ public class DialogFragmentCreatePlan extends DialogFragment {
 
     public void setEditMode(boolean mEditMode) {
         isEditMode = mEditMode;
+    }
+
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mTvNotion.setChecked(isChecked);
+        if (isChecked && mLlNotion.getChildCount() == 1) {
+            addNotionView();
+        }
+
+        if (!isChecked) {
+            int mCount = mLlNotion.getChildCount();
+            if (mCount > 1) {
+                mLlNotion.removeViews(1, mCount - 1);
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.ivCutNotion:
+                mLlNotion.removeView((View) v.getParent());
+                break;
+            case R.id.tvNotionDate:
+                View mView = View.inflate(getActivity(), R.layout.layout_notion_which_date_mode, null);
+                mView.findViewById(R.id.tvLiterary).setOnClickListener(this);
+                mView.findViewById(R.id.tvEveryDay).setOnClickListener(this);
+                mSelectModeDialog = DialogUtil.showDolViewWithoutButton(getActivity(), mView);
+                break;
+            case R.id.tvNotionTime:
+                showTimePickerDialog(v);
+                break;
+
+            case R.id.tvEveryDay:
+                if (mSelectModeDialog != null) mSelectModeDialog.dismiss();
+                break;
+
+            case R.id.tvLiterary:
+                if (mSelectModeDialog != null) mSelectModeDialog.dismiss();
+                showMultipleDatePick();
+                break;
+        }
+    }
+
+    private void showMultipleDatePick() {
+        final MaterialCalendarView mCalendarView = new MaterialCalendarView(getActivity());
+        mCalendarView.setSelectionMode(SELECTION_MODE_MULTIPLE);
+        DialogUtil.showDialogWithView(getActivity(), mCalendarView, "no", "ok", new DialogUtil.DialogListener() {
+            @Override
+            public void onNegClickListener() {
+
+            }
+
+            @Override
+            public void onPosClickListener() {
+                List<CalendarDay> mSelectedDates = mCalendarView.getSelectedDates();
+                StringBuilder mStringBuilder = new StringBuilder();
+                for (CalendarDay day : mSelectedDates) {
+                    int mYear = day.getYear();
+                    int mMonth = day.getMonth();
+                    int mDay = day.getDay();
+                    mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + " ");
+                }
+                if (mTvNotionDate != null) {
+                    mTvNotionDate.setText(mStringBuilder.toString().trim());
+                }
+            }
+        });
     }
 }
