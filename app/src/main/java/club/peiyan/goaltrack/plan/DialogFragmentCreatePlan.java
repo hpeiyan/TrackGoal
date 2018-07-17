@@ -292,6 +292,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     private void addEditItemView(@Nullable String content) {
         View mView = View.inflate(getActivity(), R.layout.edit_item_layout, null);
         EditText editItem = mView.findViewById(R.id.editItem);
+        mView.findViewById(R.id.ivCutPlan).setOnClickListener(this);
         mItemViewList.add(editItem);
         checkSetText(editItem, content);
         int mChildCount = mLlParent.getChildCount();
@@ -396,6 +397,10 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             case R.id.tvLiterary:
                 if (mSelectModeDialog != null) mSelectModeDialog.dismiss();
                 showMultipleDatePick();
+                break;
+            case R.id.ivCutPlan:
+                mLlParent.removeView((View) v.getParent());
+                mItemViewList.remove((View) ((View) v.getParent()).findViewById(R.id.editItem));
                 break;
         }
     }
