@@ -255,14 +255,18 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                                             for (String item : bean.getItemSplit()) {
                                                 mDBHelper.deleteScore(item);
                                             }
-                                            mMainActivity.getDBHelper().deleteGoal(bean.getTitle());
+//                                            mMainActivity.getDBHelper().deleteGoal(bean.getTitle());
+                                            bean.setStatus(2);
+                                            mMainActivity.getDBHelper().updateGoal(bean);
                                         }
                                     }
                                 }
                                 for (String item : mBean.getItemSplit()) {
                                     mDBHelper.deleteScore(item);
                                 }
-                                mMainActivity.getDBHelper().deleteGoal(mBean.getTitle());
+//                                mMainActivity.getDBHelper().deleteGoal(mBean.getTitle());
+                                mBean.setStatus(2);
+                                mMainActivity.getDBHelper().updateGoal(mBean);
                                 mMainActivity.notifyDataSetChange(null);
                             }
                         });

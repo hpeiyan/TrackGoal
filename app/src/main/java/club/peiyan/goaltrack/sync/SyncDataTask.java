@@ -71,6 +71,10 @@ public class SyncDataTask implements Runnable {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                if (response.code() != 200) {
+                    mOnSyncListener.onFail();
+                    return;
+                }
                 String mResult = response.body().string();
                 Log.i(TAG, "onResponse: " + mResult);
                 Gson mGson = new Gson();

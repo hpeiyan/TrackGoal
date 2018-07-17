@@ -92,7 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public ArrayList<GoalBean> getGoalByLevel(int level) {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from track_goal where level=" + level + "", null);
+        Cursor res = db.rawQuery("select * from track_goal where level=" + level + " and status != 2", null);
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -231,7 +231,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from track_goal where title=? ", new String[]{title});
+        Cursor res = db.rawQuery("select * from track_goal where title=? and status != ?", new String[]{title, "2"});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
