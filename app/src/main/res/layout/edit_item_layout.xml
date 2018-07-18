@@ -16,9 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/ivCutPlan"
         android:background="@null"
-        android:layout_marginRight="42dp"
         android:gravity="center"
-        android:hint="计划"
+        android:hint="子计划"
         android:padding="10dp"
         android:textColor="@color/primaryTextColor"
         android:textSize="@dimen/text_input_dimen"/>

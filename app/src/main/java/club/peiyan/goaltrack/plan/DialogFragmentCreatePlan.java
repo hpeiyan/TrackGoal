@@ -347,6 +347,12 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             addNotionView();
         }
 
+        if (isChecked) {
+            mTvNotion.setText("添加提醒");
+        } else {
+            mTvNotion.setText("提醒");
+        }
+
         if (!isChecked) {
             int mCount = mLlNotion.getChildCount();
             if (mCount > 1) {

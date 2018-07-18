@@ -302,8 +302,8 @@ public class MainActivity extends AppCompatActivity
                 this.getApplicationContext(), 234324243, intent, 0);
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()
-                + (420 * 1000), pendingIntent);
-        Toast.makeText(this, "Alarm set in " + 420 + " seconds", Toast.LENGTH_LONG).show();
+                + (20 * 1000), pendingIntent);
+        Toast.makeText(this, "Alarm set in " + 20 + " seconds", Toast.LENGTH_LONG).show();
     }
 
     public void startSync(SyncDataTask.OnSyncListener mListener) {
