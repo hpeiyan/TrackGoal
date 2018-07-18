@@ -21,6 +21,8 @@
         <TextView
             android:id="@+id/tvNotionDate"
             android:layout_width="0dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"

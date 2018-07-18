@@ -83,9 +83,9 @@ public class DialogUtil {
         }
     }
 
-    public static AlertDialog showDolViewWithoutButton(Activity mActivity, View mV) {
+    public static AlertDialog showSingleChoiceDialog(Activity mActivity,String[] items, DialogInterface.OnClickListener mListener) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
-        mBuilder.setView(mV);
+        mBuilder.setSingleChoiceItems(items, 0, mListener);
         AlertDialog mAlertDialog = mBuilder.create();
         if (mAlertDialog != null) {
             mAlertDialog.show();

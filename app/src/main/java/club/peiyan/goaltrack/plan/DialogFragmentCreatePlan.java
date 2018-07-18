@@ -1,13 +1,15 @@
 package club.peiyan.goaltrack.plan;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,13 +40,20 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import club.peiyan.goaltrack.AlarmBroadcastReceiver;
+import club.peiyan.goaltrack.GoalApplication;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
+import club.peiyan.goaltrack.data.AlarmBean;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
+import club.peiyan.goaltrack.utils.LogUtil;
 
+import static android.content.Context.ALARM_SERVICE;
+import static club.peiyan.goaltrack.AlarmBroadcastReceiver.CONTENT;
+import static club.peiyan.goaltrack.AlarmBroadcastReceiver.TITLE;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 
@@ -98,8 +107,10 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     private String mItems;
     private int mId = -1;
     private boolean isEditMode = false;
-    private AlertDialog mSelectModeDialog;
-    private TextView mTvNotionDate;
+    //    private TextView mTvNotionDate;
+    private static final String[] mAlarmModes = new String[]{"每天", "自由选择"};
+    private List<AlarmBean> mAlarmBeanList;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,6 +122,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         mEnd = mBundle.getString(GOAL_END_DATE);
         mItems = mBundle.getString(GOAL_ITEMS);
         isEditMode = mBundle.getBoolean(EDIT_MODE, false);
+        mAlarmBeanList = new ArrayList<>();
 
         if (parent != null && !parent.isEmpty()) {
             mParent = parent;
@@ -242,6 +254,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 DialogUtil.showDialog(getActivity(), () -> dismiss());
                 break;
             case R.id.ivSave:
+                startAlarm();
                 saveData();
                 break;
             case R.id.tvNotion:
@@ -252,14 +265,70 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         }
     }
 
+    private void startAlarm() {
+        if (mSwNotion.isChecked() && mAlarmBeanList.size() > 0) {
+            for (AlarmBean bean : mAlarmBeanList) {
+                List<CalendarDay> mDates = bean.getSelectedDates();
+                if (mDates != null && mDates.size() > 0) {
+                    for (CalendarDay day : mDates) {
+                        Calendar mCalendar = Calendar.getInstance();
+                        mCalendar.set(day.getYear(), day.getMonth(), day.getDay(),
+                                bean.getHour(), bean.getMinute());
+                        alarm(mCalendar.getTimeInMillis());
+                    }
+                } else {
+                    // TODO: 2018/7/19 每天的情况
+                }
+            }
+        }
+    }
+
+    private void alarm(long timeInMillis) {
+        if (timeInMillis > System.currentTimeMillis()) {
+            Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
+            Bundle mBundle = new Bundle();
+            String mTitle = mTvGoalName.getText().toString().trim();
+            if (!TextUtils.isEmpty(mTitle)) {
+                mBundle.putString(TITLE, mTitle);
+            }
+            mBundle.putString(CONTENT, "是时候开始你的计划了");
+            intent.putExtras(mBundle);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    GoalApplication.getContext(), 234324243, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            LogUtil.logi((timeInMillis - System.currentTimeMillis()) / 1000 + "");
+        }
+    }
+
     private void addNotionView() {
         final View mView = View.inflate(getActivity(), R.layout.layout_add_notion, null);
-        mView.findViewById(R.id.ivCutNotion).setOnClickListener(this);
-        TextView tvNotionTime = mView.findViewById(R.id.tvNotionTime);
-        tvNotionTime.setOnClickListener(this);
 
-        mTvNotionDate = mView.findViewById(R.id.tvNotionDate);
-        mTvNotionDate.setOnClickListener(this);
+        AlarmBean mAlarmBean = new AlarmBean();
+        mAlarmBean.setParentView(mView);
+        mAlarmBeanList.add(mAlarmBean);
+
+        mView.findViewById(R.id.ivCutNotion).setOnClickListener(v -> {
+            mLlNotion.removeView((View) v.getParent());
+            if (mAlarmBeanList != null && mAlarmBeanList.size() > 0) {
+                for (AlarmBean bean : mAlarmBeanList) {
+                    if (bean.getParentView() == v.getParent()) {
+                        mAlarmBeanList.remove(bean);
+                        break;
+                    }
+                }
+            }
+        });
+        mView.findViewById(R.id.tvNotionTime).setOnClickListener(v -> showTimePickerDialog(v));
+
+        mView.findViewById(R.id.tvNotionDate).setOnClickListener(v -> DialogUtil.showSingleChoiceDialog(getActivity(), mAlarmModes, (dialog, which) -> {
+            dialog.dismiss();
+            if (which == 1) {
+                showMultipleDatePick(((TextView) v));
+            } else {
+                ((TextView) v).setText("每天");
+            }
+        }));
 
         mLlNotion.addView(mView);
     }
@@ -267,7 +336,18 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     private void showTimePickerDialog(final View mV) {
         int hour = Calendar.getInstance().get(Calendar.HOUR);
         int minute = Calendar.getInstance().get(Calendar.MINUTE);
-        TimePickerDialog mDialog = new TimePickerDialog(getActivity(), (view, hourOfDay, minute1) -> ((TextView) mV).setText(hourOfDay + ":" + minute1), hour, minute, false);
+        TimePickerDialog mDialog = new TimePickerDialog(getActivity(), (view, hourOfDay, minute1) -> {
+            ((TextView) mV).setText(hourOfDay + ":" + minute1);
+            if (mAlarmBeanList != null && mAlarmBeanList.size() > 0) {
+                for (AlarmBean bean : mAlarmBeanList) {
+                    if (bean.getParentView() == mV.getParent().getParent()) {
+                        bean.setHour(hourOfDay);
+                        bean.setMinute(minute1);
+                        break;
+                    }
+                }
+            }
+        }, hour, minute, false);
         mDialog.show();
     }
 
@@ -365,27 +445,6 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ivCutNotion:
-                mLlNotion.removeView((View) v.getParent());
-                break;
-            case R.id.tvNotionDate:
-                View mView = View.inflate(getActivity(), R.layout.layout_notion_which_date_mode, null);
-                mView.findViewById(R.id.tvLiterary).setOnClickListener(this);
-                mView.findViewById(R.id.tvEveryDay).setOnClickListener(this);
-                mSelectModeDialog = DialogUtil.showDolViewWithoutButton(getActivity(), mView);
-                break;
-            case R.id.tvNotionTime:
-                showTimePickerDialog(v);
-                break;
-
-            case R.id.tvEveryDay:
-                if (mSelectModeDialog != null) mSelectModeDialog.dismiss();
-                break;
-
-            case R.id.tvLiterary:
-                if (mSelectModeDialog != null) mSelectModeDialog.dismiss();
-                showMultipleDatePick();
-                break;
             case R.id.ivCutPlan:
                 mLlParent.removeView((View) v.getParent());
                 mItemViewList.remove((View) ((View) v.getParent()).findViewById(R.id.editItem));
@@ -393,7 +452,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         }
     }
 
-    private void showMultipleDatePick() {
+    private void showMultipleDatePick(TextView mV) {
         final MaterialCalendarView mCalendarView = new MaterialCalendarView(getActivity());
         mCalendarView.setSelectionMode(SELECTION_MODE_MULTIPLE);
         DialogUtil.showDialogWithView(getActivity(), mCalendarView, "no", "ok", new DialogUtil.DialogListener() {
@@ -408,12 +467,20 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 StringBuilder mStringBuilder = new StringBuilder();
                 for (CalendarDay day : mSelectedDates) {
                     int mYear = day.getYear();
-                    int mMonth = day.getMonth();
+                    int mMonth = day.getMonth() + 1;
                     int mDay = day.getDay();
                     mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + " ");
                 }
-                if (mTvNotionDate != null) {
-                    mTvNotionDate.setText(mStringBuilder.toString().trim());
+                if (mV != null) {
+                    mV.setText(mStringBuilder.toString().trim());
+                }
+                if (mAlarmBeanList != null && mAlarmBeanList.size() > 0) {
+                    for (AlarmBean bean : mAlarmBeanList) {
+                        if (bean.getParentView() == mV.getParent().getParent()) {
+                            bean.setSelectedDates(mSelectedDates);
+                            break;
+                        }
+                    }
                 }
             }
         });
