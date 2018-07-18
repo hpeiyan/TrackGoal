@@ -102,15 +102,23 @@
             android:layout_height="1px"
             android:background="@color/dividerColor"/>
 
-        <ImageView
-            android:id="@+id/btnAddItem"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:padding="9dp"
-            android:src="@mipmap/ic_add_black_24dp"
-            />
+            android:layout_height="wrap_content">
 
+            <TextView
+                android:id="@+id/btnAddItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="15dp"
+                android:drawableLeft="@mipmap/ic_add_black_24dp"
+                android:drawablePadding="9dp"
+                android:gravity="center"
+                android:padding="9dp"
+                android:text="添加子计划"
+                />
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>

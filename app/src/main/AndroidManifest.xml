@@ -27,6 +27,7 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".AlarmBroadcastReceiver"/>
 
         <!-- 配置APP ID -->
         <meta-data

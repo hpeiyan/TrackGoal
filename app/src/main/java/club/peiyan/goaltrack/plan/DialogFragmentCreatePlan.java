@@ -20,13 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -76,7 +74,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     @BindView(R.id.tvEndDateShow)
     TextView mTvEndDateShow;
     @BindView(R.id.btnAddItem)
-    ImageView mBtnAddItem;
+    TextView mBtnAddItem;
     @BindView(R.id.llParent)
     LinearLayout mLlParent;
     @BindView(R.id.ivCancel)
@@ -226,33 +224,22 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tvStartDateShow:
-                showDatePick(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        month += 1;
-                        mTvStartDateShow.setText(year + "/" + month + "/" + dayOfMonth);
-                    }
+                showDatePick((view1, year, month, dayOfMonth) -> {
+                    month += 1;
+                    mTvStartDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                 }, mStart);
                 break;
             case R.id.tvEndDateShow:
-                showDatePick(new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        month += 1;
-                        mTvEndDateShow.setText(year + "/" + month + "/" + dayOfMonth);
-                    }
+                showDatePick((view12, year, month, dayOfMonth) -> {
+                    month += 1;
+                    mTvEndDateShow.setText(year + "/" + month + "/" + dayOfMonth);
                 }, mEnd);
                 break;
             case R.id.btnAddItem:
                 addEditItemView(null);
                 break;
             case R.id.ivCancel:
-                DialogUtil.showDialog(getActivity(), new OnEditListener() {
-                    @Override
-                    public void onExit() {
-                        dismiss();
-                    }
-                });
+                DialogUtil.showDialog(getActivity(), () -> dismiss());
                 break;
             case R.id.ivSave:
                 saveData();
@@ -280,12 +267,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     private void showTimePickerDialog(final View mV) {
         int hour = Calendar.getInstance().get(Calendar.HOUR);
         int minute = Calendar.getInstance().get(Calendar.MINUTE);
-        TimePickerDialog mDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                ((TextView) mV).setText(hourOfDay + ":" + minute);
-            }
-        }, hour, minute, false);
+        TimePickerDialog mDialog = new TimePickerDialog(getActivity(), (view, hourOfDay, minute1) -> ((TextView) mV).setText(hourOfDay + ":" + minute1), hour, minute, false);
         mDialog.show();
     }
 

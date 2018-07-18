@@ -88,12 +88,7 @@ public class SyncDataTask implements Runnable {
                             mDBHelper.insertGoal(mBean);
                         }
                         mOnSyncListener.onSuccess();
-                        mMainActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mMainActivity.notifyDataSetChange(null);
-                            }
-                        });
+                        mMainActivity.runOnUiThread(() -> mMainActivity.notifyDataSetChange(null));
                     }
                 }
             }

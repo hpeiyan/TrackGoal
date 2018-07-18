@@ -220,58 +220,52 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         }
         holder.mLlParent.setTag(mBean);
 
-        holder.mLlParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                long mDeltaTime = System.currentTimeMillis() - clickTimestamp;
-                if (mDeltaTime < 300) {
-                    GoalBean mBean = (GoalBean) v.getTag();
-                    DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean);
-                }
-                clickTimestamp = System.currentTimeMillis();
+        holder.mLlParent.setOnClickListener(v -> {
+            long mDeltaTime = System.currentTimeMillis() - clickTimestamp;
+            if (mDeltaTime < 300) {
+                GoalBean mBean1 = (GoalBean) v.getTag();
+                DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean1);
             }
+            clickTimestamp = System.currentTimeMillis();
         });
 
-        holder.mLlParent.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final boolean mHasSubGoal = mMainActivity.getDBHelper().isHasSubGoal(mBean);
-                DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s？",
-                        mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的子计划将全部被移除。" : "",
-                        "否",
-                        "我要删除", new DialogUtil.DialogListener() {
-                            @Override
-                            public void onNegClickListener() {
+        holder.mLlParent.setOnLongClickListener(v -> {
+            final boolean mHasSubGoal = mMainActivity.getDBHelper().isHasSubGoal(mBean);
+            DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s？",
+                    mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的子计划将全部被移除。" : "",
+                    "否",
+                    "我要删除", new DialogUtil.DialogListener() {
+                        @Override
+                        public void onNegClickListener() {
 
-                            }
+                        }
 
-                            @Override
-                            public void onPosClickListener() {
-                                if (mHasSubGoal) {
-                                    ArrayList<GoalBean> mSubAndContactParentGoal
-                                            = mMainActivity.getDBHelper().getSubAndContactParentGoal(mBean);
-                                    if (mSubAndContactParentGoal != null && mSubAndContactParentGoal.size() > 0) {
-                                        for (GoalBean bean : mSubAndContactParentGoal) {
-                                            for (String item : bean.getItemSplit()) {
-                                                mDBHelper.deleteScore(item);
-                                            }
-//                                            mMainActivity.getDBHelper().deleteGoal(bean.getTitle());
-                                            bean.setStatus(2);
-                                            mMainActivity.getDBHelper().updateGoal(bean);
+                        @Override
+                        public void onPosClickListener() {
+                            if (mHasSubGoal) {
+                                ArrayList<GoalBean> mSubAndContactParentGoal
+                                        = mMainActivity.getDBHelper().getSubAndContactParentGoal(mBean);
+                                if (mSubAndContactParentGoal != null && mSubAndContactParentGoal.size() > 0) {
+                                    for (GoalBean bean : mSubAndContactParentGoal) {
+                                        for (String item : bean.getItemSplit()) {
+                                            mDBHelper.deleteScore(item);
                                         }
+//                                            mMainActivity.getDBHelper().deleteGoal(bean.getTitle());
+                                        bean.setStatus(2);
+                                        mMainActivity.getDBHelper().updateGoal(bean);
                                     }
                                 }
-                                for (String item : mBean.getItemSplit()) {
-                                    mDBHelper.deleteScore(item);
-                                }
-//                                mMainActivity.getDBHelper().deleteGoal(mBean.getTitle());
-                                mBean.setStatus(2);
-                                mMainActivity.getDBHelper().updateGoal(mBean);
-                                mMainActivity.notifyDataSetChange(null);
                             }
-                        });
-                return true;
-            }
+                            for (String item : mBean.getItemSplit()) {
+                                mDBHelper.deleteScore(item);
+                            }
+//                                mMainActivity.getDBHelper().deleteGoal(mBean.getTitle());
+                            mBean.setStatus(2);
+                            mMainActivity.getDBHelper().updateGoal(mBean);
+                            mMainActivity.notifyDataSetChange(null);
+                        }
+                    });
+            return true;
         });
     }
 
