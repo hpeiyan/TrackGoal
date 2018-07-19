@@ -18,6 +18,7 @@ public class AlarmBean {
     private int hour = 9;
     private int minute = 0;
     private List<CalendarDay> mSelectedDates;
+    private List<Integer> mRequestCodes;
 
     public View getParentView() {
         return parentView;
@@ -57,5 +58,13 @@ public class AlarmBean {
 
     public void setSelectedDates(List<CalendarDay> mSelectedDates) {
         this.mSelectedDates = mSelectedDates;
+    }
+
+    public List<Integer> getRequestCodes() {
+        return mRequestCodes;
+    }
+
+    public void setRequestCodes(List<Integer> mRequestCodes) {
+        this.mRequestCodes = mRequestCodes;
     }
 }

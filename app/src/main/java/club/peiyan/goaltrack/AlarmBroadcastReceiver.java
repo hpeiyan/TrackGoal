@@ -27,8 +27,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle mBundle = intent.getExtras();
         if (mBundle != null) {
-            String mTitle = mBundle.getString(TITLE, "GoalTrack");
-            String mContent = mBundle.getString(CONTENT, "content");
+            String mTitle = mBundle.getString(TITLE, "Goal Track");
+            String mContent = mBundle.getString(CONTENT, "千里之行，始于足下，行动吧！");
             notice(context, mTitle, mContent);
         }
     }
@@ -41,8 +41,8 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.icon_app)
-                .setContentTitle("Goal Track")
-                .setContentText(title)
+                .setContentTitle("♨︎ " + title)
+                .setContentText(content)
 //                .setStyle(new NotificationCompat.BigTextStyle()
 //                        .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)

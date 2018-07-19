@@ -35,6 +35,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -269,12 +270,16 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         if (mSwNotion.isChecked() && mAlarmBeanList.size() > 0) {
             for (AlarmBean bean : mAlarmBeanList) {
                 List<CalendarDay> mDates = bean.getSelectedDates();
+                List<Integer> mRequestCodes = bean.getRequestCodes();
                 if (mDates != null && mDates.size() > 0) {
-                    for (CalendarDay day : mDates) {
-                        Calendar mCalendar = Calendar.getInstance();
-                        mCalendar.set(day.getYear(), day.getMonth(), day.getDay(),
-                                bean.getHour(), bean.getMinute());
-                        alarm(mCalendar.getTimeInMillis());
+                    if (mRequestCodes != null && mRequestCodes.size() > 0 && mRequestCodes.size() == mDates.size()) {
+                        for (int i = 0; i < mDates.size(); i++) {
+                            CalendarDay day = mDates.get(i);
+                            Calendar mCalendar = Calendar.getInstance();
+                            mCalendar.set(day.getYear(), day.getMonth(), day.getDay(),
+                                    bean.getHour(), bean.getMinute());
+                            alarm(mCalendar.getTimeInMillis(), mRequestCodes.get(i));
+                        }
                     }
                 } else {
                     // TODO: 2018/7/19 每天的情况
@@ -283,7 +288,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         }
     }
 
-    private void alarm(long timeInMillis) {
+    private void alarm(long timeInMillis, int requestCode) {
         if (timeInMillis > System.currentTimeMillis()) {
             Intent intent = new Intent(getActivity(), AlarmBroadcastReceiver.class);
             Bundle mBundle = new Bundle();
@@ -291,13 +296,14 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             if (!TextUtils.isEmpty(mTitle)) {
                 mBundle.putString(TITLE, mTitle);
             }
-            mBundle.putString(CONTENT, "是时候开始你的计划了");
+            mBundle.putString(CONTENT, String.format("\uD83D\uDE00 千里之行，始于足下，行动吧", mTitle));
             intent.putExtras(mBundle);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    GoalApplication.getContext(), 234324243, intent, 0);
+                    GoalApplication.getContext(), requestCode, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
             LogUtil.logi((timeInMillis - System.currentTimeMillis()) / 1000 + "");
+            LogUtil.logi(requestCode + "");
         }
     }
 
@@ -347,7 +353,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                     }
                 }
             }
-        }, hour, minute, false);
+        }, hour, minute, true);
         mDialog.show();
     }
 
@@ -464,6 +470,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             @Override
             public void onPosClickListener() {
                 List<CalendarDay> mSelectedDates = mCalendarView.getSelectedDates();
+                List<Integer> randomRequestCode = new ArrayList<>();
                 StringBuilder mStringBuilder = new StringBuilder();
                 for (CalendarDay day : mSelectedDates) {
                     int mYear = day.getYear();
@@ -475,9 +482,12 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                     mV.setText(mStringBuilder.toString().trim());
                 }
                 if (mAlarmBeanList != null && mAlarmBeanList.size() > 0) {
+                    Random rand = new Random();
                     for (AlarmBean bean : mAlarmBeanList) {
                         if (bean.getParentView() == mV.getParent().getParent()) {
+                            randomRequestCode.add(rand.nextInt(100000));
                             bean.setSelectedDates(mSelectedDates);
+                            bean.setRequestCodes(randomRequestCode);
                             break;
                         }
                     }
