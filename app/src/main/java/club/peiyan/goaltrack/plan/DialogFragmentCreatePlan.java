@@ -156,7 +156,6 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_create_plan, null);
         unbinder = ButterKnife.bind(this, mRootView);
-        getAlarmInfo();
         initView();
         return mRootView;
     }
@@ -174,6 +173,11 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             }
         }
         mSwNotion.setOnCheckedChangeListener(this);
+        initAlarm();
+    }
+
+    private void initAlarm() {
+        getAlarmInfo();
         initAlarmView();
     }
 
@@ -505,8 +509,9 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 }
             }
             return isSuccess;
+        } else {
+            return true;//无数据需要保存，返回成功
         }
-        return false;
     }
 
     public void setEditMode(boolean mEditMode) {
@@ -521,8 +526,15 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
 
         if (isChecked) {
             mTvNotion.setText("添加提醒");
+            if (mAlarmBeanList.size() == 0) {
+                initAlarm();//恢复旧数据
+                if (mAlarmBeanList.size() == 0) {
+                    addNotionView(null);//添加一栏
+                }
+            }
         } else {
             mTvNotion.setText("提醒");
+            mAlarmBeanList.clear();
         }
 
         if (!isChecked) {
