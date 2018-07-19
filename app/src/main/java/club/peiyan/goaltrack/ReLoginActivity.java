@@ -36,6 +36,7 @@ public class ReLoginActivity extends AppCompatActivity implements RegisterTask.O
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_login);
+        getSupportActionBar().hide();
         ButterKnife.bind(this);
         if (!AppSp.getString(Constants.USER_NAME, "").isEmpty()) {
             MainActivity.startMainActivity(ReLoginActivity.this, AppSp.getString(Constants.USER_NAME, ""), false);
