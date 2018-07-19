@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import club.peiyan.goaltrack.utils.AppSp;
 
@@ -25,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "UserTrackGoal.db";
     public static final String TRACK_GOAL_TABLE = "track_goal";
     public static final String GOAL_SCORE_TABLE = "goal_score";
+    public static final String GOAL_ALARM_TABLE = "goal_alarm";
 
     public static final String TRACK_GOAL_PARENT = "parent";
     public static final String TRACK_GOAL_LEVEL = "level";
@@ -44,12 +48,21 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String GOAL_SCORE_SCORE = "score";
     public static final String GOAL_SCORE_TIMESTAMP = "timestamp";
 
+
+    public static final String GOAL_ALARM_ID = "id";
+    public static final String GOAL_ALARM_TITLE = "title";
+    public static final String GOAL_ALARM_HOUR = "hour";
+    public static final String GOAL_ALARM_MINUTE = "minute";
+    public static final String GOAL_ALARM_REQUEST_CODE = "requestCode";
+    public static final String GOAL_ALARM_SELECT_DATES = "select_dates";
+    public static final String GOAL_ALARM_REQUEST_CODES = "request_codes";
+
     private static final String TAG = "DBHelper";
     private final Context mContext;
 
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
         mContext = context;
     }
 
@@ -64,12 +77,19 @@ public class DBHelper extends SQLiteOpenHelper {
                 "create table goal_score " +
                         "(id integer primary key, date text,parent text,level integer,title text,score integer,timestamp integer)"
         );
+
+        db.execSQL(
+                "create table goal_alarm " +
+                        "(id integer primary key, title text,hour integer,minute integer,requestCode integer,select_dates text,request_codes text)"
+        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-//        db.execSQL("DROP TABLE IF EXISTS track_goal");
-//        onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS track_goal");
+        db.execSQL("DROP TABLE IF EXISTS goal_score");
+        db.execSQL("DROP TABLE IF EXISTS goal_alarm");
+        onCreate(db);
     }
 
     public boolean insertGoal(int level, String parent, String title, String start, String over, String items, long timestamp, int status) {
@@ -483,5 +503,74 @@ public class DBHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
         return array_list;
+    }
+
+    /* Alarm Database */
+    public boolean insertAlarm(int hour, int minute, int requestCode, String title, String select_dates, String request_codes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GOAL_ALARM_HOUR, hour);
+        contentValues.put(GOAL_ALARM_MINUTE, minute);
+        contentValues.put(GOAL_ALARM_REQUEST_CODE, requestCode);
+        contentValues.put(GOAL_ALARM_SELECT_DATES, select_dates);
+        contentValues.put(GOAL_ALARM_TITLE, title);
+        contentValues.put(GOAL_ALARM_REQUEST_CODES, request_codes);
+        db.insert(GOAL_ALARM_TABLE, null, contentValues);
+        return true;
+    }
+
+    public ArrayList<AlarmBean> getAlarmByTitle(String title) {
+        if (title == null || TextUtils.isEmpty(title)) return null;
+
+        ArrayList<AlarmBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_alarm where title=?", new String[]{title});
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            AlarmBean mBean = new AlarmBean();
+            mBean.setHour(res.getInt(res.getColumnIndex(GOAL_ALARM_HOUR)));
+            mBean.setMinute(res.getInt(res.getColumnIndex(GOAL_ALARM_MINUTE)));
+            mBean.setRequestCode(res.getInt(res.getColumnIndex(GOAL_ALARM_REQUEST_CODE)));
+            String codes = res.getString(res.getColumnIndex(GOAL_ALARM_REQUEST_CODES));
+            List<Integer> codeList = new ArrayList<>();
+            if (!TextUtils.isEmpty(codes)) {
+                String[] mSplit = codes.split("\n");
+                for (String code : mSplit) {
+                    codeList.add(Integer.parseInt(code));
+                }
+            }
+            mBean.setRequestCodes(codeList);
+
+            String dates = res.getString(res.getColumnIndex(GOAL_ALARM_SELECT_DATES));
+            List<CalendarDay> dateList = new ArrayList<>();
+            if (!TextUtils.isEmpty(dates)) {
+                String[] mSplit = dates.split("\n");
+                if (mSplit.length > 0) {
+                    for (String dateString : mSplit) {
+                        String[] mStrings = dateString.split("/");
+                        if (mStrings.length == 3) {
+                            int year = Integer.parseInt(mStrings[0]);
+                            int month = Integer.parseInt(mStrings[1]);
+                            int day = Integer.parseInt(mStrings[2]);
+                            CalendarDay mCalendarDay = CalendarDay.from(year, month, day);
+                            dateList.add(mCalendarDay);
+                        }
+                    }
+                }
+            }
+            mBean.setSelectedDates(dateList);
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public int deleteAlarm(String title) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(GOAL_ALARM_TABLE,
+                "title = ? ",
+                new String[]{title});
     }
 }

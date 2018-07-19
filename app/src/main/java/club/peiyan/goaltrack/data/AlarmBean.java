@@ -15,7 +15,6 @@ import java.util.Random;
 
 public class AlarmBean {
     private View parentView;
-    private String day = "每天";
     private int hour = 9;
     private int minute = 0;
     private int requestCode = new Random().nextInt(100000);//每天模式的RequestCode
@@ -28,14 +27,6 @@ public class AlarmBean {
 
     public void setParentView(View mParentView) {
         parentView = mParentView;
-    }
-
-    public String getDay() {
-        return day;
-    }
-
-    public void setDay(String mDay) {
-        day = mDay;
     }
 
     public int getHour() {
@@ -72,5 +63,9 @@ public class AlarmBean {
 
     public int getRequestCode() {
         return requestCode;
+    }
+
+    public void setRequestCode(int mRequestCode) {
+        requestCode = mRequestCode;
     }
 }

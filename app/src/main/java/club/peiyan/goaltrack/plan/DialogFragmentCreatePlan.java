@@ -1,6 +1,5 @@
 package club.peiyan.goaltrack.plan;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.DialogFragment;
@@ -50,7 +49,9 @@ import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
+import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.LogUtil;
+import club.peiyan.goaltrack.utils.ToastUtil;
 
 import static android.content.Context.ALARM_SERVICE;
 import static club.peiyan.goaltrack.AlarmBroadcastReceiver.CONTENT;
@@ -109,13 +110,18 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     private int mId = -1;
     private boolean isEditMode = false;
     //    private TextView mTvNotionDate;
-    private static final String[] mAlarmModes = new String[]{"每天", "自由选择"};
-    private List<AlarmBean> mAlarmBeanList;
+    private static final String[] mAlarmModes = new String[]{"每天", "其他"};
+    private List<AlarmBean> mAlarmBeanList = new ArrayList<>();
+    private MainActivity mMainActivity;
+    private DBHelper mDBHelper;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMainActivity = (MainActivity) getActivity();
+        mDBHelper = mMainActivity.getDBHelper();
+
         Bundle mBundle = getArguments();
         mGoalName = mBundle.getString(GOAL_NAME);
         String parent = mBundle.getString(GOAL_PRENT);
@@ -123,7 +129,6 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         mEnd = mBundle.getString(GOAL_END_DATE);
         mItems = mBundle.getString(GOAL_ITEMS);
         isEditMode = mBundle.getBoolean(EDIT_MODE, false);
-        mAlarmBeanList = new ArrayList<>();
 
         if (parent != null && !parent.isEmpty()) {
             mParent = parent;
@@ -134,11 +139,24 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         mId = mBundle.getInt(GOAL_ID);
     }
 
+    private void getAlarmInfo() {
+        if (!TextUtils.isEmpty(mGoalName)) {
+            if (mDBHelper != null) {
+                //恢复 Alarm 的信息
+                ArrayList<AlarmBean> mAlarmByTitle = mDBHelper.getAlarmByTitle(mGoalName);
+                if (mAlarmByTitle != null && mAlarmByTitle.size() > 0) {
+                    mAlarmBeanList = mAlarmByTitle;
+                }
+            }
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_create_plan, null);
         unbinder = ButterKnife.bind(this, mRootView);
+        getAlarmInfo();
         initView();
         return mRootView;
     }
@@ -156,6 +174,16 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             }
         }
         mSwNotion.setOnCheckedChangeListener(this);
+        initAlarmView();
+    }
+
+    private void initAlarmView() {
+        if (!ListUtil.isEmpty(mAlarmBeanList)) {
+            mSwNotion.setChecked(true);
+            for (AlarmBean mBean : mAlarmBeanList) {
+                addNotionView(mBean);
+            }
+        }
     }
 
     private void checkSetText(TextView mTextView, String content) {
@@ -260,7 +288,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 break;
             case R.id.tvNotion:
                 if (mSwNotion.isChecked() && mTvNotion.isChecked()) {
-                    addNotionView();
+                    addNotionView(null);
                 }
                 break;
         }
@@ -311,12 +339,16 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         }
     }
 
-    private void addNotionView() {
+    private void addNotionView(@Nullable AlarmBean mAlarmBean) {
         final View mView = View.inflate(getActivity(), R.layout.layout_add_notion, null);
 
-        AlarmBean mAlarmBean = new AlarmBean();
+        if (mAlarmBean == null) {
+            mAlarmBean = new AlarmBean();
+        }
         mAlarmBean.setParentView(mView);
-        mAlarmBeanList.add(mAlarmBean);
+        if (!mAlarmBeanList.contains(mAlarmBean)) {
+            mAlarmBeanList.add(mAlarmBean);
+        }
 
         mView.findViewById(R.id.ivCutNotion).setOnClickListener(v -> {
             mLlNotion.removeView((View) v.getParent());
@@ -329,9 +361,22 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 }
             }
         });
-        mView.findViewById(R.id.tvNotionTime).setOnClickListener(v -> showTimePickerDialog(v));
+        TextView notionTime = mView.findViewById(R.id.tvNotionTime);
+        int mHour = mAlarmBean.getHour();
+        int mMinute = mAlarmBean.getMinute();
+        notionTime.setText((mHour > 9 ? mHour : "0" + mHour) + " : " + (mMinute > 9 ? mMinute : "0" + mMinute));
+        notionTime.setOnClickListener(v -> showTimePickerDialog(v));
 
-        mView.findViewById(R.id.tvNotionDate).setOnClickListener(v -> DialogUtil.showSingleChoiceDialog(getActivity(), mAlarmModes, (dialog, which) -> {
+        TextView notionDate = mView.findViewById(R.id.tvNotionDate);
+        if (!ListUtil.isEmpty(mAlarmBean.getSelectedDates())) {
+            List<CalendarDay> mDates = mAlarmBean.getSelectedDates();
+            int mYear = mDates.get(0).getYear();
+            int mMonth = mDates.get(0).getMonth();
+            int mDay = mDates.get(0).getDay();
+            mDates.get(0).getDate().toString();
+            notionDate.setText(mYear + "/" + mMonth + "/" + mDay + "...");
+        }
+        notionDate.setOnClickListener(v -> DialogUtil.showSingleChoiceDialog(getActivity(), mAlarmModes, (dialog, which) -> {
             dialog.dismiss();
             if (which == 1) {
                 showMultipleDatePick(((TextView) v));
@@ -372,59 +417,96 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
     }
 
     private void saveData() {
-        Activity mActivity = getActivity();
-        if (mActivity instanceof MainActivity) {
-            MainActivity mMainActivity = (MainActivity) mActivity;
-            DBHelper mDBHelper = mMainActivity.getDBHelper();
-
-            String start = mTvStartDateShow.getText().toString().trim();
-            String end = mTvEndDateShow.getText().toString();
-            StringBuilder mBuilder = new StringBuilder();
-            String title = mTvGoalName.getText().toString().trim();
-            boolean isSuccess;
-            for (EditText met : mItemViewList) {
-                String mItem = met.getText().toString();
-                mBuilder.append(mItem + "\n");
-                if (mMainActivity.getDBHelper().isHadInDB(mItem) && !isEditMode) {
-                    Toast.makeText(mMainActivity, String.format("%s计划已经在其他地方存档啦", mItem), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-
-            String mItems = mBuilder.toString().trim();
-            start.trim();
-            end.trim();
-
-            if (title.isEmpty() && mItems.isEmpty()) {
-                Toast.makeText(mMainActivity, "写点啥再保存呗", Toast.LENGTH_SHORT).show();
+        String start = mTvStartDateShow.getText().toString().trim();
+        String end = mTvEndDateShow.getText().toString();
+        StringBuilder mBuilder = new StringBuilder();
+        String title = mTvGoalName.getText().toString().trim();
+        boolean isSaveGoalSuccess;
+        boolean isSaveAlarmSuccess = false;
+        for (EditText met : mItemViewList) {
+            String mItem = met.getText().toString();
+            mBuilder.append(mItem + "\n");
+            if (mMainActivity.getDBHelper().isHadInDB(mItem) && !isEditMode) {
+                Toast.makeText(mMainActivity, String.format("%s计划已经在其他地方存档啦", mItem), Toast.LENGTH_SHORT).show();
                 return;
             }
+        }
 
-            if (!isEditMode) {
-                isSuccess = mDBHelper.insertGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 1);
-            } else {
-                isSuccess = mDBHelper.updateGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 3);
-            }
-            Toast.makeText(mActivity, isSuccess ? "已保存" : "保存异常", Toast.LENGTH_SHORT).show();
-            if (isSuccess) {
-                if (mLevel == 1) {
-                    AppSp.putString(LATEST_GOAL, title);
-                    SubMenu mSubMenu = mMainActivity.getGoalSubMenu();
-                    if (mSubMenu != null) {
-                        GoalBean mBean = mDBHelper.getGoalByTitle(title);
-                        if (mBean != null) {
-                            MenuItem mMenuItem = mSubMenu.findItem(mBean.getId());
-                            if (mMenuItem == null) {
-                                MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
-                                mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
-                            }
+        String mItems = mBuilder.toString().trim();
+        start.trim();
+        end.trim();
+
+        if (title.isEmpty() && mItems.isEmpty()) {
+            Toast.makeText(mMainActivity, "写点啥再保存呗", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isEditMode) {
+            isSaveGoalSuccess = mDBHelper.insertGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 1);
+            isSaveAlarmSuccess = saveAlarm(mDBHelper);
+        } else {
+            isSaveGoalSuccess = mDBHelper.updateGoal(mLevel, mParent, title, start, end, mItems.trim(), System.currentTimeMillis(), 3);
+            mDBHelper.deleteAlarm(title);
+            isSaveAlarmSuccess = saveAlarm(mDBHelper);
+        }
+
+        if (isSaveGoalSuccess && isSaveAlarmSuccess) {
+            ToastUtil.toast("已保存");
+            if (mLevel == 1) {
+                AppSp.putString(LATEST_GOAL, title);
+                SubMenu mSubMenu = mMainActivity.getGoalSubMenu();
+                if (mSubMenu != null) {
+                    GoalBean mBean = mDBHelper.getGoalByTitle(title);
+                    if (mBean != null) {
+                        MenuItem mMenuItem = mSubMenu.findItem(mBean.getId());
+                        if (mMenuItem == null) {
+                            MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
+                            mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
                         }
                     }
                 }
-                dismiss();
-                mMainActivity.notifyDataSetChange(title);
             }
+            dismiss();
+            mMainActivity.notifyDataSetChange(title);
+        } else {
+            ToastUtil.toast("保存异常");
         }
+    }
+
+    private boolean saveAlarm(DBHelper mDBHelper) {
+        if (mDBHelper != null && mAlarmBeanList.size() > 0) {
+            boolean isSuccess = false;
+            for (AlarmBean mBean : mAlarmBeanList) {
+                if (mBean != null) {
+                    String selectDatesContent = "";
+                    String requestCodeContent = "";
+                    List<CalendarDay> mSelectedDates = mBean.getSelectedDates();
+                    if (mSelectedDates != null && mSelectedDates.size() > 0) {
+                        StringBuilder mStringBuilder = new StringBuilder();
+                        for (CalendarDay day : mSelectedDates) {
+                            int mYear = day.getYear();
+                            int mMonth = day.getMonth() + 1;
+                            int mDay = day.getDay();
+                            mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + "\n");
+                        }
+                        selectDatesContent = mStringBuilder.toString();
+                    }
+
+                    List<Integer> mRequestCodes = mBean.getRequestCodes();
+                    if (mRequestCodes != null && mRequestCodes.size() > 0) {
+                        StringBuilder mStringBuilder = new StringBuilder();
+                        for (int requestCode : mRequestCodes) {
+                            mStringBuilder.append(requestCode + "\n");
+                        }
+                        requestCodeContent = mStringBuilder.toString();
+                    }
+                    isSuccess = mDBHelper.insertAlarm(mBean.getHour(), mBean.getMinute(), mBean.getRequestCode(),
+                            mTvGoalName.getText().toString().trim(), selectDatesContent, requestCodeContent);
+                }
+            }
+            return isSuccess;
+        }
+        return false;
     }
 
     public void setEditMode(boolean mEditMode) {
@@ -433,9 +515,9 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
 
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         mTvNotion.setChecked(isChecked);
-        if (isChecked && mLlNotion.getChildCount() == 1) {
-            addNotionView();
-        }
+//        if (isChecked && mLlNotion.getChildCount() == 1) {
+//            addNotionView(null);
+//        }
 
         if (isChecked) {
             mTvNotion.setText("添加提醒");
@@ -489,7 +571,9 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                     Random rand = new Random();
                     for (AlarmBean bean : mAlarmBeanList) {
                         if (bean.getParentView() == mV.getParent().getParent()) {
-                            randomRequestCode.add(rand.nextInt(100000));
+                            for (CalendarDay index : mSelectedDates) {
+                                randomRequestCode.add(rand.nextInt(100000));
+                            }
                             bean.setSelectedDates(mSelectedDates);
                             bean.setRequestCodes(randomRequestCode);
                             break;
