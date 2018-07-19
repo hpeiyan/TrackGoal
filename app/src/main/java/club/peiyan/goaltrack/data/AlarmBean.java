@@ -5,6 +5,7 @@ import android.view.View;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by HPY.
@@ -17,8 +18,9 @@ public class AlarmBean {
     private String day = "每天";
     private int hour = 9;
     private int minute = 0;
-    private List<CalendarDay> mSelectedDates;
-    private List<Integer> mRequestCodes;
+    private int requestCode = new Random().nextInt(100000);//每天模式的RequestCode
+    private List<CalendarDay> mSelectedDates;//自由选择模式的选择日期
+    private List<Integer> mRequestCodes;//自由选择模式的RequestCode
 
     public View getParentView() {
         return parentView;
@@ -66,5 +68,9 @@ public class AlarmBean {
 
     public void setRequestCodes(List<Integer> mRequestCodes) {
         this.mRequestCodes = mRequestCodes;
+    }
+
+    public int getRequestCode() {
+        return requestCode;
     }
 }

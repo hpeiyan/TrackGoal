@@ -282,7 +282,11 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                         }
                     }
                 } else {
-                    // TODO: 2018/7/19 每天的情况
+                    // TODO: 2018/7/19 每天的情况，只开启当天的提醒，太多天也会被Kill掉
+                    Calendar mCalendar = Calendar.getInstance();
+                    mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DATE),
+                            bean.getHour(), bean.getMinute());
+                    alarm(mCalendar.getTimeInMillis(), bean.getRequestCode());
                 }
             }
         }
