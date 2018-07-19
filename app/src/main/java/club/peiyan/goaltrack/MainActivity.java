@@ -93,12 +93,7 @@ public class MainActivity extends AppCompatActivity
         mDBHelper = new DBHelper(this);
         initDataBase();
         initView();
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createParentPlan();
-            }
-        });
+        mFab.setOnClickListener(view -> createParentPlan());
         boolean isSyncData = getIntent().getBooleanExtra(SYNC_DATA, false);
         if (isSyncData) {
             setSyncPBVisible(true);
@@ -107,12 +102,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setSyncPBVisible(final boolean isShow) {
-        mRlSyncPB.post(new Runnable() {
-            @Override
-            public void run() {
-                mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE);
-            }
-        });
+        mRlSyncPB.post(() -> mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE));
     }
 
     private void initView() {

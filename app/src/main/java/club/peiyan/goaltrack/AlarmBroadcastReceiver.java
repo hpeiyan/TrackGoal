@@ -40,9 +40,9 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.logo)
-                .setContentTitle(title)
-                .setContentText(content)
+                .setSmallIcon(R.mipmap.icon_app)
+                .setContentTitle("Goal Track")
+                .setContentText(title)
 //                .setStyle(new NotificationCompat.BigTextStyle()
 //                        .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
