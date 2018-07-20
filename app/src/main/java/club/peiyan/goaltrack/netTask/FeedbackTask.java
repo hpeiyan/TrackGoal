@@ -36,7 +36,7 @@ public class FeedbackTask implements Runnable {
 
     private String userName;
     private String note;
-    private String mEmail;
+    private String email;
 
     public FeedbackTask(Activity mActivity) {
         this.mActivity = mActivity;
@@ -83,7 +83,7 @@ public class FeedbackTask implements Runnable {
         try {
             mJSONObject.put("username", userName);
             mJSONObject.put("note", note);
-            mJSONObject.put("email", mEmail);
+            mJSONObject.put("email", email);
             mJSONObject.put("date", CalendaUtils.getCurrntDate());
         } catch (JSONException mE) {
             mE.printStackTrace();
@@ -96,7 +96,7 @@ public class FeedbackTask implements Runnable {
     }
 
     public void setEmail(String mEmail) {
-        this.mEmail = mEmail;
+        email = mEmail;
     }
 
     public interface OnFeedbackListener {
