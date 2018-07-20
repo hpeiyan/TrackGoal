@@ -36,6 +36,7 @@ public class FeedbackTask implements Runnable {
 
     private String userName;
     private String note;
+    private String mEmail;
 
     public FeedbackTask(Activity mActivity) {
         this.mActivity = mActivity;
@@ -60,12 +61,7 @@ public class FeedbackTask implements Runnable {
                     JSONObject mJSONObject = new JSONObject(mResult);
                     if (mJSONObject.getInt("code") == 200) {
                         mRegisterListener.onFeedbackSuccess();
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(mActivity, "再次感谢您的建议！", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "再次感谢您的建议！", Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException mE) {
                     mE.printStackTrace();
@@ -87,6 +83,7 @@ public class FeedbackTask implements Runnable {
         try {
             mJSONObject.put("username", userName);
             mJSONObject.put("note", note);
+            mJSONObject.put("email", mEmail);
             mJSONObject.put("date", CalendaUtils.getCurrntDate());
         } catch (JSONException mE) {
             mE.printStackTrace();
@@ -96,6 +93,10 @@ public class FeedbackTask implements Runnable {
 
     public void setRegisterListener(OnFeedbackListener mListener) {
         mRegisterListener = mListener;
+    }
+
+    public void setEmail(String mEmail) {
+        this.mEmail = mEmail;
     }
 
     public interface OnFeedbackListener {

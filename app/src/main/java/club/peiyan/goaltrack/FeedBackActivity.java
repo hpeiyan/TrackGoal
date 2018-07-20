@@ -29,6 +29,8 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
     EditText mEtFeedback;
     @BindView(R.id.tvUpload)
     TextView mTvUpload;
+    @BindView(R.id.etEmail)
+    EditText mEtEmail;
 
     public static void startFeedbackActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, FeedBackActivity.class);
@@ -40,17 +42,18 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feedback_layout);
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("欢迎畅所欲言");
+        getSupportActionBar().setTitle("畅所欲言");
     }
 
     @OnClick(R.id.tvUpload)
     public void onViewClicked() {
         final String mTrim = mEtFeedback.getText().toString().trim();
+        final String mEmail = mEtEmail.getText().toString().trim();
         if (TextUtils.isEmpty(mTrim)) {
             Toast.makeText(this, "写点东西吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        DialogUtil.showSingleDialog(FeedBackActivity.this, "提交建议吗？", "您的建议对我的帮助很大，希望您会喜欢GoalTrack，我也将继续优化提升体验和性能！",
+        DialogUtil.showSingleDialog(FeedBackActivity.this, "提交建议吗？", "希望您会喜欢GoalTrack，我也将继续优化提升体验和性能！",
                 "继续编辑", "我要提交", new DialogUtil.DialogListener() {
                     @Override
                     public void onNegClickListener() {
@@ -61,7 +64,8 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
                     public void onPosClickListener() {
                         FeedbackTask mTask = new FeedbackTask(FeedBackActivity.this);
                         mTask.setNote(mTrim);
-                        mTask.setUserName(AppSp.getString(Constants.USER_NAME,""));
+                        mTask.setEmail(mEmail);
+                        mTask.setUserName(AppSp.getString(Constants.USER_NAME, ""));
                         mTask.setRegisterListener(FeedBackActivity.this);
                         new Thread(mTask).start();
                         finish();
