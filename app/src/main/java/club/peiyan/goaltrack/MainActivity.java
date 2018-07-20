@@ -32,6 +32,7 @@ import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.sync.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
@@ -140,6 +141,10 @@ public class MainActivity extends AppCompatActivity
         View mHeaderView = mNavView.getHeaderView(0);
         mTvUserName = mHeaderView.findViewById(R.id.tvUserName);
         mTvUserName.setText(AppSp.getString(Constants.USER_NAME, "佚名"));
+
+        if (ListUtil.isEmpty(mParentGoals)) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
+        }
     }
 
     public void setMode(boolean mMode) {
@@ -193,9 +198,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
