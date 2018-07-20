@@ -69,15 +69,6 @@
     </RelativeLayout>
 
 
-    <TextView
-        android:id="@+id/tvTimeSpend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp"
-        android:text="@string/app_name"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="@dimen/text_show_dimen"/>
-
+    <include layout="@layout/layout_time_edit"/>
 
 </LinearLayout>

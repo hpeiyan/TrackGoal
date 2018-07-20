@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -41,7 +42,6 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     private static final int TYPE_HEADER = -1;
     private ArrayList<GoalBean> mData;
     private final MainActivity mMainActivity;
-    private static long clickTimestamp = System.currentTimeMillis();
     private final DBHelper mDBHelper;
 
     public GoalsAdapter(MainActivity mMainActivity) {
@@ -218,15 +218,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 holder.mLlParent.addView(mView);
             }
         }
-        holder.mLlParent.setTag(mBean);
-
-        holder.mLlParent.setOnClickListener(v -> {
-            long mDeltaTime = System.currentTimeMillis() - clickTimestamp;
-            if (mDeltaTime < 300) {
-                GoalBean mBean1 = (GoalBean) v.getTag();
-                DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean1);
-            }
-            clickTimestamp = System.currentTimeMillis();
+        holder.mIvEdit.setOnClickListener(v -> {
+            DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean);
         });
 
         holder.mLlParent.setOnLongClickListener(v -> {
@@ -313,6 +306,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         LinearLayout mLlParent;
         @BindView(R.id.pbGoal)
         ProgressBar mPbGoal;
+        @BindView(R.id.ivEdit)
+        ImageView mIvEdit;
 
         GoalViewHolder(View view) {
             super(view);
