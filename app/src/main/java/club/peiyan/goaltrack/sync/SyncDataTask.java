@@ -87,9 +87,9 @@ public class SyncDataTask implements Runnable {
                             mDBHelper.deleteGoal(mBean.getTitle());
                             mDBHelper.insertGoal(mBean);
                         }
-                        mOnSyncListener.onSuccess();
                         mMainActivity.runOnUiThread(() -> mMainActivity.notifyDataSetChange(null));
                     }
+                    mOnSyncListener.onSuccess();
                 }
             }
         });
