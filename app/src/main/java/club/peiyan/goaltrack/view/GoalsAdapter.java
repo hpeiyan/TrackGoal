@@ -7,12 +7,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,18 +59,18 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         GoalViewHolder mHolder;
         switch (viewType) {
-            case 1:
-                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
-                break;
-            case 2:
-                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_2_goal, parent, false));
-                break;
-            case 3:
-                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_3_goal, parent, false));
-                break;
-            case 4:
-                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_4_goal, parent, false));
-                break;
+//            case 1:
+//                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
+//                break;
+//            case 2:
+//                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_2_goal, parent, false));
+//                break;
+//            case 3:
+//                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_3_goal, parent, false));
+//                break;
+//            case 4:
+//                mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_4_goal, parent, false));
+//                break;
             case TYPE_HEADER:
                 return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_header_item, parent, false));
             default:
@@ -218,14 +220,21 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 holder.mLlParent.addView(mView);
             }
         }
-        holder.mIvEdit.setOnClickListener(v -> {
+        holder.btnEdit.setOnClickListener(v -> {
+            holder.swMenu.smoothClose();
             DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean);
         });
 
-        holder.mLlParent.setOnLongClickListener(v -> {
+        holder.btnDelete.setOnClickListener(v -> {
+            holder.swMenu.smoothClose();
             final boolean mHasSubGoal = mMainActivity.getDBHelper().isHasSubGoal(mBean);
-            DialogUtil.showSingleDialog(mContext, String.format("确定放弃%s？",
-                    mBean.getTitle()), mHasSubGoal ? "注意：\n移除这个计划的话，\n它的子计划将全部被移除。" : "",
+            String mTitle = String.format("确定放弃%s？", mBean.getTitle());
+            String mMessage = "注意：\n移除这个计划的话，\n它的子计划将全部被移除。";
+            if (!mHasSubGoal) {
+                mMessage = mTitle;
+                mTitle = "";
+            }
+            DialogUtil.showSingleDialog(mContext, mTitle, mMessage,
                     "否",
                     "我要删除", new DialogUtil.DialogListener() {
                         @Override
@@ -243,7 +252,6 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                                         for (String item : bean.getItemSplit()) {
                                             mDBHelper.deleteScore(item);
                                         }
-//                                            mMainActivity.getDBHelper().deleteGoal(bean.getTitle());
                                         bean.setStatus(2);
                                         mMainActivity.getDBHelper().updateGoal(bean);
                                     }
@@ -252,13 +260,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                             for (String item : mBean.getItemSplit()) {
                                 mDBHelper.deleteScore(item);
                             }
-//                                mMainActivity.getDBHelper().deleteGoal(mBean.getTitle());
                             mBean.setStatus(2);
                             mMainActivity.getDBHelper().updateGoal(mBean);
                             mMainActivity.notifyDataSetChange(null);
                         }
                     });
-            return true;
         });
     }
 
@@ -306,8 +312,12 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         LinearLayout mLlParent;
         @BindView(R.id.pbGoal)
         ProgressBar mPbGoal;
-        @BindView(R.id.ivEdit)
-        ImageView mIvEdit;
+        @BindView(R.id.btnEdit)
+        Button btnEdit;
+        @BindView(R.id.btnDelete)
+        Button btnDelete;
+        @BindView(R.id.swMenu)
+        SwipeMenuLayout swMenu;
 
         GoalViewHolder(View view) {
             super(view);

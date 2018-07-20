@@ -2,15 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp">
+    >
+
+    <View
+        android:id="@+id/topLine"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorPrimary"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tvItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/topLine"
         android:layout_centerVertical="true"
-        android:background="@drawable/selector_goal_white_item"
         android:ellipsize="end"
         android:maxLines="1"
         android:maxWidth="120dp"

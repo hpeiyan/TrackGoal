@@ -28,7 +28,7 @@
     <string name="tomorrow">明日</string>
     <string name="today_score">今日得分榜</string>
     <string name="yesterday_score">昨日得分榜</string>
-    <string name="non_data">Woops，昨日的数据跑去外太空了</string>
+    <string name="non_data">Woops，分数跑去外太空了</string>
     <string name="need_create_data">右下角，创建计划哦</string>
     <string name="hadn_create">还没想好要做什么啦</string>
     <string name="dontCaculate">暂未统计</string>

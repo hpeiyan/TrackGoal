@@ -20,17 +20,9 @@ public class DialogUtil {
 
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mContext);
         AlertDialog mAlertDialog = mBuilder.setMessage("你真的确定退出编辑吗？")
-                .setNegativeButton("继续编辑", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton("我要退出", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        mOnEditListener.onExit();
-                    }
+                .setNegativeButton("继续编辑", (dialog, which) -> dialog.dismiss()).setPositiveButton("我要退出", (dialog, which) -> {
+                    dialog.dismiss();
+                    mOnEditListener.onExit();
                 }).create();
 
         mAlertDialog.show();
@@ -44,18 +36,12 @@ public class DialogUtil {
             mBuilder.setTitle(title);
         }
         AlertDialog mAlertDialog = mBuilder.setMessage(message)
-                .setNegativeButton(negBtn, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onNegClickListener();
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton(posBtn, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onPosClickListener();
-                        dialog.dismiss();
-                    }
+                .setNegativeButton(negBtn, (dialog, which) -> {
+                    mListener.onNegClickListener();
+                    dialog.dismiss();
+                }).setPositiveButton(posBtn, (dialog, which) -> {
+                    mListener.onPosClickListener();
+                    dialog.dismiss();
                 }).create();
         mAlertDialog.show();
     }
@@ -65,25 +51,19 @@ public class DialogUtil {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
         mBuilder.setView(mV);
         AlertDialog mAlertDialog = mBuilder
-                .setNegativeButton(negBtn, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onNegClickListener();
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton(posBtn, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mListener.onPosClickListener();
-                        dialog.dismiss();
-                    }
+                .setNegativeButton(negBtn, (dialog, which) -> {
+                    mListener.onNegClickListener();
+                    dialog.dismiss();
+                }).setPositiveButton(posBtn, (dialog, which) -> {
+                    mListener.onPosClickListener();
+                    dialog.dismiss();
                 }).create();
         if (mAlertDialog != null) {
             mAlertDialog.show();
         }
     }
 
-    public static AlertDialog showSingleChoiceDialog(Activity mActivity,String[] items, DialogInterface.OnClickListener mListener) {
+    public static AlertDialog showSingleChoiceDialog(Activity mActivity, String[] items, DialogInterface.OnClickListener mListener) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
         mBuilder.setSingleChoiceItems(items, 0, mListener);
         AlertDialog mAlertDialog = mBuilder.create();

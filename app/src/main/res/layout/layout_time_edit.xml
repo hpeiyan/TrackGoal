@@ -10,19 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/ivEdit"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/app_name"
         android:textColor="@color/primaryTextColor"
         android:textSize="@dimen/text_show_dimen"/>
 
-    <ImageView
-        android:id="@+id/ivEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:padding="10dp"
-        android:src="@mipmap/ic_mode_edit_black_24dp"/>
 </RelativeLayout>
