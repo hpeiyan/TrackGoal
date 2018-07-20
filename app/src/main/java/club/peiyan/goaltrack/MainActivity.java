@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
     private static final int FEEDBACKID = 1024;
+    private static final int ADD_GOAL_ID = 1086;
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
     @BindView(R.id.toolbar)
@@ -160,6 +161,8 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
+        MenuItem mItem = mGoalSubMenu.add(R.id.add_goal, ADD_GOAL_ID, ADD_GOAL_ID, "创建计划");
+        mItem.setIcon(R.mipmap.ic_add_black_24dp);
         mAppSubMenu.clear();
         MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
         mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
@@ -239,11 +242,13 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
             case FEEDBACKID:
                 FeedBackActivity.startFeedbackActivity(MainActivity.this);
+                break;
+            case ADD_GOAL_ID:
+                createParentPlan();
                 break;
             default:
                 for (GoalBean bean : mParentGoals) {
