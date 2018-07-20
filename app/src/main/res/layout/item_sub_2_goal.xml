@@ -1,75 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/llParent"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginBottom="@dimen/item_normal_margin"
-              android:layout_marginLeft="@dimen/item_normal_margin"
-              android:layout_marginRight="60dp"
-              android:layout_marginTop="@dimen/item_normal_margin"
-              android:background="@drawable/selector_parent_goal_item"
-              android:clickable="true"
-              android:focusable="true"
-              android:orientation="vertical"
-              android:paddingBottom="8dp"
-              android:paddingLeft="8dp"
-              android:paddingRight="8dp"
-              android:translationZ="@dimen/translation_z">
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swMenu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/item_normal_margin"
+    android:background="@drawable/selector_parent_goal_item"
+    android:clickable="true"
+    android:translationZ="@dimen/translation_z"
+    >
 
-    <ProgressBar
-        android:id="@+id/pbGoal"
-        style="@style/MyProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/llParent"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/item_normal_margin"
+                  android:layout_marginLeft="@dimen/item_normal_margin"
+                  android:layout_marginRight="60dp"
+                  android:layout_marginTop="@dimen/item_normal_margin"
+                  android:orientation="vertical"
+                  android:paddingBottom="8dp"
+                  android:paddingLeft="8dp"
+                  android:paddingRight="8dp"
+        >
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tvHoldCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="32天"
-            android:textColor="@color/secondTextColor"
-            android:textSize="25sp"
-            />
-
-        <TextView
-            android:id="@+id/tvGoalName"
+        <ProgressBar
+            android:id="@+id/pbGoal"
+            style="@style/MyProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@+id/tvDownCount"
-            android:layout_toRightOf="@+id/tvHoldCount"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:padding="5dp"
-            android:text="@string/app_name"
-            android:textColor="@color/sub_2_goal_color"
-            android:textSize="@dimen/text_title_dimen"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/tvDownCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="32天"
-            android:textColor="@color/secondTextColor"
-            android:textSize="25sp"
-            android:textStyle=""/>
-
-    </RelativeLayout>
+            />
 
 
-    <include layout="@layout/layout_time_edit"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvHoldCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="32天"
+                android:textColor="@color/secondTextColor"
+                android:textSize="25sp"
+                />
+
+            <TextView
+                android:id="@+id/tvGoalName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@+id/tvDownCount"
+                android:layout_toRightOf="@+id/tvHoldCount"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:padding="5dp"
+                android:text="@string/app_name"
+                android:textColor="@color/sub_2_goal_color"
+                android:textSize="@dimen/text_title_dimen"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvDownCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="32天"
+                android:textColor="@color/secondTextColor"
+                android:textSize="25sp"
+                android:textStyle=""/>
+
+        </RelativeLayout>
 
 
-</LinearLayout>
+        <include layout="@layout/layout_time_edit"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryLight"
+        android:text="编辑"
+        android:textColor="@color/colorPrimary"/>
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:text="删除"
+        android:textColor="@color/md_white_1000"/>
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>
