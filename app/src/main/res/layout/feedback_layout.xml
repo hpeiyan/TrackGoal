@@ -13,7 +13,8 @@
         android:background="@null"
         android:gravity="start"
         android:hint="吐槽、建议，可能还有感谢"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:textSize="@dimen/text_input_dimen"/>
 
     <EditText
         android:id="@+id/etEmail"
