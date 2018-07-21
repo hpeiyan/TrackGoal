@@ -308,7 +308,7 @@
     <color name="md_blue_grey_800">#37474F</color>
     <color name="md_blue_grey_900">#263238</color>
 
-    <color name="root_goal_color">@color/md_pink_500</color>
+    <color name="root_goal_color">@color/colorAccent</color>
     <color name="sub_2_goal_color">@color/md_amber_500</color>
     <color name="sub_3_goal_color">@color/md_light_blue_500</color>
     <color name="sub_4_goal_color">@color/md_light_green_500</color>
