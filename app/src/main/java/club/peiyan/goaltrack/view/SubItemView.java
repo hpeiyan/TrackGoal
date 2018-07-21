@@ -4,6 +4,8 @@ import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.DBHelper;
@@ -26,6 +28,12 @@ public class SubItemView implements View.OnClickListener {
     private final MainActivity mActivity;
     private final DBHelper mDBHelper;
     private final View mRootView;
+    @BindView(R.id.topLine)
+    View mTopLine;
+    @BindView(R.id.tvItem)
+    TextView mTvItem;
+    @BindView(R.id.sbProgress)
+    SeekBar mSbProgress;
 
     public SubItemView(MainActivity mMainActivity, String item,
                        GoalsAdapter mAdapter, GoalBean mBean) {
@@ -33,14 +41,13 @@ public class SubItemView implements View.OnClickListener {
         mDBHelper = mActivity.getDBHelper();
 
         mRootView = inflate(mActivity, R.layout.sub_item_check, null);
-        TextView tvItem = mRootView.findViewById(R.id.tvItem);
-        SeekBar sb = mRootView.findViewById(R.id.sbProgress);
+        ButterKnife.bind(this, mRootView);
 
         final ScoreBean mScoreBean = mDBHelper.getScoreByTitleDate(item, CalendaUtils.getCurrntDate());
         if (mScoreBean != null) {
-            sb.setProgress(mScoreBean.getScore());
+            mSbProgress.setProgress(mScoreBean.getScore());
         }
-        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSbProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -67,13 +74,13 @@ public class SubItemView implements View.OnClickListener {
             }
         });
 
-        tvItem.setText(item);
-        tvItem.setOnClickListener(this);
-        tvItem.setTag(R.id.sub_title, item);
-        tvItem.setTag(R.id.parent_title, mBean.getTitle());
-        tvItem.setTag(R.id.level, mBean.getLevel());
-        tvItem.setTag(R.id.startDate, mBean.getStart());
-        tvItem.setTag(R.id.overDate, mBean.getOver());
+        mTvItem.setText(item);
+        mTvItem.setOnClickListener(this);
+        mTvItem.setTag(R.id.sub_title, item);
+        mTvItem.setTag(R.id.parent_title, mBean.getTitle());
+        mTvItem.setTag(R.id.level, mBean.getLevel());
+        mTvItem.setTag(R.id.startDate, mBean.getStart());
+        mTvItem.setTag(R.id.overDate, mBean.getOver());
     }
 
     public View getRootView() {
