@@ -290,7 +290,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             Toast.makeText(mMainActivity, "计划太细了，适可而止", Toast.LENGTH_SHORT).show();
             return;
         }
-        GoalBean mGoalBean = mMainActivity.getDBHelper().getGoalByTitle(subTitle);
+        GoalBean mGoalBean = mMainActivity.getDBHelper().getGoalByTitle(subTitle, parentTitle);
         if (mGoalBean != null) {
             DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mGoalBean);
         } else {

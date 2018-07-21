@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity
     public void initDataBase() {
         if (mParentGoals != null) mParentGoals.clear();
         mParentGoals = mDBHelper.getGoalByLevel(1);
-        setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, "")));
+        setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, ""), "rootParent"));
         if (mLatestParentGoal == null) {
             setLatestParentGoal(mDBHelper.getNearestParentGoal());
         }

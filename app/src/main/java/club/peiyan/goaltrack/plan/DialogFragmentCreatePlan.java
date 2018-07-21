@@ -425,15 +425,17 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         String end = mTvEndDateShow.getText().toString();
         StringBuilder mBuilder = new StringBuilder();
         String title = mTvGoalName.getText().toString().trim();
+
+        if (mMainActivity.getDBHelper().isParentHadInDB(title) && !isEditMode) {
+            ToastUtil.toast(String.format("%s已经创建过了", title));
+            return;
+        }
+
         boolean isSaveGoalSuccess;
-        boolean isSaveAlarmSuccess = false;
+        boolean isSaveAlarmSuccess;
         for (EditText met : mItemViewList) {
             String mItem = met.getText().toString();
             mBuilder.append(mItem + "\n");
-            if (mMainActivity.getDBHelper().isHadInDB(mItem) && !isEditMode) {
-                Toast.makeText(mMainActivity, String.format("%s计划已经在其他地方存档啦", mItem), Toast.LENGTH_SHORT).show();
-                return;
-            }
         }
 
         String mItems = mBuilder.toString().trim();
@@ -460,7 +462,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 AppSp.putString(LATEST_GOAL, title);
                 SubMenu mSubMenu = mMainActivity.getGoalSubMenu();
                 if (mSubMenu != null) {
-                    GoalBean mBean = mDBHelper.getGoalByTitle(title);
+                    GoalBean mBean = mDBHelper.getGoalByTitle(title, "rootParent");
                     if (mBean != null) {
                         MenuItem mMenuItem = mSubMenu.findItem(mBean.getId());
                         if (mMenuItem == null) {

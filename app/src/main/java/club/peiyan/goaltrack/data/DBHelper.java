@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.ListUtil;
 
 import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
@@ -245,13 +246,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Nullable
-    public GoalBean getGoalByTitle(String title) {
+    public GoalBean getGoalByTitle(String title, String mRootParent) {
         if (title == null || TextUtils.isEmpty(title)) return null;
 
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from track_goal where title=? and status != ?", new String[]{title, "2"});
+        Cursor res = db.rawQuery("select * from track_goal where title=? and status != ? and parent=?", new String[]{title, "2", mRootParent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -291,11 +292,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<GoalBean> getSubAndContactParentGoal(GoalBean mNearestParentGoal) {
+        if (mNearestParentGoal == null) return null;
         String[] mItems = mNearestParentGoal.getItems().split("\n");
         ArrayList<GoalBean> mSingleAllGoalBeans = new ArrayList<>();
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
-                GoalBean mGoalBean = getGoalByTitle(item);
+                GoalBean mGoalBean = getGoalByTitle(item, mNearestParentGoal.getTitle());
                 if (mGoalBean != null) {
                     mSingleAllGoalBeans.add(mGoalBean);
                 }
@@ -313,28 +315,28 @@ public class DBHelper extends SQLiteOpenHelper {
         if (mItems != null && mItems.length > 0) {
             for (String title1 : mItems) {
                 // level 2
-                GoalBean mGoal2 = getGoalByTitle(title1);
+                GoalBean mGoal2 = getGoalByTitle(title1, mNearestParentGoal.getTitle());
                 if (mGoal2 == null) continue;
                 mSingleAllGoalBeans.add(mGoal2);
 
                 String[] mSplit2 = mGoal2.getItems().split("\n");
                 for (String title2 : mSplit2) {
                     //level 3
-                    GoalBean mGoal3 = getGoalByTitle(title2);
+                    GoalBean mGoal3 = getGoalByTitle(title2, mGoal2.getTitle());
                     if (mGoal3 == null) continue;
                     mSingleAllGoalBeans.add(mGoal3);
 
                     String[] mSplit3 = mGoal3.getItems().split("\n");
                     for (String title3 : mSplit3) {
                         //level 4
-                        GoalBean mGoal4 = getGoalByTitle(title3);
+                        GoalBean mGoal4 = getGoalByTitle(title3, mGoal3.getTitle());
                         if (mGoal4 == null) continue;
                         mSingleAllGoalBeans.add(mGoal4);
 
                         String[] mSplit4 = mGoal4.getItems().split("\n");
                         for (String title4 : mSplit4) {
                             //level 5
-                            GoalBean mGoal5 = getGoalByTitle(title4);
+                            GoalBean mGoal5 = getGoalByTitle(title4, mGoal4.getTitle());
                             if (mGoal5 == null) continue;
                             mSingleAllGoalBeans.add(mGoal5);
                         }
@@ -349,7 +351,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] mItems = mGoalBean.getItems().split("\n");
         if (mItems != null && mItems.length > 0) {
             for (String item : mItems) {
-                GoalBean mGoal = getGoalByTitle(item);
+                GoalBean mGoal = getGoalByTitle(item, mGoalBean.getTitle());
                 if (mGoal != null) return true;
             }
         }
@@ -357,8 +359,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean isHadInDB(String mItem) {
-        GoalBean mGoal = getGoalByTitle(mItem);
+    public boolean isParentHadInDB(String mItem) {
+        GoalBean mGoal = getGoalByTitle(mItem, "rootParent");
         return mGoal != null;
     }
 
