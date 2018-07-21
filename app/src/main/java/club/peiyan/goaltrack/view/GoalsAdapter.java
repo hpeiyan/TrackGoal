@@ -114,12 +114,12 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             int deltaYear = currentYear - Integer.parseInt(mStartDates[0]);
             int deltaMonth = currentMonth - Integer.parseInt(mStartDates[1]);
             int deltaDay = currentDay - Integer.parseInt(mStartDates[2]);
-            totalHoldDay = deltaYear * 365 + deltaMonth * 30 + deltaDay;
+            totalHoldDay = deltaYear * 365 + deltaMonth * 30 + deltaDay + 1;// bias 1 day
 
             int year = Integer.parseInt(mEndDates[0]) - Integer.parseInt(mStartDates[0]);
             int month = Integer.parseInt(mEndDates[1]) - Integer.parseInt(mStartDates[1]);
             int day = Integer.parseInt(mEndDates[2]) - Integer.parseInt(mStartDates[2]);
-            totalNeedSpend = year * 365 + month * 30 + day;
+            totalNeedSpend = year * 365 + month * 30 + day + 1;// bias 1 day
         }
 
         holder.mPbGoal.setMax(totalNeedSpend);
@@ -154,7 +154,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 holder.mLlParent.addView(mRootView);
             }
         } else {
-            View mRootView = new DownCountView(mMainActivity,mBean).getRootView();
+            View mRootView = new DownCountView(mMainActivity, mBean).getRootView();
             holder.mLlParent.addView(mRootView);
 
         }
