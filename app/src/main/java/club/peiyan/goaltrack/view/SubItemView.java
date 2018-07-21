@@ -1,8 +1,10 @@
 package club.peiyan.goaltrack.view;
 
 import android.view.View;
-import android.widget.SeekBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -10,12 +12,10 @@ import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
-import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
-import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.plan.GoalFragment;
+import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
-
-import static android.view.View.inflate;
 
 /**
  * Created by HPY.
@@ -27,53 +27,36 @@ public class SubItemView implements View.OnClickListener {
 
     private final MainActivity mActivity;
     private final DBHelper mDBHelper;
-    private final View mRootView;
     @BindView(R.id.topLine)
     View mTopLine;
+    @BindView(R.id.lineLeft)
+    View mLineLeft;
     @BindView(R.id.tvItem)
     TextView mTvItem;
-    @BindView(R.id.sbProgress)
-    SeekBar mSbProgress;
+    @BindView(R.id.rlItem)
+    RelativeLayout mRlItem;
+    private View mRootView;
+    private final GoalFragment mGoalFragment;
+    private String mItem;
+    private String mParentGoal;
+
+    private static final int[] leftDrawableRes = new int[]{
+            R.drawable.shape_left_line_parent, R.drawable.shape_left_line_2,
+            R.drawable.shape_left_line_3, R.drawable.shape_left_line_4
+    };
 
     public SubItemView(MainActivity mMainActivity, String item,
-                       GoalsAdapter mAdapter, GoalBean mBean) {
+                       String parentGoal, GoalBean mBean, int mViewType) {
         mActivity = mMainActivity;
         mDBHelper = mActivity.getDBHelper();
-
-        mRootView = inflate(mActivity, R.layout.sub_item_check, null);
+        mGoalFragment = mActivity.getGoalFragment();
+        mItem = item;
+        mParentGoal = parentGoal;
+        mRootView = mActivity.getLayoutInflater().inflate(R.layout.sub_item_check, null);
         ButterKnife.bind(this, mRootView);
 
-        final ScoreBean mScoreBean = mDBHelper.getScoreByTitleDate(item, CalendaUtils.getCurrntDate());
-        if (mScoreBean != null) {
-            mSbProgress.setProgress(mScoreBean.getScore());
-        }
-        mSbProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int mProgress = seekBar.getProgress();
-                ScoreBean mScoreByTitle = mDBHelper.getScoreByTitle(item);
-                boolean isSuccess;
-                if (mScoreByTitle == null) {
-                    isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                } else {
-                    isSuccess = mDBHelper.updateScore(mScoreByTitle.getId(), -1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                }
-                if (isSuccess) {
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
-        });
-
+        mLineLeft.setBackground(mActivity.getResources().getDrawable(leftDrawableRes[mViewType]));
+        mRlItem.setOnClickListener(this);
         mTvItem.setText(item);
         mTvItem.setOnClickListener(this);
         mTvItem.setTag(R.id.sub_title, item);
@@ -89,6 +72,35 @@ public class SubItemView implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.rlItem:
+                scrollToSubGoal();
+                break;
+            case R.id.tvItem:
+                createSubGoal(v);
+                break;
+        }
+    }
+
+    private void scrollToSubGoal() {
+        ArrayList<GoalBean> mGoals = mActivity.getSingleAllGoals();
+        if (!ListUtil.isEmpty(mGoals)) {
+            for (int i = 0; i < mGoals.size(); i++) {
+                GoalBean goal = mGoals.get(i);
+                if (goal.getTitle().equals(mItem) &&
+                        goal.getParent().equals(mParentGoal)) {
+
+                    if (mGoalFragment != null &&
+                            mGoalFragment.getRvGoal() != null) {
+                        mGoalFragment.getRvGoal().smoothScrollToPosition(i);
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void createSubGoal(View v) {
         String subTitle = (String) v.getTag(R.id.sub_title);
         String parentTitle = (String) v.getTag(R.id.parent_title);
         int level = (int) v.getTag(R.id.level);

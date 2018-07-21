@@ -363,4 +363,8 @@ public class MainActivity extends AppCompatActivity
         ToastUtil.toast("同步失败");
         setSyncPBVisible(false);
     }
+
+    public GoalFragment getGoalFragment() {
+        return mGoalFragment;
+    }
 }

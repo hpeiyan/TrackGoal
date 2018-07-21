@@ -13,4 +13,5 @@
     <dimen name="text_title_dimen">20sp</dimen>
     <dimen name="text_show_tiny">6sp</dimen>
     <dimen name="text_big_dimen">30sp</dimen>
+    <dimen name="left_side_dimen">8dp</dimen>
 </resources>

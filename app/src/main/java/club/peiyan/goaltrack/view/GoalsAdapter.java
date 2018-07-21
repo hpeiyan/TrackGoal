@@ -38,6 +38,15 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     private ArrayList<GoalBean> mData;
     private final MainActivity mMainActivity;
     private final DBHelper mDBHelper;
+    private static final int[] colorRes = new int[]{
+            R.color.root_goal_color, R.color.sub_2_goal_color,
+            R.color.sub_3_goal_color, R.color.sub_4_goal_color
+    };
+
+    private static final int[] pbDrawableRes = new int[]{
+            R.drawable.progressbar_parent, R.drawable.progressbar_2,
+            R.drawable.progressbar_3, R.drawable.progressbar_4
+    };
 
     public GoalsAdapter(MainActivity mMainActivity) {
         this.mMainActivity = mMainActivity;
@@ -52,16 +61,16 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         GoalViewHolder mHolder;
         switch (viewType) {
-            case 1:
+            case 0:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parent_goal, parent, false));
                 break;
-            case 2:
+            case 1:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_2_goal, parent, false));
                 break;
-            case 3:
+            case 2:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_3_goal, parent, false));
                 break;
-            case 4:
+            case 3:
                 mHolder = new GoalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sub_4_goal, parent, false));
                 break;
             default:
@@ -73,6 +82,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(MyViewHolder mHolder, int position) {
+        int mViewType = getItemViewType(position);
         GoalViewHolder holder = (GoalViewHolder) mHolder;
         String[] mItems = new String[0];
         final Context mContext = holder.mLlParent.getContext();
@@ -113,6 +123,9 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         }
 
         holder.mPbGoal.setMax(totalNeedSpend);
+        holder.mPbGoal.setProgressDrawable(mContext
+                .getResources()
+                .getDrawable(pbDrawableRes[mViewType]));
         holder.mPbGoal.setProgress(totalHoldDay);
 
         holder.mTvTimeSpend.setText(mBuilder.toString().trim());
@@ -134,8 +147,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         /*add sub goal View*/
         if (mItems != null && mItems.length > 0) {
             for (final String item : mItems) {
+
                 View mRootView = new SubItemView(mMainActivity, item,
-                        GoalsAdapter.this, mBean).getRootView();
+                        mBean.getTitle(), mBean, mViewType)
+                        .getRootView();
                 holder.mLlParent.addView(mRootView);
             }
         }
@@ -189,7 +204,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        return mData.get(position).getLevel();
+        return mData.get(position).getLevel() - 1;
     }
 
     @Override
