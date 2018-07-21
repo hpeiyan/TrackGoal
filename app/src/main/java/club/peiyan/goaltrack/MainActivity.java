@@ -1,7 +1,13 @@
 package club.peiyan.goaltrack;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -27,19 +33,25 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.listener.DownCountListener;
+import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.plan.ScoreFragment;
-import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
+import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
+import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
+import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_ORIGIN;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, SyncDataTask.OnSyncListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener,
+        SyncDataTask.OnSyncListener,
+        ServiceConnection {
 
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
@@ -76,6 +88,21 @@ public class MainActivity extends AppCompatActivity
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
     private TextView mTvUserName;
     private SubMenu mAppSubMenu;
+    private DownCountService mService;
+    private DownCountListener mDownCountListener;
+
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            long mCount = intent.getLongExtra(DOWN_COUNT, 0);
+            long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
+            boolean isFinish = intent.getBooleanExtra(COUNT_FINISH, false);
+            if (mDownCountListener != null) {
+                mDownCountListener.onFinish(isFinish);
+                mDownCountListener.onTick(mCount, mOrigin);
+            }
+        }
+    };
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
@@ -367,4 +394,36 @@ public class MainActivity extends AppCompatActivity
     public GoalFragment getGoalFragment() {
         return mGoalFragment;
     }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        DownCountService.MyBinder b = (DownCountService.MyBinder) service;
+        mService = b.getService();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        mService = null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = new Intent(this, DownCountService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
+        registerReceiver(mReceiver, new IntentFilter(
+                DownCountService.NOTIFICATION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unbindService(this);
+        unregisterReceiver(mReceiver);
+    }
+
+    public void setDownCountListener(DownCountListener mListener) {
+        mDownCountListener = mListener;
+    }
+
 }
