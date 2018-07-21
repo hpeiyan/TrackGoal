@@ -1,4 +1,4 @@
-package club.peiyan.goaltrack.sync;
+package club.peiyan.goaltrack.netTask;
 
 import android.util.Log;
 

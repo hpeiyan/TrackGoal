@@ -19,7 +19,7 @@ import butterknife.Unbinder;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.GoalBean;
-import club.peiyan.goaltrack.sync.SyncDataTask;
+import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.view.GoalsAdapter;
 import club.peiyan.goaltrack.view.MyRecycleView;
 
@@ -128,12 +128,7 @@ public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     }
 
     private void setPullStatus(final boolean isStop) {
-        mConstraintLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mConstraintLayout.setRefreshing(isStop);
-            }
-        });
+        mConstraintLayout.post(() -> mConstraintLayout.setRefreshing(isStop));
     }
 
     @Override

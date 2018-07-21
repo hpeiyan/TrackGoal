@@ -30,7 +30,7 @@ import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.plan.ScoreFragment;
-import club.peiyan.goaltrack.sync.SyncDataTask;
+import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -224,6 +224,7 @@ public class MainActivity extends AppCompatActivity
                 initAppMode(item);
                 break;
             case R.id.action_sync:
+                setSyncPBVisible(true);
                 startSync(this);
         }
         return super.onOptionsItemSelected(item);
