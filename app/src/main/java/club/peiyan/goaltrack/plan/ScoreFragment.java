@@ -43,8 +43,7 @@ public class ScoreFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainActivity = (MainActivity) getActivity();
-        mDBHelper = mMainActivity.getDBHelper();
+
     }
 
     @Nullable
@@ -52,6 +51,8 @@ public class ScoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View mView = inflater.inflate(R.layout.yesterday_main, null);
         unbinder = ButterKnife.bind(this, mView);
+        mMainActivity = (MainActivity) getActivity();
+        mDBHelper = mMainActivity.getDBHelper();
         initData();
         initView();
         return mView;
@@ -59,10 +60,12 @@ public class ScoreFragment extends Fragment {
 
     private void initData() {
         mPastScoreList = new ArrayList();
-        for (int i = 1; i < 7; i++) {
-            ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
-            if (mScoreBeans != null && mScoreBeans.size() > 0) {
-                mPastScoreList.add(mScoreBeans);
+        if (mDBHelper != null) {
+            for (int i = 1; i < 7; i++) {
+                ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
+                if (mScoreBeans != null && mScoreBeans.size() > 0) {
+                    mPastScoreList.add(mScoreBeans);
+                }
             }
         }
     }
