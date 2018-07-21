@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
 
@@ -30,15 +28,13 @@ import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 
-import static android.view.View.inflate;
-
 /**
  * Created by HPY.
  * Time: 2018/7/7.
  * Desc:
  */
 
-public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder> implements View.OnClickListener {
+public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder> {
 
     private static final String TAG = "GoalsAdapter";
     private static final int TYPE_HEADER = -1;
@@ -173,51 +169,13 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         if (mChildCount > 3) {
             holder.mLlParent.removeViews(3, mChildCount - 3);
         }
+
+        /*add sub goal View*/
         if (mItems != null && mItems.length > 0) {
             for (final String item : mItems) {
-                View mView = inflate(mContext, R.layout.sub_item_check, null);
-                TextView tvItem = mView.findViewById(R.id.tvItem);
-                SeekBar sb = mView.findViewById(R.id.sbProgress);
-
-                final ScoreBean mScoreBean = mDBHelper.getScoreByTitleDate(item, CalendaUtils.getCurrntDate());
-                if (mScoreBean != null) {
-                    sb.setProgress(mScoreBean.getScore());
-                }
-                sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        int mProgress = seekBar.getProgress();
-                        ScoreBean mScoreByTitle = mDBHelper.getScoreByTitle(item);
-                        boolean isSuccess;
-                        if (mScoreByTitle == null) {
-                            isSuccess = mDBHelper.insertScore(-1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                        } else {
-                            isSuccess = mDBHelper.updateScore(mScoreByTitle.getId(), -1, "", item, CalendaUtils.getCurrntDate(), mProgress, System.currentTimeMillis());
-                        }
-                        if (isSuccess) {
-                            notifyDataSetChanged();
-                        }
-                    }
-                });
-
-                tvItem.setText(item);
-                tvItem.setOnClickListener(this);
-                tvItem.setTag(R.id.sub_title, item);
-                tvItem.setTag(R.id.parent_title, mBean.getTitle());
-                tvItem.setTag(R.id.level, mBean.getLevel());
-                tvItem.setTag(R.id.startDate, mBean.getStart());
-                tvItem.setTag(R.id.overDate, mBean.getOver());
-                holder.mLlParent.addView(mView);
+                View mRootView = new SubItemView(mMainActivity, item,
+                        GoalsAdapter.this, mBean).getRootView();
+                holder.mLlParent.addView(mRootView);
             }
         }
         holder.btnEdit.setOnClickListener(v -> {
@@ -278,26 +236,6 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
     public int getItemCount() {
         return mData.size() + 1;
     }
-
-    @Override
-    public void onClick(View v) {
-        String subTitle = (String) v.getTag(R.id.sub_title);
-        String parentTitle = (String) v.getTag(R.id.parent_title);
-        int level = (int) v.getTag(R.id.level);
-        String start = (String) v.getTag(R.id.startDate);
-        String over = (String) v.getTag(R.id.overDate);
-        if (level == 4) {
-            Toast.makeText(mMainActivity, "计划太细了，适可而止", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        GoalBean mGoalBean = mMainActivity.getDBHelper().getGoalByTitle(subTitle, parentTitle);
-        if (mGoalBean != null) {
-            DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mGoalBean);
-        } else {
-            DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), subTitle, parentTitle, level + 1, start, over);
-        }
-    }
-
 
     static class GoalViewHolder extends MyViewHolder {
         @BindView(R.id.tvGoalName)
