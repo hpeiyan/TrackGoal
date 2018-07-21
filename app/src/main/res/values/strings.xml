@@ -23,6 +23,7 @@
     <item name="about" type="id"/>
     <item name="nav_share" type="id"/>
     <item name="nav_about" type="id"/>
+    <item name="time_count_tag" type="id"/>
 
     <string name="today">今日</string>
     <string name="yesterday">昨日</string>
@@ -37,5 +38,6 @@
     <string name="goal">目标</string>
     <string name="score">分数</string>
     <string name="feedback">反馈</string>
+    <string name="start_downcount">任务开始，倒计时</string>
 
 </resources>

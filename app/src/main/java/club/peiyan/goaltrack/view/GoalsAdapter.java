@@ -153,6 +153,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                         .getRootView();
                 holder.mLlParent.addView(mRootView);
             }
+        } else {
+            View mRootView = new DownCountView(mMainActivity,mBean).getRootView();
+            holder.mLlParent.addView(mRootView);
+
         }
         holder.btnEdit.setOnClickListener(v -> {
             holder.swMenu.smoothClose();

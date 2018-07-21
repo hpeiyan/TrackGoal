@@ -79,7 +79,6 @@
 
         <include layout="@layout/layout_time_edit"/>
 
-
     </LinearLayout>
 
     <Button

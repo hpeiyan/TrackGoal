@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.ListUtil;
 
 import static club.peiyan.goaltrack.data.Constants.USER_NAME;
@@ -374,7 +375,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         "(id integer primary key, date text,parent text,level integer,title text,score integer,timestamp integer)"
         );
     * */
-    public boolean insertScore(int level, String parent, String title, String date, int score, long timestamp) {
+    public boolean insertScore(int level, String parent, String title, String date, long score, long timestamp) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(GOAL_SCORE_DATE, date);
@@ -387,28 +388,34 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateScore(Integer id, int level, String parent, String title, String date, int score, long timestamp) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(GOAL_SCORE_DATE, date);
-        contentValues.put(GOAL_SCORE_LEVEL, level);
-        contentValues.put(GOAL_SCORE_PARENT, parent);
-        contentValues.put(GOAL_SCORE_TITLE, title);
-        contentValues.put(GOAL_SCORE_SCORE, score);
-        contentValues.put(GOAL_SCORE_TIMESTAMP, timestamp);
-        db.update(GOAL_SCORE_TABLE, contentValues, "id = ? ", new String[]{Integer.toString(id)});
+    public boolean updateScore(int level, String parent, String title, String date, long deltaScore, long timestamp) {
+        ScoreBean mScoreBean = getScoreByTitle(title, parent);
+        if (mScoreBean == null) {
+            insertScore(level, parent, title, date, deltaScore, timestamp);
+        } else {
+            deltaScore += mScoreBean.getScore();
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(GOAL_SCORE_DATE, date);
+            contentValues.put(GOAL_SCORE_LEVEL, level);
+            contentValues.put(GOAL_SCORE_PARENT, parent);
+            contentValues.put(GOAL_SCORE_TITLE, title);
+            contentValues.put(GOAL_SCORE_SCORE, deltaScore);
+            contentValues.put(GOAL_SCORE_TIMESTAMP, timestamp);
+            db.update(GOAL_SCORE_TABLE, contentValues, "title = ? and parent = ? ", new String[]{title, parent});
+        }
         return true;
     }
 
 
     @Nullable
-    public ScoreBean getScoreByTitle(String title) {
+    public ScoreBean getScoreByTitle(String title, String mParent) {
         if (title == null || TextUtils.isEmpty(title)) return null;
 
         ArrayList<ScoreBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from goal_score where title=?", new String[]{title});
+        Cursor res = db.rawQuery("select * from goal_score where title=? and parent=?", new String[]{title, mParent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -467,6 +474,31 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor res = db.rawQuery("select * from goal_score where date=?", new String[]{mDay});
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            ScoreBean mBean = new ScoreBean();
+            mBean.setId(res.getInt(res.getColumnIndex(GOAL_SCORE_ID)));
+            mBean.setLevel(res.getInt(res.getColumnIndex(GOAL_SCORE_LEVEL)));
+            mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
+            mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
+            mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setScore(res.getInt(res.getColumnIndex(GOAL_SCORE_SCORE)));
+            mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        if (array_list.size() > 0)
+            return array_list;
+        return null;
+    }
+
+    public ArrayList<ScoreBean> getScoreToday(String title, String parent) {
+        ArrayList<ScoreBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_score where date=? and title=? and parent=?"
+                , new String[]{CalendaUtils.getCurrntDate(), title, parent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
