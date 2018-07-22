@@ -49,6 +49,7 @@ import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -120,19 +121,17 @@ public class MainActivity extends AppCompatActivity
     private long mCostTimeMills;
     private String[] mTags;
     private long mCount;
-//    private Snackbar mSnackbar;
-
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             mTags = intent.getStringArrayExtra(DOWN_COUNT_TAG);
-            boolean isFinish = intent.getBooleanExtra(COUNT_FINISH, false);
+            boolean mIsFinish = intent.getBooleanExtra(COUNT_FINISH, false);
             if (mListenerList.size() > 0) {
                 for (DownCountListener mDownCountListener : mListenerList) {
                     if (mDownCountListener != null) {
-                        if (isFinish) {
-                            mDownCountListener.onFinish(isFinish, mTags);
+                        if (mIsFinish) {
+                            mDownCountListener.onFinish(mIsFinish, mTags);
                         } else {
                             mCount = intent.getLongExtra(DOWN_COUNT, 0);
                             long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
@@ -512,19 +511,17 @@ public class MainActivity extends AppCompatActivity
                 mRlDownCount.setVisibility(View.GONE);
                 getSupportActionBar().show();
             }
-            if (mTags != null
-                    && mTags.length == 3) {
+            if (tags != null
+                    && tags.length == 3) {
 //                if (mCostTimeMills > 15 * 60 * 1000) {
                 if (mCostTimeMills > 15) {
                     // TODO: 2018/7/21 后续改成15分钟
-                    mDBHelper.updateScore(Integer.parseInt(mTags[2]), mTags[1], mTags[0], CalendaUtils.getCurrntDate(),
+                    mDBHelper.updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendaUtils.getCurrntDate(),
                             mCostTimeMills, System.currentTimeMillis());
                 }
             }
-            mTags = new String[0];
-            mCount = 0;
+            notifyDataSetChange(null);
             mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
-            mCostTimeMills = 0;
             isPause = false;
         }
     }
@@ -546,7 +543,17 @@ public class MainActivity extends AppCompatActivity
                 isPause = !isPause;
                 break;
             case R.id.ivClose:
-                finishDownCount();
+                DialogUtil.showSingleDialog(this, null, "取消计时任务吗？", "继续计时", "我要取消", new DialogUtil.DialogListener() {
+                    @Override
+                    public void onNegClickListener() {
+
+                    }
+
+                    @Override
+                    public void onPosClickListener() {
+                        finishDownCount();
+                    }
+                });
                 break;
         }
     }

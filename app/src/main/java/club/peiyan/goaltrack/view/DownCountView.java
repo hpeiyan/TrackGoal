@@ -138,7 +138,7 @@ public class DownCountView {
         }));
 
         mIvClear.setOnClickListener((v -> {
-            DialogUtil.showSingleDialog(mActivity, null, "取消计时任务吗？", "继续计时", "我要退出", new DialogUtil.DialogListener() {
+            DialogUtil.showSingleDialog(mActivity, null, "取消计时任务吗？", "继续计时", "我要取消", new DialogUtil.DialogListener() {
                 @Override
                 public void onNegClickListener() {
 
@@ -196,26 +196,22 @@ public class DownCountView {
     }
 
     private void showTimePickerDialog() {
-        String[] mActivityTags = mActivity.getTags();
-        if (mActivityTags != null
-                && (!mActivityTags[0].equals(mGoalBean.getTitle())
-                || !mActivityTags[1].equals(mGoalBean.getParent())
-                || !mActivityTags[2].equals(String.valueOf(mGoalBean.getLevel())))) {
+        DownCountService mService = mActivity.getService();
+        if (mService == null || !mService.isDownCountServiceRun()) {
+            int hour = Calendar.getInstance().get(Calendar.HOUR);
+            int minute = Calendar.getInstance().get(Calendar.MINUTE);
+            TimePickerDialog mDialog = new TimePickerDialog(mActivity, (view, hourOfDay, minute1) -> {
+                int mCurrentHours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                int mCurrentMinutes = Calendar.getInstance().get(Calendar.MINUTE);
+                long time = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute1 - mCurrentMinutes)) * 60 * 1000;
+
+                startDownCountService(time);
+
+            }, hour, minute, true);
+            mDialog.show();
+        } else {
             ToastUtil.toast("任务进行中，请保持专注！");
-            return;
         }
-
-        int hour = Calendar.getInstance().get(Calendar.HOUR);
-        int minute = Calendar.getInstance().get(Calendar.MINUTE);
-        TimePickerDialog mDialog = new TimePickerDialog(mActivity, (view, hourOfDay, minute1) -> {
-            int mCurrentHours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-            int mCurrentMinutes = Calendar.getInstance().get(Calendar.MINUTE);
-            long time = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute1 - mCurrentMinutes)) * 60 * 1000;
-
-            startDownCountService(time);
-
-        }, hour, minute, true);
-        mDialog.show();
     }
 
     private void startDownCountService(long mTime) {

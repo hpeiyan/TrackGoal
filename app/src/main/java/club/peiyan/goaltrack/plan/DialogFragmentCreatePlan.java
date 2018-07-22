@@ -50,7 +50,6 @@ import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
-import club.peiyan.goaltrack.utils.LogUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 
 import static android.content.Context.ALARM_SERVICE;
@@ -338,8 +337,6 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                     GoalApplication.getContext(), requestCode, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
-            LogUtil.logi((timeInMillis - System.currentTimeMillis()) / 1000 + "");
-            LogUtil.logi(requestCode + "");
         }
     }
 

@@ -24,6 +24,7 @@ public class DownCountService extends Service {
     private final IBinder mBinder = new MyBinder();
     private CountDownTimer mDownTimer;
     private boolean mIsStop;
+    private boolean isDownCountServiceRun = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -45,6 +46,7 @@ public class DownCountService extends Service {
         mDownTimer = new CountDownTimer(mTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
+                isDownCountServiceRun = true;
                 Intent intent = new Intent(NOTIFICATION);
                 intent.putExtra(DOWN_COUNT, millisUntilFinished);
                 intent.putExtra(DOWN_COUNT_ORIGIN, mTime);
@@ -54,6 +56,7 @@ public class DownCountService extends Service {
 
             @Override
             public void onFinish() {
+                isDownCountServiceRun = false;
                 Intent intent = new Intent(NOTIFICATION);
                 intent.putExtra(COUNT_FINISH, true);
                 intent.putExtra(DOWN_COUNT_TAG, mTags);
@@ -79,5 +82,9 @@ public class DownCountService extends Service {
 
     public boolean isStop() {
         return mIsStop;
+    }
+
+    public boolean isDownCountServiceRun() {
+        return isDownCountServiceRun;
     }
 }
