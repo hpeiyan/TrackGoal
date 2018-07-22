@@ -57,6 +57,7 @@ public class DownCountView {
     private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss");
     private long mMillisUntilFinished;
     private final GoalBean mGoalBean;
+    private long mOriginStartTime;
 
 
     public DownCountView(MainActivity mMainActivity, GoalBean mBean) {
@@ -203,10 +204,8 @@ public class DownCountView {
             TimePickerDialog mDialog = new TimePickerDialog(mActivity, (view, hourOfDay, minute1) -> {
                 int mCurrentHours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                 int mCurrentMinutes = Calendar.getInstance().get(Calendar.MINUTE);
-                long time = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute1 - mCurrentMinutes)) * 60 * 1000;
-
-                startDownCountService(time);
-
+                mOriginStartTime = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute1 - mCurrentMinutes)) * 60 * 1000;
+                startDownCountService(mOriginStartTime);
             }, hour, minute, true);
             mDialog.show();
         } else {

@@ -43,24 +43,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
                 .setSmallIcon(R.mipmap.icon_app)
                 .setContentTitle("♨︎ " + title)
                 .setContentText(content)
-//                .setStyle(new NotificationCompat.BigTextStyle()
-//                        .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-//                .addAction(R.drawable.ic_menu_send, "action",
-//                        snoozePendingIntent)
                 .setAutoCancel(true);
-
-        // Issue the initial notification with zero progress
-//        int PROGRESS_MAX = 100;
-//        int PROGRESS_CURRENT = 60;
-//        mBuilder.setProgress(PROGRESS_MAX, PROGRESS_CURRENT, false);
 
         createNotificationChannel(mContext);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
-// notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1024, mBuilder.build());
+        notificationManager.notify(Integer.parseInt(CHANNEL_ID), mBuilder.build());
     }
 
     private void createNotificationChannel(Context mContext) {
@@ -72,8 +62,6 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
             NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }

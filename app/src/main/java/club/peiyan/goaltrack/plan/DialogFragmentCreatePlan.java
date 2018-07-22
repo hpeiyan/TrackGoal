@@ -337,6 +337,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                     GoalApplication.getContext(), requestCode, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            //在未来的某段时间发起通知。
         }
     }
 
