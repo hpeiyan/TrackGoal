@@ -54,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String GOAL_ALARM_ID = "id";
     public static final String GOAL_ALARM_TITLE = "title";
+    public static final String GOAL_ALARM_PARENT = "parent";
     public static final String GOAL_ALARM_HOUR = "hour";
     public static final String GOAL_ALARM_MINUTE = "minute";
     public static final String GOAL_ALARM_REQUEST_CODE = "requestCode";
@@ -83,7 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL(
                 "create table goal_alarm " +
-                        "(id integer primary key, title text,hour integer,minute integer,requestCode integer,select_dates text,request_codes text)"
+                        "(id integer primary key, title text,parent text,hour integer,minute integer,requestCode integer,select_dates text,request_codes text)"
         );
     }
 
@@ -515,7 +516,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /* Alarm Database */
-    public boolean insertAlarm(int hour, int minute, int requestCode, String title, String select_dates, String request_codes) {
+    public boolean insertAlarm(int hour, int minute, int requestCode, String title,String parent, String select_dates, String request_codes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(GOAL_ALARM_HOUR, hour);
@@ -523,18 +524,19 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(GOAL_ALARM_REQUEST_CODE, requestCode);
         contentValues.put(GOAL_ALARM_SELECT_DATES, select_dates);
         contentValues.put(GOAL_ALARM_TITLE, title);
+        contentValues.put(GOAL_ALARM_PARENT, parent);
         contentValues.put(GOAL_ALARM_REQUEST_CODES, request_codes);
         db.insert(GOAL_ALARM_TABLE, null, contentValues);
         return true;
     }
 
-    public ArrayList<AlarmBean> getAlarmByTitle(String title) {
+    public ArrayList<AlarmBean> getAlarmByTitle(String title,String parent) {
         if (title == null || TextUtils.isEmpty(title)) return null;
 
         ArrayList<AlarmBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from goal_alarm where title=?", new String[]{title});
+        Cursor res = db.rawQuery("select * from goal_alarm where title=? and parent=?", new String[]{title,parent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {

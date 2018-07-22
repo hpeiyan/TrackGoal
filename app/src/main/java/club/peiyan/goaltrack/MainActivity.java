@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity
         item.setChecked(mMode);
         item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
         mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-        mGoalFragment.getRvGoal().setEditMode(!mMode);
+//        mGoalFragment.getRvGoal().setEditMode(!mMode);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

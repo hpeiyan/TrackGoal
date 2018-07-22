@@ -8,23 +8,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
+import club.peiyan.goaltrack.data.AlarmBean;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.utils.DialogUtil;
+import club.peiyan.goaltrack.utils.ListUtil;
 
 /**
  * Created by HPY.
@@ -140,8 +146,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             mItems = mTrim.split("\n");
         }
         int mChildCount = holder.mLlParent.getChildCount();
-        if (mChildCount > 3) {
-            holder.mLlParent.removeViews(3, mChildCount - 3);
+        if (mChildCount > 4) {
+            holder.mLlParent.removeViews(4, mChildCount - 4);
         }
 
         /*add sub goal View*/
@@ -162,6 +168,31 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             holder.swMenu.smoothClose();
             DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean);
         });
+
+        ArrayList<AlarmBean> mAlarms = mDBHelper.getAlarmByTitle(mBean.getTitle(), mBean.getParent());
+        if (mAlarms != null && mAlarms.size() > 0) {
+            AlarmBean mAlarmBean = mAlarms.get(0);
+            int mHour = mAlarmBean.getHour();
+            int mMinute = mAlarmBean.getMinute();
+            String mHM = (mHour > 9 ? mHour : "0" + mHour) + " : " + (mMinute > 9 ? mMinute : "0" + mMinute);
+            if (!ListUtil.isEmpty(mAlarmBean.getSelectedDates())) {
+                List<CalendarDay> mDates = mAlarmBean.getSelectedDates();
+                StringBuilder mStringBuilder = new StringBuilder();
+                for (CalendarDay mDate : mDates) {
+                    int mYear = mDate.getYear();
+                    int mMonth = mDate.getMonth();
+                    int mDay = mDate.getDay();
+                    mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + ",");
+                }
+                mStringBuilder.append(mHM);
+                holder.tvAlarmInfo.setText(mStringBuilder.toString());
+            } else {
+                holder.tvAlarmInfo.setText("每天 " + mHM);
+            }
+            holder.rlAlarm.setVisibility(View.VISIBLE);
+        } else {
+            holder.rlAlarm.setVisibility(View.GONE);
+        }
 
         holder.btnDelete.setOnClickListener(v -> {
             holder.swMenu.smoothClose();
@@ -235,6 +266,12 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         Button btnDelete;
         @BindView(R.id.swMenu)
         SwipeMenuLayout swMenu;
+        @BindView(R.id.ivAlarm)
+        ImageView ivAlarm;
+        @BindView(R.id.tvAlarmInfo)
+        TextView tvAlarmInfo;
+        @BindView(R.id.rlAlarm)
+        RelativeLayout rlAlarm;
 
         GoalViewHolder(View view) {
             super(view);

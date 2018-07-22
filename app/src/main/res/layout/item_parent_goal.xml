@@ -71,6 +71,7 @@
         </RelativeLayout>
 
         <include layout="@layout/layout_time_edit"/>
+        <include layout="@layout/layout_alarm_info"/>
 
     </LinearLayout>
 

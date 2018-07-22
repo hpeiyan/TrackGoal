@@ -142,7 +142,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         if (!TextUtils.isEmpty(mGoalName)) {
             if (mDBHelper != null) {
                 //恢复 Alarm 的信息
-                ArrayList<AlarmBean> mAlarmByTitle = mDBHelper.getAlarmByTitle(mGoalName);
+                ArrayList<AlarmBean> mAlarmByTitle = mDBHelper.getAlarmByTitle(mGoalName, mParent);
                 if (mAlarmByTitle != null && mAlarmByTitle.size() > 0) {
                     mAlarmBeanList = mAlarmByTitle;
                 }
@@ -375,7 +375,6 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             int mYear = mDates.get(0).getYear();
             int mMonth = mDates.get(0).getMonth();
             int mDay = mDates.get(0).getDay();
-            mDates.get(0).getDate().toString();
             notionDate.setText(mYear + "/" + mMonth + "/" + mDay + "...");
         }
         notionDate.setOnClickListener(v -> DialogUtil.showSingleChoiceDialog(getActivity(), mAlarmModes, (dialog, which) -> {
@@ -505,7 +504,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                         requestCodeContent = mStringBuilder.toString();
                     }
                     isSuccess = mDBHelper.insertAlarm(mBean.getHour(), mBean.getMinute(), mBean.getRequestCode(),
-                            mTvGoalName.getText().toString().trim(), selectDatesContent, requestCodeContent);
+                            mTvGoalName.getText().toString().trim(), mParent, selectDatesContent, requestCodeContent);
                 }
             }
             return isSuccess;
