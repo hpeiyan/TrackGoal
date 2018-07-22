@@ -8,18 +8,15 @@
     <RelativeLayout
         android:id="@+id/rlCost"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center">
 
         <TextView
-            android:id="@+id/tvCostShow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:drawableLeft="@mipmap/ic_label_outline_black_24dp"
-            android:drawablePadding="12dp"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:text="今日用时: "
+            android:layout_toLeftOf="@+id/tvCostTime"
+            android:text="今日用时："
             android:textColor="@color/secondTextColor"
             android:textSize="@dimen/text_show_dimen"/>
 
@@ -27,9 +24,7 @@
             android:id="@+id/tvCostTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="16dp"
-            android:layout_toRightOf="@+id/tvCostShow"
+            android:layout_centerInParent="true"
             android:padding="12dp"
             android:text="00:00:00"
             android:textColor="@color/primaryTextColor"
@@ -41,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rlCost"
+        android:gravity="center_horizontal"
         >
 
         <ImageView

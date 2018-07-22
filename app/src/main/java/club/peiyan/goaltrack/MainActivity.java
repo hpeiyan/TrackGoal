@@ -521,9 +521,8 @@ public class MainActivity extends AppCompatActivity
                             mCostTimeMills, System.currentTimeMillis());
                 }
             }
-//            notifyDataSetChange(null);
-//            mTags = new String[0];
-//            mCount = 0;
+            mTags = new String[0];
+            mCount = 0;
             mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
             mCostTimeMills = 0;
             isPause = false;

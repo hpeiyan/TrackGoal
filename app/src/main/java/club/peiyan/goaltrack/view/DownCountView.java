@@ -26,6 +26,7 @@ import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
+import club.peiyan.goaltrack.utils.ToastUtil;
 
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
@@ -195,6 +196,15 @@ public class DownCountView {
     }
 
     private void showTimePickerDialog() {
+        String[] mActivityTags = mActivity.getTags();
+        if (mActivityTags != null
+                && (!mActivityTags[0].equals(mGoalBean.getTitle())
+                || !mActivityTags[1].equals(mGoalBean.getParent())
+                || !mActivityTags[2].equals(String.valueOf(mGoalBean.getLevel())))) {
+            ToastUtil.toast("任务进行中，请保持专注！");
+            return;
+        }
+
         int hour = Calendar.getInstance().get(Calendar.HOUR);
         int minute = Calendar.getInstance().get(Calendar.MINUTE);
         TimePickerDialog mDialog = new TimePickerDialog(mActivity, (view, hourOfDay, minute1) -> {
