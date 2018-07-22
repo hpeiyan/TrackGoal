@@ -32,6 +32,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String GOAL_SCORE_TABLE = "goal_score";
     public static final String GOAL_ALARM_TABLE = "goal_alarm";
 
+    public static final String TRACK_GOAL_ID = "id";
     public static final String TRACK_GOAL_PARENT = "parent";
     public static final String TRACK_GOAL_LEVEL = "level";
     public static final String TRACK_GOAL_TITLE = "title";
@@ -119,7 +120,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -134,32 +135,6 @@ public class DBHelper extends SQLiteOpenHelper {
         return array_list;
     }
 
-    /*public GoalBean getGoalByID(int id) {
-        ArrayList<GoalBean> array_list = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from track_goal where id=" + id + "", null);
-        res.moveToFirst();
-
-        while (res.isAfterLast() == false) {
-            GoalBean mBean = new GoalBean();
-//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
-            mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
-            mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
-            mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
-            mBean.setStart(res.getString(res.getColumnIndex(TRACK_GOAL_START_TIME)));
-            mBean.setOver(res.getString(res.getColumnIndex(TRACK_GOAL_END_TIME)));
-            mBean.setItems(res.getString(res.getColumnIndex(TRACK_GOAL_ITEMS)));
-            mBean.setTimestamp(res.getInt(res.getColumnIndex(TRACK_GOAL_TIMESTAMP)));
-            mBean.setStatus(res.getInt(res.getColumnIndex(TRACK_GOAL_STATUS)));
-            array_list.add(mBean);
-            res.moveToNext();
-        }
-        if (array_list.size() > 0) {
-            return array_list.get(0);
-        }
-        return null;
-    }*/
-
     public ArrayList<GoalBean> getParentGoal() {
         ArrayList<GoalBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -168,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -231,7 +206,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));
@@ -258,7 +233,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         while (res.isAfterLast() == false) {
             GoalBean mBean = new GoalBean();
-//            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
+            mBean.setId(res.getInt(res.getColumnIndex(TRACK_GOAL_ID)));
             mBean.setLevel(res.getInt(res.getColumnIndex(TRACK_GOAL_LEVEL)));
             mBean.setParent(res.getString(res.getColumnIndex(TRACK_GOAL_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(TRACK_GOAL_TITLE)));

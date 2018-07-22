@@ -6,8 +6,6 @@ import android.os.Binder;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 
-import club.peiyan.goaltrack.utils.LogUtil;
-
 
 /**
  * Created by HPY.
@@ -20,17 +18,20 @@ public class DownCountService extends Service {
     public static final String DOWN_COUNT = "DOWN_COUNT";
     public static final String COUNT_FINISH = "COUNT_FINISH";
     public static final String COUNT_STOP = "COUNT_STOP";
-    public static final String NOTIFICATION = "club.peiyan.goaltrack";
     public static final String DOWN_COUNT_ORIGIN = "DOWN_COUNT_ORIGIN";
+    public static final String DOWN_COUNT_TAG = "DOWN_COUNT_TAG";
+    public static final String NOTIFICATION = "club.peiyan.goaltrack";
     private final IBinder mBinder = new MyBinder();
     private CountDownTimer mDownTimer;
+    private boolean mIsStop;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long mTime = intent.getLongExtra(DOWN_COUNT, 0);
-        boolean isStop = intent.getBooleanExtra(COUNT_STOP, false);
+        String[] mTags = intent.getStringArrayExtra(DOWN_COUNT_TAG);
+        mIsStop = intent.getBooleanExtra(COUNT_STOP, false);
         boolean isFinish = intent.getBooleanExtra(COUNT_FINISH, false);
-        if (isStop && mDownTimer != null) {
+        if (mIsStop && mDownTimer != null) {
             mDownTimer.cancel();
             return Service.START_NOT_STICKY;
         }
@@ -47,6 +48,7 @@ public class DownCountService extends Service {
                 Intent intent = new Intent(NOTIFICATION);
                 intent.putExtra(DOWN_COUNT, millisUntilFinished);
                 intent.putExtra(DOWN_COUNT_ORIGIN, mTime);
+                intent.putExtra(DOWN_COUNT_TAG, mTags);
                 sendBroadcast(intent);
             }
 
@@ -54,6 +56,7 @@ public class DownCountService extends Service {
             public void onFinish() {
                 Intent intent = new Intent(NOTIFICATION);
                 intent.putExtra(COUNT_FINISH, true);
+                intent.putExtra(DOWN_COUNT_TAG, mTags);
                 sendBroadcast(intent);
             }
         }.start();
@@ -74,4 +77,7 @@ public class DownCountService extends Service {
         }
     }
 
+    public boolean isStop() {
+        return mIsStop;
+    }
 }

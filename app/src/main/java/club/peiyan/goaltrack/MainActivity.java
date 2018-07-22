@@ -39,6 +39,7 @@ import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
@@ -46,6 +47,7 @@ import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_ORIGIN;
+import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_TAG;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
@@ -91,15 +93,38 @@ public class MainActivity extends AppCompatActivity
     private DownCountService mService;
     private DownCountListener mDownCountListener;
 
+    private long mCostTimeMills;
+    private String[] mTags;
+    private long mCount;
+
+
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long mCount = intent.getLongExtra(DOWN_COUNT, 0);
-            long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
+            mTags = intent.getStringArrayExtra(DOWN_COUNT_TAG);
             boolean isFinish = intent.getBooleanExtra(COUNT_FINISH, false);
+
             if (mDownCountListener != null) {
-                mDownCountListener.onFinish(isFinish);
-                mDownCountListener.onTick(mCount, mOrigin);
+                if (isFinish) {
+                    mDownCountListener.onFinish(isFinish, mTags);
+                } else {
+                    mCount = intent.getLongExtra(DOWN_COUNT, 0);
+                    long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
+                    mDownCountListener.onTick(mCount, mOrigin, mTags);
+                    mCostTimeMills = mOrigin - mCount;
+                }
+            }
+
+            if (isFinish
+                    && mTags != null
+                    && mTags.length == 3) {
+//                if (mCostTimeMills > 15 * 60 * 1000) {
+                if (mCostTimeMills > 15) {
+                    // TODO: 2018/7/21 后续改成15分钟
+                    mDBHelper.updateScore(Integer.parseInt(mTags[2]), mTags[1], mTags[0], CalendaUtils.getCurrntDate(),
+                            mCostTimeMills, System.currentTimeMillis());
+                    notifyDataSetChange(null);
+                }
             }
         }
     };
@@ -426,4 +451,15 @@ public class MainActivity extends AppCompatActivity
         mDownCountListener = mListener;
     }
 
+    public DownCountService getService() {
+        return mService;
+    }
+
+    public String[] getTags() {
+        return mTags;
+    }
+
+    public long getCount() {
+        return mCount;
+    }
 }

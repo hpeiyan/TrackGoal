@@ -20,7 +20,6 @@ import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.listener.DownCountListener;
-import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
@@ -28,6 +27,7 @@ import club.peiyan.goaltrack.utils.TimeUtil;
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
+import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_TAG;
 
 /**
  * Created by HPY.
@@ -52,7 +52,6 @@ public class DownCountView {
     ImageView mIvClear;
     private SimpleDateFormat mTimeFormat = new SimpleDateFormat("HH:mm:ss");
     private long mMillisUntilFinished;
-    private long mCostTimeMills;
     private final GoalBean mGoalBean;
 
 
@@ -82,10 +81,31 @@ public class DownCountView {
     }
 
     private void initView() {
-        mIvTimeCount.setTag(R.id.time_count_tag, 2);
+        String[] mActivityTags = mActivity.getTags();
+        DownCountService mService = mActivity.getService();
+        if (mService != null
+                && mService.isStop()
+                && mActivity.getCount() > 0
+                && mActivityTags != null
+                && mActivityTags[0].equals(mGoalBean.getTitle())
+                && mActivityTags[1].equals(mGoalBean.getParent())
+                && mActivityTags[2].equals(String.valueOf(mGoalBean.getLevel()))) {
+
+            mTvRemainTime.setText(mTimeFormat.format(new Date(mActivity.getCount())));
+            mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_play_circle_outline_black_24dp));
+            mIvTimeCount.setTag(R.id.time_count_tag, 3);//pause
+            mIvClear.setVisibility(View.VISIBLE);
+
+            mMillisUntilFinished = mActivity.getCount();
+        } else {
+            mIvTimeCount.setTag(R.id.time_count_tag, 2);
+        }
+
         mTvRemainTime.setOnClickListener((v -> {
             if ((Integer) mIvTimeCount.getTag(R.id.time_count_tag) == 2) {
                 showTimePickerDialog();
+            } else if ((Integer) mIvTimeCount.getTag(R.id.time_count_tag) == 3) {
+                startDownCountService(mActivity.getCount());
             }
         }));
 
@@ -95,6 +115,9 @@ public class DownCountView {
                 if (mTag == 1) {
                     Intent mIntent = new Intent(mActivity, DownCountService.class);
                     mIntent.putExtra(COUNT_STOP, true);
+                    mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mGoalBean.getTitle(),
+                            mGoalBean.getParent(),
+                            String.valueOf(mGoalBean.getLevel())});
                     mActivity.startService(mIntent);
 
                     mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_play_circle_outline_black_24dp));
@@ -120,15 +143,24 @@ public class DownCountView {
                 public void onPosClickListener() {
                     Intent mIntent = new Intent(mActivity, DownCountService.class);
                     mIntent.putExtra(COUNT_FINISH, true);
+                    mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mGoalBean.getTitle(),
+                            mGoalBean.getParent(),
+                            String.valueOf(mGoalBean.getLevel())});
                     mActivity.startService(mIntent);
                 }
             });
         }));
         mActivity.setDownCountListener(new DownCountListener() {
             @Override
-            public void onTick(long millisUntilFinished, long origin) {
+            public void onTick(long millisUntilFinished, long origin, String[] tags) {
+                if (tags == null
+                        || tags.length != 3
+                        || !tags[0].equals(mGoalBean.getTitle())
+                        || !tags[1].equals(mGoalBean.getParent())
+                        || !tags[2].equals(String.valueOf(mGoalBean.getLevel()))) {
+                    return;
+                }
                 mMillisUntilFinished = millisUntilFinished;
-                mCostTimeMills = origin - millisUntilFinished;
                 mIvClear.setVisibility(View.VISIBLE);
                 mTvRemainTime.setText(mTimeFormat.format(new Date(millisUntilFinished)));
                 mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_pause_circle_outline_black_24dp));
@@ -136,25 +168,20 @@ public class DownCountView {
             }
 
             @Override
-            public void onFinish(boolean isFinish) {
-                if (!isFinish) return;
+            public void onFinish(boolean isFinish, String[] tags) {
+                if (!isFinish
+                        || tags == null
+                        || tags.length != 3
+                        || !tags[0].equals(mGoalBean.getTitle())
+                        || !tags[1].equals(mGoalBean.getParent())
+                        || !tags[2].equals(String.valueOf(mGoalBean.getLevel()))) {
+                    return;
+                }
                 mTvRemainTime.setText(mActivity.getString(R.string.start_downcount));
                 mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_timer_black_24dp));
                 mIvTimeCount.setTag(R.id.time_count_tag, 2);//finish
                 mMillisUntilFinished = 0;
                 mIvClear.setVisibility(View.GONE);
-//                if (mCostTimeMills > 15 * 60 * 1000) {
-                if (mCostTimeMills > 15) {
-                    // TODO: 2018/7/21 后续改成15分钟
-                    if (mGoalBean != null) {
-                        mActivity.getDBHelper().insertScore(mGoalBean.getLevel(),
-                                mGoalBean.getParent(), mGoalBean.getTitle(),
-                                CalendaUtils.getCurrntDate(), mCostTimeMills, System.currentTimeMillis());
-                        mActivity.getDBHelper().updateScore(mGoalBean.getLevel(), mGoalBean.getParent(),
-                                mGoalBean.getTitle(), CalendaUtils.getCurrntDate(), mCostTimeMills, System.currentTimeMillis());
-                        mActivity.notifyDataSetChange(null);
-                    }
-                }
             }
         });
     }
@@ -180,6 +207,9 @@ public class DownCountView {
     private void startDownCountService(long mTime) {
         Intent mIntent = new Intent(mActivity, DownCountService.class);
         mIntent.putExtra(DOWN_COUNT, mTime);
+        mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mGoalBean.getTitle(),
+                mGoalBean.getParent(),
+                String.valueOf(mGoalBean.getLevel())});
         mActivity.startService(mIntent);
 
         mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_pause_circle_outline_black_24dp));

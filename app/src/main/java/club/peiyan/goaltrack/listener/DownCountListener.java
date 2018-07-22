@@ -7,6 +7,6 @@ package club.peiyan.goaltrack.listener;
  */
 
 public interface DownCountListener {
-    void onTick(long count,long countOrigin);
-    void onFinish(boolean isFinish);
+    void onTick(long count,long countOrigin,String[] tags);
+    void onFinish(boolean isFinish,String[] tags);
 }
