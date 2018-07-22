@@ -17,10 +17,16 @@ public class TimeUtil {
         return mTimeFormat.format(new Date(costTime + 16 * 60 * 60 * 1000));
     }
 
+    public static String formatDownTime(long downCountTime) {
+        return mTimeFormat.format(new Date(downCountTime));
+    }
+
     public static String formateCostTime(int hourOfDay, int minute) {
         int mCurrentHours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         int mCurrentMinutes = Calendar.getInstance().get(Calendar.MINUTE);
         int time = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute - mCurrentMinutes)) * 60 * 1000;
         return mTimeFormat.format(new Date(time));
     }
+
+
 }

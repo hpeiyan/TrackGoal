@@ -18,21 +18,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
@@ -41,10 +50,14 @@ import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.ListUtil;
+import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
+import club.peiyan.goaltrack.utils.UIThread;
+import club.peiyan.goaltrack.utils.ViewUtil;
 import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
+import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_ORIGIN;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_TAG;
@@ -53,7 +66,7 @@ import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener,
         SyncDataTask.OnSyncListener,
-        ServiceConnection {
+        ServiceConnection, DownCountListener {
 
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
@@ -73,6 +86,17 @@ public class MainActivity extends AppCompatActivity
     ViewPager mContainer;
     @BindView(R.id.rlSyncPB)
     RelativeLayout mRlSyncPB;
+    @BindView(R.id.tvDownCount)
+    TextView mTvDownCount;
+    @BindView(R.id.ivPausePlay)
+    ImageView mIvPausePlay;
+    @BindView(R.id.ivClose)
+    ImageView mIvClose;
+    @BindView(R.id.rlDownCount)
+    RelativeLayout mRlDownCount;
+    @BindView(R.id.pbSync)
+    ProgressBar mPbSync;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private DBHelper mDBHelper;
 
@@ -91,11 +115,12 @@ public class MainActivity extends AppCompatActivity
     private TextView mTvUserName;
     private SubMenu mAppSubMenu;
     private DownCountService mService;
-    private DownCountListener mDownCountListener;
+    private ArrayList<DownCountListener> mListenerList = new ArrayList<>();
 
     private long mCostTimeMills;
     private String[] mTags;
     private long mCount;
+//    private Snackbar mSnackbar;
 
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -103,29 +128,21 @@ public class MainActivity extends AppCompatActivity
         public void onReceive(Context context, Intent intent) {
             mTags = intent.getStringArrayExtra(DOWN_COUNT_TAG);
             boolean isFinish = intent.getBooleanExtra(COUNT_FINISH, false);
-
-            if (mDownCountListener != null) {
-                if (isFinish) {
-                    mDownCountListener.onFinish(isFinish, mTags);
-                } else {
-                    mCount = intent.getLongExtra(DOWN_COUNT, 0);
-                    long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
-                    mDownCountListener.onTick(mCount, mOrigin, mTags);
-                    mCostTimeMills = mOrigin - mCount;
+            if (mListenerList.size() > 0) {
+                for (DownCountListener mDownCountListener : mListenerList) {
+                    if (mDownCountListener != null) {
+                        if (isFinish) {
+                            mDownCountListener.onFinish(isFinish, mTags);
+                        } else {
+                            mCount = intent.getLongExtra(DOWN_COUNT, 0);
+                            long mOrigin = intent.getLongExtra(DOWN_COUNT_ORIGIN, 0);
+                            mDownCountListener.onTick(mCount, mOrigin, mTags);
+                            mCostTimeMills = mOrigin - mCount;
+                        }
+                    }
                 }
             }
 
-            if (isFinish
-                    && mTags != null
-                    && mTags.length == 3) {
-//                if (mCostTimeMills > 15 * 60 * 1000) {
-                if (mCostTimeMills > 15) {
-                    // TODO: 2018/7/21 后续改成15分钟
-                    mDBHelper.updateScore(Integer.parseInt(mTags[2]), mTags[1], mTags[0], CalendaUtils.getCurrntDate(),
-                            mCostTimeMills, System.currentTimeMillis());
-                    notifyDataSetChange(null);
-                }
-            }
         }
     };
 
@@ -153,6 +170,19 @@ public class MainActivity extends AppCompatActivity
             setSyncPBVisible(true);
             startSync(this);
         }
+        setDownCountListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     private void setSyncPBVisible(final boolean isShow) {
@@ -160,9 +190,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
-//        if (mSingleAllGoals != null && mSingleAllGoals.size() > 0) {
-//            setMode((Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 20) ? true : false);
-//        }
         setSupportActionBar(mToolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -448,7 +475,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setDownCountListener(DownCountListener mListener) {
-        mDownCountListener = mListener;
+        mListenerList.add(mListener);
     }
 
     public DownCountService getService() {
@@ -462,4 +489,100 @@ public class MainActivity extends AppCompatActivity
     public long getCount() {
         return mCount;
     }
+
+    @Override
+    public void onTick(long count, long countOrigin, String[] tags) {
+        String mTitle = "";
+        if (tags != null && tags.length == 3) {
+            mTitle = tags[0];
+        }
+        mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
+        String countHtml = mTitle + ":    " + "<big><big><big>" + TimeUtil.formatDownTime(count) + "</big></big></big>";
+        mTvDownCount.setText(Html.fromHtml(countHtml));
+        if (!ViewUtil.isVisible(mRlDownCount)) {
+            mRlDownCount.setVisibility(View.VISIBLE);
+            getSupportActionBar().hide();
+        }
+    }
+
+    @Override
+    public void onFinish(boolean isFinish, String[] tags) {
+        if (isFinish) {
+            if (ViewUtil.isVisible(mRlDownCount)) {
+                mRlDownCount.setVisibility(View.GONE);
+                getSupportActionBar().show();
+            }
+            if (mTags != null
+                    && mTags.length == 3) {
+//                if (mCostTimeMills > 15 * 60 * 1000) {
+                if (mCostTimeMills > 15) {
+                    // TODO: 2018/7/21 后续改成15分钟
+                    mDBHelper.updateScore(Integer.parseInt(mTags[2]), mTags[1], mTags[0], CalendaUtils.getCurrntDate(),
+                            mCostTimeMills, System.currentTimeMillis());
+                }
+            }
+//            notifyDataSetChange(null);
+//            mTags = new String[0];
+//            mCount = 0;
+            mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
+            mCostTimeMills = 0;
+            isPause = false;
+        }
+    }
+
+    private boolean isPause = false;// now status
+
+    @OnClick({R.id.ivPausePlay, R.id.ivClose})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.ivPausePlay:
+                if (isPause) {
+                    mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
+                    continueDownCount();
+                } else {
+                    mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
+                    pauseDownCount();
+                    UIThread.postDelay(() -> notifyDataSetChange(null), 200);
+                }
+                isPause = !isPause;
+                break;
+            case R.id.ivClose:
+                finishDownCount();
+                break;
+        }
+    }
+
+    private void pauseDownCount() {
+        Intent mIntent = new Intent(this, DownCountService.class);
+        mIntent.putExtra(COUNT_STOP, true);
+        mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
+                mTags[1],
+                String.valueOf(mTags[2])});
+        startService(mIntent);
+    }
+
+    private void finishDownCount() {
+        Intent mIntent = new Intent(this, DownCountService.class);
+        mIntent.putExtra(COUNT_FINISH, true);
+        mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
+                mTags[1],
+                String.valueOf(mTags[2])});
+        startService(mIntent);
+    }
+
+    private void continueDownCount() {
+        Intent mIntent = new Intent(this, DownCountService.class);
+        mIntent.putExtra(DOWN_COUNT, mCount);
+        mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
+                mTags[1],
+                String.valueOf(mTags[2])});
+        startService(mIntent);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPauseEvent(PauseEvent event) {
+        mIvPausePlay.setImageDrawable(getResources()
+                .getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
+    }
+
 }

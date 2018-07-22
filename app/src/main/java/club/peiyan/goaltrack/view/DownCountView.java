@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +21,7 @@ import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.data.ScoreBean;
+import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
@@ -122,6 +125,7 @@ public class DownCountView {
 
                     mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_play_circle_outline_black_24dp));
                     mIvTimeCount.setTag(R.id.time_count_tag, 3);//pause
+                    EventBus.getDefault().post(new PauseEvent());
                 } else {
                     startDownCountService(mMillisUntilFinished);
                     mIvTimeCount.setImageDrawable(mActivity.getResources().getDrawable(R.mipmap.ic_pause_circle_outline_black_24dp));
@@ -216,5 +220,4 @@ public class DownCountView {
         mIvTimeCount.setTag(R.id.time_count_tag, 1);//play
         mIvClear.setVisibility(View.VISIBLE);
     }
-
 }
