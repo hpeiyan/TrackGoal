@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
 import android.os.CountDownTimer;
@@ -101,6 +102,8 @@ public class DownCountService extends Service {
                 mBuilder.setProgress(0, 0, false)
                         .setContentText("祝贺你，完成任务！！！");
                 notificationManager.notify(DOWN_COUNT_NOTION_ID, mBuilder.build());
+                MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
+                mPlayer.start();
             }
         }.start();
 
