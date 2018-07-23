@@ -64,6 +64,8 @@ public class DownCountService extends Service {
         mBuilder.setSmallIcon(R.mipmap.icon_app)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentTitle(mTags[0])
+                .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
+                .setOnlyAlertOnce(true)//只在开始的时候开提醒音
                 .setContentIntent(pendingIntent)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true);
