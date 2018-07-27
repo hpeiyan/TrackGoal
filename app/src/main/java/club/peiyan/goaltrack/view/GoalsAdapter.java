@@ -218,8 +218,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                                         = mMainActivity.getDBHelper().getSubAndContactParentGoal(mBean);
                                 if (mSubAndContactParentGoal != null && mSubAndContactParentGoal.size() > 0) {
                                     for (GoalBean bean : mSubAndContactParentGoal) {
-                                        for (String item : bean.getItemSplit()) {
-                                            mDBHelper.deleteScore(item);
+                                        String[] mItemSplit = bean.getItemSplit();
+                                        if (mItemSplit != null && mItemSplit.length > 0) {
+                                            for (String item : mItemSplit) {
+                                                mDBHelper.deleteScore(item);
+                                            }
                                         }
                                         bean.setStatus(2);
                                         mMainActivity.getDBHelper().updateGoal(bean);
