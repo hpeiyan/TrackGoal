@@ -29,6 +29,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -464,6 +466,8 @@ public class MainActivity extends AppCompatActivity
         bindService(intent, this, Context.BIND_AUTO_CREATE);
         registerReceiver(mReceiver, new IntentFilter(
                 DownCountService.NOTIFICATION));
+        MobclickAgent.onResume(this);
+        MobclickAgent.onPause(this);
     }
 
     @Override

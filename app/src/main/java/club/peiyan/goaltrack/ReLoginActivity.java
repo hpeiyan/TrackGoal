@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -72,6 +74,7 @@ public class ReLoginActivity extends AppCompatActivity implements RegisterTask.O
 
     @Override
     public void onVerifySuccess() {
+        MobclickAgent.onProfileSignIn(mName);
         MainActivity.startMainActivity(ReLoginActivity.this, mName, true);
     }
 
@@ -82,6 +85,9 @@ public class ReLoginActivity extends AppCompatActivity implements RegisterTask.O
 
     @Override
     public void onRegisterSuccess() {
+        MobclickAgent.onProfileSignIn(mName);
+//        //登出
+//        MobclickAgent.onProfileSignOff();
         MainActivity.startMainActivity(ReLoginActivity.this, mName, false);
     }
 
@@ -89,4 +95,17 @@ public class ReLoginActivity extends AppCompatActivity implements RegisterTask.O
     public void onRegisterFail() {
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 }

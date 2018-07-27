@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -593,5 +594,15 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                 }
             }
         });
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("CreatingPlanPage"); //统计页面("MainScreen"为页面名称，可自定义)
+    }
+
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("CreatingPlanPage");
     }
 }

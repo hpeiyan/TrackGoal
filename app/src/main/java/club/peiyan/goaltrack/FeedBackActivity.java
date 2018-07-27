@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -81,5 +83,17 @@ public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.
     @Override
     public void onFeedbackFail() {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

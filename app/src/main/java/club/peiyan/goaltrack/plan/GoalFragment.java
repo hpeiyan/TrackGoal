@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -138,5 +140,14 @@ public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     public void setActivity(MainActivity mMainActivity) {
         mActivity = mMainActivity;
+    }
+
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("GoalFragment"); //统计页面("MainScreen"为页面名称，可自定义)
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("GoalFragment");
     }
 }
