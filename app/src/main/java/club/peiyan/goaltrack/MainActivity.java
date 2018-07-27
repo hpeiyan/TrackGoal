@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private static final String SYNC_DATA = "sync_data";
     private static final int FEEDBACKID = 1024;
+    private static final int ALARM_SETTING_ID = 1026;
     private static final int ADD_GOAL_ID = 1086;
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
@@ -251,6 +252,8 @@ public class MainActivity extends AppCompatActivity
         mAppSubMenu.clear();
         MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
         mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
+        MenuItem mAlarmItem = mAppSubMenu.add(R.id.app, ALARM_SETTING_ID, 2, getString(R.string.alarm_setting));
+        mAlarmItem.setIcon(R.drawable.ic_menu_manage);
     }
 
     public SubMenu getGoalSubMenu() {
@@ -331,6 +334,9 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case FEEDBACKID:
                 FeedBackActivity.startFeedbackActivity(MainActivity.this);
+                break;
+            case ALARM_SETTING_ID:
+                PushQAActivity.startPushActivity(MainActivity.this);
                 break;
             case ADD_GOAL_ID:
                 createParentPlan();

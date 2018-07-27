@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
+    flavorDimensions "versionCode"
     defaultConfig {
         applicationId "club.peiyan.goaltrack"
         minSdkVersion 19
@@ -9,6 +10,21 @@ android {
         versionCode 1002
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [UMENG_CHANNEL_VALUE: "huawei"]//添加一个默认渠道号
+    }
+
+    productFlavors {
+        Tencent {}
+        Vivo {}
+        Oppo {}
+        Xiaomi {}
+        Baidu {}
+        Huawei {}
+        Meizu {}
+    }
+
+    productFlavors.all {
+        flavor -> flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
     }
 
     signingConfigs {
@@ -33,8 +49,10 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
+            minifyEnabled false
             signingConfig signingConfigs.release
         }
+
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

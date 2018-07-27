@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      lang="zh-CN">
+    <head>
+        <meta
+                http-equiv="Content-Type"
+                content="text/html; charset=utf-8"/>
+        <title>常见问题</title>
+        <meta
+                name="viewport"
+                content="initial-scale=1.0, maximum-scale=1, user-scalable=no"/>
+        <link
+                rel="stylesheet"
+                type="text/css"
+                href="/css/reset.css"/>
+        <link
+                rel="stylesheet"
+                type="text/css"
+                href="/css/minisite.css?ver=3"/>
+    </head>
+    <body
+            id="app_ihour_android"
+            class="pageWhite">
+        <div id="wrapper">
+            <div class="main">
+                <h1>收不到推送通知怎么办</h1>
+                <p class="desc">
+                    因为国产第三方 Android 系统限制推送相关功能，您需要手动开启推送功能。
+                </p>
+
+                <div class="list">
+                    <h3>小米 MIUI</h3>
+                    <ul>
+                        <li>自启动管理：需要把应用加到
+                            <strong>「自启动管理」</strong>
+                            列表，否则杀进程或重新开机后进程无法开启
+                        </li>
+                        <li>通知栏设置：应用默认都是显示通知栏通知，如果关闭，则收到通知也不会提示</li>
+                        <li>网络助手：可以手动禁止已安装的第三方程序访问2G/3G和WIFI的网络和设置以后新安装程序是否允许访问2G/3G和WIFI的网络</li>
+                        <li>MIUI 7 神隐模式：允许应用进行自定义配置模式，应用在后台保持联网可用，否则应用进入后台时，应用无法正常接收消息。<strong>
+                            「设置」</strong>下电量和性能中
+                            <strong>「神隐模式」</strong>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="list">
+                    <h3>华为 Emotion</h3>
+                    <ul>
+                        <li>自启动管理：需要把应用加到
+                            <strong>「自启动管理」</strong>
+                            列表，否则杀进程或重新开机后进程不会开启，只能手动开启应用
+                        </li>
+                        <li>后台应用保护：需要手动把应用加到此列表，否则设备进入睡眠后会自动杀掉应用进程，只有手动开启应用才能恢复运行</li>
+                        <li>通知管理：应用状态有三种：提示、允许、禁止。禁止应用则通知栏不会有任何提醒</li>
+                    </ul>
+                </div>
+
+                <div class="list">
+                    <h3>魅族 Flyme</h3>
+                    <ul>
+                        <li>自启动管理：需要把应用加到
+                            <strong>「自启动管理」</strong>
+                            列表，否则杀进程或重新开机后进程无法开启
+                        </li>
+                        <li>通知栏推送：关闭应用通知则收到消息不会有任何展示</li>
+                        <li>省电管理： 安全中心里设置省电模式，在
+                            <strong>「待机耗电管理」</strong>
+                            中允许应用待机时，保持允许，否则手机休眠或者应用闲置一段时间，无法正常接收消息。
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="list">
+                    <h3>VIVO Funtouch OS</h3>
+                    <ul>
+                        <li>内存一键清理：需要将应用加入<strong>「白名单」</strong>列表，否则系统自带的“一键加速”，会杀掉进程
+                        </li>
+                        <li>自启动管理：需要将应用加入“i管家”中的<strong>「自启动管理」</strong>
+                            列表，否则重启手机后进程不会自启。但强制手动杀进程，即使加了这个列表中，后续进程也无法自启动。
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="list">
+                    <h3>OPPO ColorOS</h3>
+                    <ul>
+                        <li>冻结应用管理：需要将应用加入纯净后台，否则锁屏状态下无法及时收到消息</li>
+                        <li>自启动管理：将应用加入<strong>「自启动管理」</strong>列表的同时，还需要到<strong>「设置」</strong>-
+                            <strong>「应用程序」</strong>-<strong>「正在运行」</strong>
+                            里锁定应用进程，否则杀进程或者开机后进程不会开启，只能手动开启应用
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="list">
+                    <h3>锤子 SmartisanOS</h3>
+                    <ul>
+                        <li>通知提醒：前往<strong>「设置」</strong>-<strong>「应用管理」</strong>-<strong>
+                            「应用程序管理」</strong>。找到应用，开启<strong>「允许推送通知」</strong>，进入
+                            <strong>「权限管理」，开启
+                                <strong>「允许被系统启动」</strong>
+                            </strong>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>
