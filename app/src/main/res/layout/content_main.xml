@@ -52,6 +52,13 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/flDownCount"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <FrameLayout
         android:id="@+id/flGoal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

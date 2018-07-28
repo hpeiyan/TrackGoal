@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -50,6 +51,7 @@ import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
+import club.peiyan.goaltrack.plan.DownCountFragment;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
@@ -60,6 +62,8 @@ import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.utils.UIThread;
 import club.peiyan.goaltrack.utils.ViewUtil;
 
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 import static android.view.animation.Animation.INFINITE;
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
@@ -82,16 +86,6 @@ public class MainActivity extends AppCompatActivity
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.tvDownCount)
-    TextView mTvDownCount;
-    @BindView(R.id.ivPausePlay)
-    ImageView mIvPausePlay;
-    @BindView(R.id.ivClose)
-    ImageView mIvClose;
-    @BindView(R.id.rlDownCount)
-    RelativeLayout mRlDownCount;
-    @BindView(R.id.flGoal)
-    FrameLayout mFlGoal;
     @BindView(R.id.pbSync)
     ProgressBar mPbSync;
     @BindView(R.id.rlSyncPB)
@@ -102,6 +96,18 @@ public class MainActivity extends AppCompatActivity
     NavigationView mNavView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    @BindView(R.id.flDownCount)
+    FrameLayout mFlDownCount;
+    @BindView(R.id.flGoal)
+    FrameLayout mFlGoal;
+    @BindView(R.id.tvDownCount)
+    TextView mTvDownCount;
+    @BindView(R.id.ivPausePlay)
+    ImageView mIvPausePlay;
+    @BindView(R.id.ivClose)
+    ImageView mIvClose;
+    @BindView(R.id.rlDownCount)
+    RelativeLayout mRlDownCount;
 
     private DBHelper mDBHelper;
 
@@ -147,6 +153,9 @@ public class MainActivity extends AppCompatActivity
         }
     };
     private Animation mAnimation;
+    private DownCountFragment mDownCountFragment;
+    private boolean mIsForceClosePage;
+
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
@@ -175,18 +184,6 @@ public class MainActivity extends AppCompatActivity
         setDownCountListener(this);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
     private void setSyncPBVisible(final boolean isShow) {
         mRlSyncPB.post(() -> mRlSyncPB.setVisibility(isShow ? View.VISIBLE : View.GONE));
     }
@@ -197,18 +194,15 @@ public class MainActivity extends AppCompatActivity
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        getSupportActionBar().show();
         getSupportActionBar().setTitle(titleRes[1]);
-
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
         mAppSubMenu = mNavView.getMenu().addSubMenu("App");
         initMenuItem("");
-
-        mGoalFragment = new GoalFragment();
-        mGoalFragment.setActivity(this);
-        mGoalFragment.setData(mSingleAllGoals);
-        getSupportFragmentManager().beginTransaction().add(R.id.flGoal, mGoalFragment).commit();
-
+        mDownCountFragment = new DownCountFragment();
+        showGoalPage();
+        showDownCountPage();
         View mHeaderView = mNavView.getHeaderView(0);
         mTvUserName = mHeaderView.findViewById(R.id.tvUserName);
         mTvUserName.setText(AppSp.getString(Constants.USER_NAME, "佚名"));
@@ -216,6 +210,33 @@ public class MainActivity extends AppCompatActivity
         if (ListUtil.isEmpty(mParentGoals)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
+    }
+
+    public void showDownCountPage() {
+        if (mDownCountFragment == null) {
+            mDownCountFragment = new DownCountFragment();
+        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flDownCount, mDownCountFragment, "DownCountFragment")
+                .commit();
+    }
+
+    public void showGoalPage() {
+        if (mGoalFragment == null) {
+            mGoalFragment = new GoalFragment();
+        }
+        mGoalFragment.setActivity(this);
+        mGoalFragment.setData(mSingleAllGoals);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.flGoal, mGoalFragment, "GoalFragment")
+                .commit();
+    }
+
+    public boolean isDownPageShow() {
+        Fragment mFragment = getSupportFragmentManager().findFragmentByTag("DownCountFragment");
+        return mFragment != null && mFragment.isResumed();
     }
 
     private void initMenuItem(String mGoalTitle) {
@@ -269,9 +290,23 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
+        if (ViewUtil.isVisible(mRlDownCount)) {
+            DialogUtil.showSingleDialog(this, "最小化吗？", "任务还在进行\n保持专注是第一生产力", "否", "是的", new DialogUtil.DialogListener() {
+                @Override
+                public void onNegClickListener() {
+
+                }
+
+                @Override
+                public void onPosClickListener() {
+                    mIsForceClosePage = true;
+                    hideDownCountPage();
+                }
+            });
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
@@ -470,6 +505,11 @@ public class MainActivity extends AppCompatActivity
         return mCount;
     }
 
+    public long getCostTimeMills() {
+        return mCostTimeMills;
+    }
+
+
     @Override
     public void onTick(long count, long countOrigin, String[] tags) {
         String mTitle = "";
@@ -483,11 +523,27 @@ public class MainActivity extends AppCompatActivity
             mRlDownCount.setVisibility(View.VISIBLE);
             getSupportActionBar().hide();
         }
+
+        if (!ViewUtil.isVisible(mFlDownCount) && !mIsForceClosePage) {
+            setVisibleDownCountPage();
+        }
+    }
+
+    private void setVisibleDownCountPage() {
+        ViewUtil.setVisible(mFlDownCount);
+        ViewUtil.setGone(mFlGoal);
+        ViewUtil.setGone(mFab);
+        getSupportActionBar().hide();
+        mDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
     public void onFinish(boolean isFinish, String[] tags) {
         if (isFinish) {
+            mIsForceClosePage = !mIsForceClosePage;
+            if (ViewUtil.isVisible(mFlDownCount)) {
+                hideDownCountPage();
+            }
             if (ViewUtil.isVisible(mRlDownCount)) {
                 mRlDownCount.setVisibility(View.GONE);
                 getSupportActionBar().show();
@@ -505,6 +561,13 @@ public class MainActivity extends AppCompatActivity
             mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
             isPause = false;
         }
+    }
+
+    private void hideDownCountPage() {
+        ViewUtil.setVisible(mFlGoal);
+        ViewUtil.setVisible(mFab);
+        ViewUtil.setGone(mFlDownCount);
+        mDrawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED);
     }
 
     private boolean isPause = false;// now status
@@ -571,5 +634,18 @@ public class MainActivity extends AppCompatActivity
         mIvPausePlay.setImageDrawable(getResources()
                 .getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
 
 }

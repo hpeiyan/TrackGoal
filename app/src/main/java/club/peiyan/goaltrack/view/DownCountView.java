@@ -78,8 +78,11 @@ public class DownCountView {
             if (!ListUtil.isEmpty(mBeanArrayList)) {
                 ScoreBean mScoreBean = mBeanArrayList.get(0);
                 if (mScoreBean != null) {
+                    mRlCost.setVisibility(View.VISIBLE);
                     String mCostTime = TimeUtil.formateCostTime(mScoreBean.getScore());
                     mTvCostTime.setText(mCostTime);
+                } else {
+                    mRlCost.setVisibility(View.GONE);
                 }
             }
         }
