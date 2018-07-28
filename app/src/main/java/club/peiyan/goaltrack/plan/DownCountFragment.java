@@ -58,9 +58,12 @@ public class DownCountFragment extends Fragment implements DownCountListener {
     RelativeLayout mRlDownCount;
     @BindView(R.id.cpv)
     CircleProgressView mCircleView;
+    @BindView(R.id.tvTitle)
+    TextView mTvTitle;
     private MainActivity mMainActivity;
     private String[] mTags;
     private long mCount;
+    private long mOrigin;
 
 
     @Override
@@ -81,7 +84,6 @@ public class DownCountFragment extends Fragment implements DownCountListener {
 
     private void initView() {
         mCircleView.setShowTextWhileSpinning(true); // Show/hide text in spinning mode
-        mCircleView.setText("Loading...");
         mCircleView.setUnitPosition(UnitPosition.RIGHT_TOP);
         mCircleView.setUnit("%");
         mCircleView.setUnitVisible(true);
@@ -89,8 +91,11 @@ public class DownCountFragment extends Fragment implements DownCountListener {
         mCircleView.setTextScale(0.9f);
         mCircleView.setTextColorAuto(true);
         mCircleView.setAutoTextSize(true);
-        mCircleView.setBarColor(getResources().getColor(R.color.colorPrimary), getResources().getColor(R.color.colorAccent));
-
+        mCircleView.setFillCircleColor(getResources().getColor(R.color.colorPrimaryLight));
+        mCircleView.setRimColor(getResources().getColor(R.color.md_grey_700));
+        mCircleView.setBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        mCircleView.setInnerContourColor(getResources().getColor(R.color.md_grey_700));
+        mCircleView.setOuterContourColor(getResources().getColor(R.color.md_grey_700));
     }
 
     @Override
@@ -111,15 +116,18 @@ public class DownCountFragment extends Fragment implements DownCountListener {
 
     @Override
     public void onTick(long count, long countOrigin, String[] tags) {
+        if (mOrigin == 0 || mOrigin < countOrigin) {
+            mOrigin = countOrigin;
+        }
         String mTitle = "";
         if (tags != null && tags.length == 3) {
             mTitle = tags[0];
         }
         mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
-        String countHtml = mTitle + ":    " + "<big><big><big>" + TimeUtil.formatDownTime(count) + "</big></big></big>";
-        mTvDownCount.setText(Html.fromHtml(countHtml));
-        int mProgress = (int) ((100 * (countOrigin - count) / (countOrigin - TimeUtil.THRESHOLD)));
-
+        mTvTitle.setText(mTitle);
+        String mCountTime = "<big><big><big>" + TimeUtil.formatDownTime(count) + "</big></big></big>";
+        mTvDownCount.setText(Html.fromHtml(mCountTime));
+        int mProgress = (int) ((100 * (mOrigin - count) / (mOrigin - TimeUtil.THRESHOLD)));
         mCircleView.setValueAnimated(mProgress, 100);
     }
 
@@ -139,6 +147,7 @@ public class DownCountFragment extends Fragment implements DownCountListener {
             mMainActivity.notifyDataSetChange(null);
             mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
             isPause = false;
+            mOrigin = 0;
         }
     }
 

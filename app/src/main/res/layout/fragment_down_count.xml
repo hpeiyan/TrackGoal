@@ -4,7 +4,7 @@
     android:id="@+id/rlDownCount"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_grey_500"
+    android:background="@color/md_grey_700"
     android:padding="8dp"
     android:visibility="visible">
 
@@ -16,38 +16,55 @@
         android:layout_marginTop="60dp"/>
 
     <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cpv"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/md_white_1000"
+        android:textSize="@dimen/text_title_dimen"
+        />
+
+    <TextView
         android:id="@+id/tvDownCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/tvTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         android:gravity="center_vertical"
         android:maxLines="1"
-        android:maxWidth="200dp"
-        android:text="@string/app_name"
         android:textColor="@color/md_white_1000"
+        android:textSize="@dimen/text_title_dimen"
         />
 
-    <ImageView
-        android:id="@+id/ivPausePlay"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="50dp"
-        android:layout_marginRight="5dp"
-        android:layout_toLeftOf="@+id/ivClose"
-        android:padding="8dp"
-        android:src="@mipmap/ic_pause_circle_outline_white_24dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
+        android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/ivClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="50dp"
-        android:padding="8dp"
-        android:src="@mipmap/ic_close_white_24dp"/>
+        <ImageView
+            android:id="@+id/ivPausePlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="55dp"
+            android:layout_toLeftOf="@+id/ivClose"
+            android:padding="8dp"
+            android:src="@mipmap/ic_pause_circle_outline_white_24dp"/>
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@mipmap/ic_close_white_24dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
