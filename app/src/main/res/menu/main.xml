@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <item
         android:id="@+id/action_sync"
-        android:icon="@mipmap/ic_cloud_circle_white_24dp"
+        android:icon="@mipmap/ic_autorenew_white_24dp"
         android:orderInCategory="100"
         android:title="同步"
+        app:actionViewClass="android.widget.ImageView"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/action_mode"
+        android:id="@+id/action_score"
         android:checked="true"
-        android:icon="@mipmap/ic_lock_open_white_24dp"
+        android:icon="@mipmap/ic_trending_up_white_24dp"
         android:orderInCategory="100"
         android:title="编辑模式"
         app:showAsAction="ifRoom"/>

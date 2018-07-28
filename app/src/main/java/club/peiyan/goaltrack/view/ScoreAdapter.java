@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.GoalApplication;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.ScoreBean;
+import club.peiyan.goaltrack.data.ScoreList;
 
 /**
  * Created by HPY.
@@ -25,9 +26,9 @@ import club.peiyan.goaltrack.data.ScoreBean;
 public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    private ArrayList mScoreList;
+    private ArrayList<ScoreList> mScoreList;
 
-    public void setData(ArrayList mPastScoreList) {
+    public void setData(ArrayList<ScoreList> mPastScoreList) {
         mScoreList = mPastScoreList;
     }
 
@@ -39,24 +40,26 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ArrayList<ScoreBean> mScoreBeans = (ArrayList<ScoreBean>) mScoreList.get(position);
+        ScoreList mScoreBeans = mScoreList.get(position);
         ViewHolder mHolder = (ViewHolder) holder;
         int score = 0;
         int totalSie = 0;
-        if (mScoreBeans != null && mScoreBeans.size() > 0) {
-            for (ScoreBean bean : mScoreBeans) {
-                if (bean == null) continue;
-                score += bean.getScore();
-                View mView = View.inflate(GoalApplication.getContext(), R.layout.score_line_view, null);
-                TextView itemName = mView.findViewById(R.id.tvItemName);
-                itemName.setText(bean.getTitle());
-                ProgressBar pb = mView.findViewById(R.id.pbGoal);
-                pb.setProgress(bean.getScore());
-                mHolder.mLlScoreLine.addView(mView);
-                totalSie++;
-                mHolder.mTvScoreTitle.setText(bean.getDate());
+        if (mScoreBeans != null) {
+            if (mScoreBeans.getScoreBeans().size() > 0) {
+                for (ScoreBean bean : mScoreBeans.getScoreBeans()) {
+                    if (bean == null) continue;
+                    score += bean.getScore();
+                    View mView = View.inflate(GoalApplication.getContext(), R.layout.score_line_view, null);
+                    TextView itemName = mView.findViewById(R.id.tvItemName);
+                    itemName.setText(bean.getTitle());
+                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
+                    pb.setProgress(bean.getScore());
+                    mHolder.mLlScoreLine.addView(mView);
+                    totalSie++;
+                    mHolder.mTvScoreTitle.setText(bean.getDate());
+                }
+                mHolder.mTvScoreShow.setText(score + "/" + totalSie * 10);
             }
-            mHolder.mTvScoreShow.setText(score + "/" + totalSie * 10);
         }
     }
 

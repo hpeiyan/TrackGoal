@@ -11,9 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -43,12 +44,13 @@ import butterknife.OnClick;
 import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
+import club.peiyan.goaltrack.data.ScoreBean;
+import club.peiyan.goaltrack.data.ScoreList;
 import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.netTask.SyncDataTask;
 import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.GoalFragment;
-import club.peiyan.goaltrack.plan.ScoreFragment;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendaUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
@@ -57,8 +59,8 @@ import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.utils.UIThread;
 import club.peiyan.goaltrack.utils.ViewUtil;
-import club.peiyan.goaltrack.view.SectionsPagerAdapter;
 
+import static android.view.animation.Animation.INFINITE;
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
@@ -67,7 +69,7 @@ import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_TAG;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener,
+        implements NavigationView.OnNavigationItemSelectedListener,
         SyncDataTask.OnSyncListener,
         ServiceConnection, DownCountListener {
 
@@ -80,16 +82,6 @@ public class MainActivity extends AppCompatActivity
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
-    @BindView(R.id.nav_view)
-    NavigationView mNavView;
-    @BindView(R.id.drawer_layout)
-    DrawerLayout mDrawerLayout;
-    @BindView(R.id.container)
-    ViewPager mContainer;
-    @BindView(R.id.rlSyncPB)
-    RelativeLayout mRlSyncPB;
     @BindView(R.id.tvDownCount)
     TextView mTvDownCount;
     @BindView(R.id.ivPausePlay)
@@ -98,19 +90,26 @@ public class MainActivity extends AppCompatActivity
     ImageView mIvClose;
     @BindView(R.id.rlDownCount)
     RelativeLayout mRlDownCount;
+    @BindView(R.id.flGoal)
+    FrameLayout mFlGoal;
     @BindView(R.id.pbSync)
     ProgressBar mPbSync;
+    @BindView(R.id.rlSyncPB)
+    RelativeLayout mRlSyncPB;
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
 
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     private DBHelper mDBHelper;
 
     private ArrayList<GoalBean> mSingleAllGoals = new ArrayList<>();
     private GoalBean mLatestParentGoal;
     private ArrayList<GoalBean> mParentGoals;
     private SubMenu mGoalSubMenu;
-    private boolean mMode = true;//False预览模式, True编辑模式
     private GoalFragment mGoalFragment;
-    private MenuItem mModeMenu;
 
     private static final int[] titleRes = new int[]{R.string.score, R.string.goal};
     private static final int[] imgRes = new int[]{R.mipmap.ic_headset_black_24dp, R.mipmap.ic_toys_black_24dp,
@@ -147,6 +146,7 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
+    private Animation mAnimation;
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
         AppSp.putString(Constants.USER_NAME, mName);
@@ -204,20 +204,10 @@ public class MainActivity extends AppCompatActivity
         mAppSubMenu = mNavView.getMenu().addSubMenu("App");
         initMenuItem("");
 
-        ScoreFragment mScoreFragment = new ScoreFragment();
         mGoalFragment = new GoalFragment();
         mGoalFragment.setActivity(this);
         mGoalFragment.setData(mSingleAllGoals);
-
-        ArrayList<Fragment> mFragments = new ArrayList<>();
-        mFragments.add(mScoreFragment);
-        mFragments.add(mGoalFragment);
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.setData(mFragments);
-        mContainer.setAdapter(mSectionsPagerAdapter);
-        mContainer.setCurrentItem(1);
-        mContainer.addOnPageChangeListener(this);
+        getSupportFragmentManager().beginTransaction().add(R.id.flGoal, mGoalFragment).commit();
 
         View mHeaderView = mNavView.getHeaderView(0);
         mTvUserName = mHeaderView.findViewById(R.id.tvUserName);
@@ -226,10 +216,6 @@ public class MainActivity extends AppCompatActivity
         if (ListUtil.isEmpty(mParentGoals)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
-    }
-
-    public void setMode(boolean mMode) {
-        this.mMode = mMode;
     }
 
     private void initMenuItem(String mGoalTitle) {
@@ -292,8 +278,18 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        mModeMenu = menu.getItem(1);
-        initAppMode(mModeMenu);
+        ImageView syncIv = (ImageView) menu.findItem(R.id.action_sync).getActionView();
+        mAnimation = AnimationUtils.loadAnimation(this, R.anim.sync);
+        mAnimation.setRepeatMode(INFINITE);
+        mAnimation.setRepeatCount(Integer.MAX_VALUE);
+        if (syncIv != null) {
+            syncIv.setImageResource(R.mipmap.ic_autorenew_white_24dp);
+            syncIv.setOnClickListener(view -> {
+                view.startAnimation(mAnimation);
+                setSyncPBVisible(true);
+                startSync(this);
+            });
+        }
         return true;
     }
 
@@ -301,14 +297,17 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_mode:
-                item.setChecked(!item.isChecked());
-                setMode(item.isChecked());//触发开关之后的状态
-                initAppMode(item);
+            case R.id.action_score:
+                ArrayList<ScoreList> mPastScoreList = new ArrayList();
+                for (int i = 1; i < 7; i++) {
+                    ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
+                    if (mScoreBeans != null && mScoreBeans.size() > 0) {
+                        mPastScoreList.add(new ScoreList(mScoreBeans));
+                    }
+                }
+                ScoreActivity.startScoreActivity(this, mPastScoreList);
                 break;
             case R.id.action_sync:
-                setSyncPBVisible(true);
-                startSync(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -320,12 +319,6 @@ public class MainActivity extends AppCompatActivity
         new Thread(mTask).start();
     }
 
-    private void initAppMode(MenuItem item) {
-        item.setChecked(mMode);
-        item.setIcon(mMode ? R.mipmap.ic_lock_open_white_24dp : R.mipmap.ic_lock_outline_white_24dp);
-        mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-//        mGoalFragment.getRvGoal().setEditMode(!mMode);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -369,9 +362,6 @@ public class MainActivity extends AppCompatActivity
         mGoalFragment.getAdapter().setData(mSingleAllGoals);
         mGoalFragment.getAdapter().notifyDataSetChanged();
         initMenuItem(goalTitle);
-        if (mContainer.getCurrentItem() != 1) {
-            mContainer.setCurrentItem(1, true);
-        }
         if (goalTitle != null && !TextUtils.isEmpty(goalTitle)) {
             for (int i = 0; i < mSingleAllGoals.size(); i++) {
                 if (goalTitle.equals(mSingleAllGoals.get(i).getTitle())) {
@@ -416,38 +406,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        if (position != 1) {
-            mModeMenu.setVisible(false);
-            mFab.setVisibility(View.GONE);
-        } else {
-            mModeMenu.setVisible(true);
-            mFab.setVisibility(mMode ? View.VISIBLE : View.GONE);
-        }
-        getSupportActionBar().setTitle(titleRes[position]);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 
     @Override
     public void onSuccess() {
         ToastUtil.toast("同步成功");
         setSyncPBVisible(false);
+        mAnimation.cancel();
     }
 
     @Override
     public void onFail() {
         ToastUtil.toast("同步失败");
         setSyncPBVisible(false);
+        mAnimation.cancel();
     }
 
     public GoalFragment getGoalFragment() {

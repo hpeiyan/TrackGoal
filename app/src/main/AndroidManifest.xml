@@ -20,6 +20,7 @@
 
         <activity android:name=".FeedBackActivity"/>
         <activity android:name=".PushQAActivity"/>
+        <activity android:name=".ScoreActivity"/>
 
         <activity android:name=".ReLoginActivity">
             <intent-filter>
