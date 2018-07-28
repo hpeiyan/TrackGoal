@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
@@ -19,6 +18,7 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -169,25 +169,36 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             DialogFragmentCreatePlan.showDialog(mMainActivity.getFragmentManager(), mBean);
         });
 
+        int mNotionCountCount = holder.llNotionShow.getChildCount();
+        if (mNotionCountCount > 0) {
+            holder.llNotionShow.removeViews(0, mNotionCountCount);
+        }
+
         ArrayList<AlarmBean> mAlarms = mDBHelper.getAlarmByTitle(mBean.getTitle(), mBean.getParent());
         if (mAlarms != null && mAlarms.size() > 0) {
-            AlarmBean mAlarmBean = mAlarms.get(0);
-            int mHour = mAlarmBean.getHour();
-            int mMinute = mAlarmBean.getMinute();
-            String mHM = (mHour > 9 ? mHour : "0" + mHour) + " : " + (mMinute > 9 ? mMinute : "0" + mMinute);
-            if (!ListUtil.isEmpty(mAlarmBean.getSelectedDates())) {
-                List<CalendarDay> mDates = mAlarmBean.getSelectedDates();
-                StringBuilder mStringBuilder = new StringBuilder();
-                for (CalendarDay mDate : mDates) {
-                    int mYear = mDate.getYear();
-                    int mMonth = mDate.getMonth();
-                    int mDay = mDate.getDay();
-                    mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + ",");
+            StringBuilder mStringBuilder = new StringBuilder();
+            for (AlarmBean mAlarmBean : mAlarms) {
+                final View mView = View.inflate(mMainActivity, R.layout.layout_notion_show, null);
+                TextView tvNotionDate = mView.findViewById(R.id.tvNotionDate);
+                TextView tvNotionTime = mView.findViewById(R.id.tvNotionTime);
+
+                int mHour = mAlarmBean.getHour();
+                int mMinute = mAlarmBean.getMinute();
+                String mHM = (mHour > 9 ? mHour : "0" + mHour) + " : " + (mMinute > 9 ? mMinute : "0" + mMinute);
+                tvNotionTime.setText(mHM);
+
+                if (!ListUtil.isEmpty(mAlarmBean.getSelectedDates())) {
+                    List<CalendarDay> mDates = mAlarmBean.getSelectedDates();
+                    for (int i = 0; i < mDates.size(); i++) {
+                        CalendarDay mDate = mDates.get(i);
+                        Date mDateDate = mDate.getDate();
+                        mStringBuilder.append(i == mDates.size() - 1 ? String.format("%tF", mDateDate) : String.format("%tF%n", mDateDate));
+                    }
+                    tvNotionDate.setText(mStringBuilder.toString());
+                } else {
+                    tvNotionDate.setText("每天");
                 }
-                mStringBuilder.append(mHM);
-                holder.tvAlarmInfo.setText(mStringBuilder.toString());
-            } else {
-                holder.tvAlarmInfo.setText("每天 " + mHM);
+                holder.llNotionShow.addView(mView);
             }
             holder.rlAlarm.setVisibility(View.VISIBLE);
         } else {
@@ -271,10 +282,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         SwipeMenuLayout swMenu;
         @BindView(R.id.ivAlarm)
         ImageView ivAlarm;
-        @BindView(R.id.tvAlarmInfo)
-        TextView tvAlarmInfo;
+        @BindView(R.id.llNotionShow)
+        LinearLayout llNotionShow;
         @BindView(R.id.rlAlarm)
-        RelativeLayout rlAlarm;
+        LinearLayout rlAlarm;
 
         GoalViewHolder(View view) {
             super(view);

@@ -54,7 +54,8 @@
     <FrameLayout
         android:id="@+id/flGoal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlDownCount"/>
 
     <RelativeLayout
         android:id="@+id/rlSyncPB"
