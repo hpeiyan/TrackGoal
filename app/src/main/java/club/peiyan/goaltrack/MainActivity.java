@@ -572,7 +572,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isPause = false;// now status
 
-    @OnClick({R.id.ivPausePlay, R.id.ivClose})
+    @OnClick({R.id.ivPausePlay, R.id.ivClose, R.id.rlDownCount})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ivPausePlay:
@@ -598,6 +598,11 @@ public class MainActivity extends AppCompatActivity
                         finishDownCount();
                     }
                 });
+                break;
+            case R.id.rlDownCount:
+                if (!ViewUtil.isVisible(mFlDownCount)) {
+                    setVisibleDownCountPage();
+                }
                 break;
         }
     }

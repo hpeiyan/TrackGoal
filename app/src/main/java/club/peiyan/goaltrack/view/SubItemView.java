@@ -35,6 +35,8 @@ public class SubItemView implements View.OnClickListener {
     TextView mTvItem;
     @BindView(R.id.rlItem)
     RelativeLayout mRlItem;
+    @BindView(R.id.tvSubEdit)
+    TextView mTvSubEdit;
     private View mRootView;
     private final GoalFragment mGoalFragment;
     private String mItem;
@@ -64,6 +66,7 @@ public class SubItemView implements View.OnClickListener {
         mTvItem.setTag(R.id.level, mBean.getLevel());
         mTvItem.setTag(R.id.startDate, mBean.getStart());
         mTvItem.setTag(R.id.overDate, mBean.getOver());
+        mTvSubEdit.setOnClickListener(this);
     }
 
     public View getRootView() {
@@ -77,7 +80,9 @@ public class SubItemView implements View.OnClickListener {
                 scrollToSubGoal();
                 break;
             case R.id.tvItem:
-                createSubGoal(v);
+                break;
+            case R.id.tvSubEdit:
+                createSubGoal(mTvItem);
                 break;
         }
     }
