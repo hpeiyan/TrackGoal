@@ -15,11 +15,12 @@ public class ScoreBean implements Parcelable {
     private String parent;
     private String title;
     private String date;
-    private int score;
+    private long score;
     private long timestamp;
 
     public ScoreBean() {
     }
+
 
     protected ScoreBean(Parcel in) {
         id = in.readInt();
@@ -27,7 +28,7 @@ public class ScoreBean implements Parcelable {
         parent = in.readString();
         title = in.readString();
         date = in.readString();
-        score = in.readInt();
+        score = in.readLong();
         timestamp = in.readLong();
     }
 
@@ -83,11 +84,11 @@ public class ScoreBean implements Parcelable {
         date = mDate;
     }
 
-    public int getScore() {
+    public long getScore() {
         return score;
     }
 
-    public void setScore(int mScore) {
+    public void setScore(long mScore) {
         score = mScore;
     }
 
@@ -106,12 +107,14 @@ public class ScoreBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeInt(id);
         dest.writeInt(level);
         dest.writeString(parent);
         dest.writeString(title);
         dest.writeString(date);
-        dest.writeInt(score);
+        dest.writeLong(score);
         dest.writeLong(timestamp);
     }
+
 }

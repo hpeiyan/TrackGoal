@@ -334,11 +334,15 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_score:
                 ArrayList<ScoreList> mPastScoreList = new ArrayList();
-                for (int i = 1; i < 7; i++) {
-                    ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
-                    if (mScoreBeans != null && mScoreBeans.size() > 0) {
-                        mPastScoreList.add(new ScoreList(mScoreBeans));
-                    }
+//                for (int i = 1; i < 7; i++) {
+//                    ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
+//                    if (mScoreBeans != null && mScoreBeans.size() > 0) {
+//                        mPastScoreList.add(new ScoreList(mScoreBeans));
+//                    }
+//                }
+                ArrayList<ScoreBean> mScoreBeans = mDBHelper.getAllScore();
+                if (mScoreBeans != null && mScoreBeans.size() > 0) {
+                    mPastScoreList.add(new ScoreList(mScoreBeans));
                 }
                 ScoreActivity.startScoreActivity(this, mPastScoreList);
                 break;

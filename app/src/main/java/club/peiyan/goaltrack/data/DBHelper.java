@@ -508,6 +508,7 @@ public class DBHelper extends SQLiteOpenHelper {
             mBean.setParent(res.getString(res.getColumnIndex(GOAL_SCORE_PARENT)));
             mBean.setTitle(res.getString(res.getColumnIndex(GOAL_SCORE_TITLE)));
             mBean.setDate(res.getString(res.getColumnIndex(GOAL_SCORE_DATE)));
+            mBean.setScore(res.getLong(res.getColumnIndex(GOAL_SCORE_SCORE)));
             mBean.setTimestamp(res.getInt(res.getColumnIndex(GOAL_SCORE_TIMESTAMP)));
             array_list.add(mBean);
             res.moveToNext();

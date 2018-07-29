@@ -38,7 +38,8 @@ public class ScoreActivity extends AppCompatActivity {
         mListExtra = mIntent.getParcelableArrayListExtra("data");
 
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("分数");
+        getSupportActionBar().hide();
+//        getSupportActionBar().setTitle("分数");
         getSupportFragmentManager().beginTransaction().add(R.id.flScore, new ScoreFragment()).commit();
     }
 

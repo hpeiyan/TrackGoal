@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,8 +51,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     View mView = View.inflate(GoalApplication.getContext(), R.layout.score_line_view, null);
                     TextView itemName = mView.findViewById(R.id.tvItemName);
                     itemName.setText(bean.getTitle());
-                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
-                    pb.setProgress(bean.getScore());
+//                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
+//                    pb.setProgress(bean.getScore());
                     mHolder.mLlScoreLine.addView(mView);
                     totalSie++;
                     mHolder.mTvScoreTitle.setText(bean.getDate());
