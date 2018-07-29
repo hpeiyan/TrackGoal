@@ -153,6 +153,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
             holdHtml = "<small><small><small><small><small><small>" + (totalHoldDay <= 0 ? "离开始" : "坚持的") + "</small></small></small></small></small></small>" + Math.abs(totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
             downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
             holder.mTvDownCount.setText(Html.fromHtml(downHtml));
+            holder.mTvDownCount.setVisibility(View.VISIBLE);
             holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
             holder.rlDone.setVisibility(View.GONE);
         }
