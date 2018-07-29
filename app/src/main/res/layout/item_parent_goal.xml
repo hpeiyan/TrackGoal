@@ -103,12 +103,35 @@
         android:layout_height="match_parent"
         android:translationZ="@dimen/translation_z">
 
+        <RelativeLayout
+            android:id="@+id/rlDone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/item_normal_margin"
+                android:background="#33F5F5F5"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@mipmap/ic_goal_done"/>
+        </RelativeLayout>
+
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:src="@mipmap/ic_tag_root"
             />
+
 
     </RelativeLayout>
 </FrameLayout>

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mcxtzhang.swipemenulib.SwipeMenuLayout;
@@ -136,10 +137,24 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
 
         holder.mTvTimeSpend.setText(mBuilder.toString().trim());
 
-        String holdHtml = "<small><small><small><small><small><small>" + (totalHoldDay <= 0 ? "离开始" : "坚持的") + "</small></small></small></small></small></small>" + Math.abs(totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
-        String downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
-        holder.mTvDownCount.setText(Html.fromHtml(downHtml));
-        holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
+        String holdHtml = "";
+        String downHtml = "";
+
+        boolean isDone = totalHoldDay > totalNeedSpend;
+        if (isDone) {
+            //完成或者过时状态
+            holdHtml = "<small><small><small><small><small><small>" + (totalHoldDay <= 0 ? "离开始" : "坚持的") + "</small></small></small></small></small></small>" + Math.abs(totalNeedSpend) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+//            downHtml = "<small><small><small><small><small><small>任务完成</small></small></small></small></small></small>";
+            holder.mTvDownCount.setText(Html.fromHtml(downHtml));
+            holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
+            holder.rlDone.setVisibility(View.VISIBLE);
+        } else {
+            holdHtml = "<small><small><small><small><small><small>" + (totalHoldDay <= 0 ? "离开始" : "坚持的") + "</small></small></small></small></small></small>" + Math.abs(totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+            downHtml = "<small><small><small><small><small><small>只剩下 </small></small></small></small></small></small>" + (totalNeedSpend - totalHoldDay) + "<small><small><small><small><small><small>天 </small></small></small></small></small></small>";
+            holder.mTvDownCount.setText(Html.fromHtml(downHtml));
+            holder.mTvHoldCount.setText(Html.fromHtml(holdHtml));
+            holder.rlDone.setVisibility(View.GONE);
+        }
         holder.mTvGoalName.setText(mBean.getTitle());
         String mTrim = mBean.getItems().trim();
         if (!mTrim.isEmpty()) {
@@ -160,8 +175,10 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                 holder.mLlParent.addView(mRootView);
             }
         } else {
-            View mRootView = new DownCountView(mMainActivity, mBean).getRootView();
-            holder.mLlParent.addView(mRootView);
+            if (!isDone) {
+                View mRootView = new DownCountView(mMainActivity, mBean).getRootView();
+                holder.mLlParent.addView(mRootView);
+            }
 
         }
         holder.btnEdit.setOnClickListener(v -> {
@@ -286,6 +303,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
         LinearLayout llNotionShow;
         @BindView(R.id.rlAlarm)
         LinearLayout rlAlarm;
+        @BindView(R.id.rlDone)
+        RelativeLayout rlDone;
 
         GoalViewHolder(View view) {
             super(view);
