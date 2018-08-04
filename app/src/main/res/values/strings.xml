@@ -17,6 +17,7 @@
     <item name="feedback" type="id"/>
     <item name="qa" type="id"/>
     <item name="aboutApp" type="id"/>
+    <item name="notification" type="id"/>
 
     <item name="year" type="id"/>
     <item name="month" type="id"/>

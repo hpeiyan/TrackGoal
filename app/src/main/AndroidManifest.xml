@@ -17,13 +17,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
         <activity android:name=".FeedBackActivity"/>
         <activity android:name=".PushQAActivity"/>
         <activity android:name=".ScoreActivity"/>
-
+        <activity android:name=".SettingActivity"/>
+        <activity android:name=".AboutActivity"/>
+        <activity android:name=".QAActivity"/>
         <activity android:name=".ReLoginActivity"/>
-
         <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

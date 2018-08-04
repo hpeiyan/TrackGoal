@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
     private TextView mTvUserName;
-//    private SubMenu mAppSubMenu;
+    //    private SubMenu mAppSubMenu;
     private DownCountService mService;
     private ArrayList<DownCountListener> mListenerList = new ArrayList<>();
 
@@ -411,6 +411,15 @@ public class MainActivity extends BaseActivity
                 UIThread.postDelay(() -> FeedBackActivity.startFeedbackActivity(MainActivity.this), 200);
                 break;
             case R.id.setting:
+                UIThread.postDelay(() -> SettingActivity.startSettingActivity(MainActivity.this), 200);
+                break;
+            case R.id.qa:
+                UIThread.postDelay(() -> QAActivity.startQAActivity(MainActivity.this), 200);
+                break;
+            case R.id.aboutApp:
+                UIThread.postDelay(() -> AboutActivity.startAboutActivity(MainActivity.this), 200);
+                break;
+            case R.id.notification:
                 UIThread.postDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
                 break;
             case ADD_GOAL_ID:
