@@ -59,6 +59,7 @@ public class SettingActivity extends BaseActivity {
             AppSp.putBoolean(Constants.ALARM_ON, isChecked);
         });
 
+        mEtScoreDays.setText(Constants.getScoreShowDay() + "");
         mEtScoreDays.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
