@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.HttpClientUtil;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -84,7 +84,7 @@ public class FeedbackTask implements Runnable {
             mJSONObject.put("username", userName);
             mJSONObject.put("note", note);
             mJSONObject.put("email", email);
-            mJSONObject.put("date", CalendaUtils.getCurrntDate());
+            mJSONObject.put("date", CalendarUtils.getCurrntDate());
         } catch (JSONException mE) {
             mE.printStackTrace();
         }

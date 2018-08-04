@@ -29,7 +29,7 @@ import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
-import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.UIThread;
@@ -140,7 +140,7 @@ public class DownCountFragment extends Fragment implements DownCountListener {
 //                if (mCostTimeMills > 15 * 60 * 1000) {
                 if (mMainActivity.getCostTimeMills() > 15) {
                     // TODO: 2018/7/21 后续改成15分钟
-                    mMainActivity.getDBHelper().updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendaUtils.getCurrntDate(),
+                    mMainActivity.getDBHelper().updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendarUtils.getCurrntDate(),
                             mMainActivity.getCostTimeMills(), System.currentTimeMillis());
                 }
             }

@@ -8,10 +8,10 @@ import java.util.Calendar;
  * Desc:
  */
 
-public class CalendaUtils {
+public class CalendarUtils {
     public static String getCurrntDate() {
         int year = Calendar.getInstance().get(Calendar.YEAR);
-        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int day = Calendar.getInstance().get(Calendar.DATE);
         return year + "/" + month + "/" + day;
     }
@@ -20,7 +20,7 @@ public class CalendaUtils {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.add(Calendar.DATE, -1);
         int year = mCalendar.get(Calendar.YEAR);
-        int month = mCalendar.get(Calendar.MONTH);
+        int month = mCalendar.get(Calendar.MONTH) + 1;
         int day = mCalendar.get(Calendar.DATE);
         return year + "/" + month + "/" + day;
     }
@@ -29,7 +29,7 @@ public class CalendaUtils {
         Calendar mCalendar = Calendar.getInstance();
         mCalendar.add(Calendar.DATE, -deltaDate);
         int year = mCalendar.get(Calendar.YEAR);
-        int month = mCalendar.get(Calendar.MONTH);
+        int month = mCalendar.get(Calendar.MONTH) + 1;
         int day = mCalendar.get(Calendar.DATE);
         return year + "/" + month + "/" + day;
     }

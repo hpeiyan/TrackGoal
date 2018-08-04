@@ -15,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.utils.CalendaUtils;
-import club.peiyan.goaltrack.utils.ListUtil;
+import club.peiyan.goaltrack.utils.CalendarUtils;
 
 import static club.peiyan.goaltrack.data.Constants.USER_NAME;
 
@@ -474,7 +473,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor res = db.rawQuery("select * from goal_score where date=? and title=? and parent=?"
-                , new String[]{CalendaUtils.getCurrntDate(), title, parent});
+                , new String[]{CalendarUtils.getCurrntDate(), title, parent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {

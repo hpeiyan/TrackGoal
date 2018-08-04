@@ -54,7 +54,7 @@ import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.DownCountFragment;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.utils.CalendaUtils;
+import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
@@ -334,15 +334,11 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_score:
                 ArrayList<ScoreList> mPastScoreList = new ArrayList();
-//                for (int i = 1; i < 7; i++) {
-//                    ArrayList<ScoreBean> mScoreBeans = mDBHelper.getScoreByTime(CalendaUtils.getDate(i));
-//                    if (mScoreBeans != null && mScoreBeans.size() > 0) {
-//                        mPastScoreList.add(new ScoreList(mScoreBeans));
-//                    }
-//                }
-                ArrayList<ScoreBean> mScoreBeans = mDBHelper.getAllScore();
-                if (mScoreBeans != null && mScoreBeans.size() > 0) {
-                    mPastScoreList.add(new ScoreList(mScoreBeans));
+                for (int i = 0; i < 7; i++) {
+                    ArrayList<ScoreBean> mBeans = mDBHelper.getScoreByTime(CalendarUtils.getDate(i));
+                    if (mBeans != null && mBeans.size() > 0) {
+                        mPastScoreList.add(new ScoreList(mBeans));
+                    }
                 }
                 ScoreActivity.startScoreActivity(this, mPastScoreList);
                 break;
@@ -557,7 +553,7 @@ public class MainActivity extends AppCompatActivity
 //                if (mCostTimeMills > 15 * 60 * 1000) {
                 if (mCostTimeMills > 15) {
                     // TODO: 2018/7/21 后续改成15分钟
-                    mDBHelper.updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendaUtils.getCurrntDate(),
+                    mDBHelper.updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendarUtils.getCurrntDate(),
                             mCostTimeMills, System.currentTimeMillis());
                 }
             }

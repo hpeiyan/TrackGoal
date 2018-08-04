@@ -1,20 +1,28 @@
 package club.peiyan.goaltrack.view;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import club.peiyan.goaltrack.GoalApplication;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.data.ScoreList;
+import club.peiyan.goaltrack.utils.ListUtil;
 
 /**
  * Created by HPY.
@@ -25,10 +33,16 @@ import club.peiyan.goaltrack.data.ScoreList;
 public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
-    private ArrayList<ScoreList> mScoreList;
+    private ArrayList<ScoreList> mPastScoreList;
+    private final Activity mActivity;
+    private Typeface mTf;
 
-    public void setData(ArrayList<ScoreList> mPastScoreList) {
-        mScoreList = mPastScoreList;
+    public ScoreAdapter(Activity mActivity) {
+        this.mActivity = mActivity;
+    }
+
+    public void setData(ArrayList<ScoreList> mScoreList) {
+        mPastScoreList = mScoreList;
     }
 
     @Override
@@ -39,43 +53,129 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ScoreList mScoreBeans = mScoreList.get(position);
+        ScoreList mScoreBeans = mPastScoreList.get(position);
         ViewHolder mHolder = (ViewHolder) holder;
-        int score = 0;
-        int totalSie = 0;
-        if (mScoreBeans != null) {
-            if (mScoreBeans.getScoreBeans().size() > 0) {
-                for (ScoreBean bean : mScoreBeans.getScoreBeans()) {
-                    if (bean == null) continue;
-                    score += bean.getScore();
-                    View mView = View.inflate(GoalApplication.getContext(), R.layout.score_line_view, null);
-                    TextView itemName = mView.findViewById(R.id.tvItemName);
-                    itemName.setText(bean.getTitle());
-//                    ProgressBar pb = mView.findViewById(R.id.pbGoal);
-//                    pb.setProgress(bean.getScore());
-                    mHolder.mLlScoreLine.addView(mView);
-                    totalSie++;
-                    mHolder.mTvScoreTitle.setText(bean.getDate());
-                }
-                mHolder.mTvScoreShow.setText(score + "/" + totalSie * 10);
+        initPieChart(mHolder.pieChart,mScoreBeans);
+    }
+
+    private void initPieChart(PieChart mChart, ScoreList mScoreBeans) {
+        ArrayList<PieEntry> entries = new ArrayList<>();
+
+        if (mScoreBeans != null && !ListUtil.isEmpty(mScoreBeans.getScoreBeans())) {
+            for (ScoreBean bean : mScoreBeans.getScoreBeans()) {
+                entries.add(new PieEntry(bean.getScore(), bean.getTitle()));
             }
         }
+
+        mChart.setUsePercentValues(true);
+        mChart.getDescription().setEnabled(false);
+        mChart.setExtraOffsets(5, 10, 5, 5);
+
+        mChart.setDragDecelerationFrictionCoef(0.95f);
+
+        mTf = Typeface.createFromAsset(mActivity.getAssets(), "OpenSans-Regular.ttf");
+
+        mChart.setCenterTextTypeface(Typeface.createFromAsset(mActivity.getAssets(), "OpenSans-Light.ttf"));
+//        mChart.setCenterText(generateCenterSpannableText());
+        mChart.setCenterText(mScoreBeans.getScoreBeans().get(0).getDate());
+
+        mChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
+
+        mChart.setDrawHoleEnabled(true);
+        mChart.setHoleColor(Color.WHITE);
+
+        mChart.setTransparentCircleColor(Color.WHITE);
+        mChart.setTransparentCircleAlpha(110);
+
+        mChart.setHoleRadius(58f);
+        mChart.setTransparentCircleRadius(61f);
+
+        mChart.setDrawCenterText(true);
+
+        mChart.setRotationAngle(0);
+        // enable rotation of the chart by touch
+        mChart.setRotationEnabled(true);
+        mChart.setHighlightPerTapEnabled(true);
+
+        // mChart.setUnit(" €");
+        // mChart.setDrawUnitsInChart(true);
+
+        // add a selection listener
+//        mChart.setOnChartValueSelectedListener();
+
+        setData(entries,mChart);
+
+        mChart.animateY(1400);
+        // mChart.spin(2000, 0, 360);
+
+        Legend l = mChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setEnabled(false);
+    }
+
+    private void setData(ArrayList<PieEntry> entries, PieChart mChart) {
+
+        PieDataSet dataSet = new PieDataSet(entries, "Election Results");
+        dataSet.setSliceSpace(3f);
+        dataSet.setSelectionShift(5f);
+
+        // add a lot of colors
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+
+        colors.add(ColorTemplate.getHoloBlue());
+
+        dataSet.setColors(colors);
+        //dataSet.setSelectionShift(0f);
+
+
+        dataSet.setValueLinePart1OffsetPercentage(80.f);
+        dataSet.setValueLinePart1Length(0.2f);
+        dataSet.setValueLinePart2Length(0.4f);
+        //dataSet.setUsingSliceColorAsValueLineColor(true);
+
+        //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        PieData data = new PieData(dataSet);
+        data.setValueFormatter(new PercentFormatter());
+        data.setValueTextSize(11f);
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTypeface(mTf);
+        mChart.setData(data);
+
+        // undo all highlights
+        mChart.highlightValues(null);
+
+        mChart.invalidate();
     }
 
     @Override
     public int getItemCount() {
-        return mScoreList.size();
+        return mPastScoreList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.tvScoreTitle)
-        TextView mTvScoreTitle;
-        @BindView(R.id.tvScoreShow)
-        TextView mTvScoreShow;
-        @BindView(R.id.llScoreLine)
-        LinearLayout mLlScoreLine;
-        @BindView(R.id.llParent)
-        RelativeLayout mLlParent;
+        @BindView(R.id.pieChart)
+        PieChart pieChart;
 
         ViewHolder(View view) {
             super(view);
