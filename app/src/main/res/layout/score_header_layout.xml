@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llParent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="6dp"
+    android:padding="5dp"
+    android:translationZ="3dp"
+    >
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        />
+
+    <TextView
+        android:id="@+id/tvShow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/barChart"
+        android:layout_centerInParent="true"
+        android:drawablePadding="20dp"
+        android:drawableRight="@mipmap/ic_share_black_24dp"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="@dimen/item_normal_margin"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/tvShow"
+        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/dividerColor"
+        />
+
+</RelativeLayout>

@@ -22,7 +22,9 @@
         <activity android:name=".PushQAActivity"/>
         <activity android:name=".ScoreActivity"/>
 
-        <activity android:name=".ReLoginActivity">
+        <activity android:name=".ReLoginActivity"/>
+
+        <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -69,4 +71,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 </manifest>

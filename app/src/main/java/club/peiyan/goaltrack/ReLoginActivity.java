@@ -1,5 +1,6 @@
 package club.peiyan.goaltrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.netTask.RegisterTask;
 import club.peiyan.goaltrack.netTask.VerifyTask;
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.UIThread;
 
 /**
  * Created by HPY.
@@ -33,6 +35,16 @@ public class ReLoginActivity extends AppCompatActivity implements RegisterTask.O
     @BindView(R.id.btnRegister)
     Button mBtnRegister;
     private String mName;
+
+    public static void startReLoginActivity(LoadingActivity mActivity) {
+        Intent mIntent = new Intent(mActivity, ReLoginActivity.class);
+        UIThread.postDelay(() -> {
+            mActivity.startActivity(mIntent);
+            if (!mActivity.isDestroyed()) {
+                mActivity.finish();
+            }
+        }, 500);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

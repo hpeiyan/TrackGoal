@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class ScoreList implements Parcelable {
 
     private ArrayList<ScoreBean> mScoreBeans;
+    private long totalScore;
 
     public ScoreList(ArrayList<ScoreBean> mScoreBeans) {
         this.mScoreBeans = mScoreBeans;
@@ -21,6 +22,7 @@ public class ScoreList implements Parcelable {
 
     protected ScoreList(Parcel in) {
         mScoreBeans = in.createTypedArrayList(ScoreBean.CREATOR);
+        totalScore = in.readLong();
     }
 
     public static final Creator<ScoreList> CREATOR = new Creator<ScoreList>() {
@@ -43,6 +45,14 @@ public class ScoreList implements Parcelable {
         this.mScoreBeans = mScoreBeans;
     }
 
+    public long getTotalScore() {
+        return totalScore;
+    }
+
+    public void setTotalScore(long mTotalScore) {
+        totalScore = mTotalScore;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -51,5 +61,6 @@ public class ScoreList implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(mScoreBeans);
+        dest.writeLong(totalScore);
     }
 }

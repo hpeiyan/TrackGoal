@@ -3,7 +3,6 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -17,7 +16,7 @@ import butterknife.ButterKnife;
  * Desc:
  */
 
-public class PushQAActivity extends AppCompatActivity {
+public class PushQAActivity extends BaseActivity {
 
 
     @BindView(R.id.webview)

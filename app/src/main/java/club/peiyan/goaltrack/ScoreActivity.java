@@ -3,7 +3,6 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import butterknife.ButterKnife;
 import club.peiyan.goaltrack.data.ScoreList;
 import club.peiyan.goaltrack.plan.ScoreFragment;
+import club.peiyan.goaltrack.utils.LogUtil;
 
 /**
  * Created by HPY.
@@ -19,7 +19,7 @@ import club.peiyan.goaltrack.plan.ScoreFragment;
  * Desc:
  */
 
-public class ScoreActivity extends AppCompatActivity {
+public class ScoreActivity extends BaseActivity {
 
 
     private ArrayList<ScoreList> mListExtra;
@@ -36,10 +36,9 @@ public class ScoreActivity extends AppCompatActivity {
         setContentView(R.layout.score_layout);
         Intent mIntent = getIntent();
         mListExtra = mIntent.getParcelableArrayListExtra("data");
-
         ButterKnife.bind(this);
         getSupportActionBar().hide();
-//        getSupportActionBar().setTitle("分数");
+        if (savedInstanceState != null) return;
         getSupportFragmentManager().beginTransaction().add(R.id.flScore, new ScoreFragment()).commit();
     }
 
@@ -58,4 +57,30 @@ public class ScoreActivity extends AppCompatActivity {
         super.onPause();
         MobclickAgent.onPause(this);
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("test",1);
+        LogUtil.logi("onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int mInt = savedInstanceState.getInt("test");
+        LogUtil.logi("onRestoreInstanceState: "+mInt);
+    }
+
+    //
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//
+//        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT
+//                || newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//
+//        }
+//
+//    }
 }

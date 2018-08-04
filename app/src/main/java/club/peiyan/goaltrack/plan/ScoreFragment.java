@@ -58,8 +58,9 @@ public class ScoreFragment extends Fragment {
     private void initView() {
         if (mPastScoreList.size() == 0) {
             errorView.setVisibility(View.VISIBLE);
+        }else {
+            initRecycleView();
         }
-        initRecycleView();
     }
 
     private void initRecycleView() {

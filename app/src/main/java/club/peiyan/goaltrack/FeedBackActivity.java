@@ -3,7 +3,6 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -25,7 +24,7 @@ import club.peiyan.goaltrack.utils.DialogUtil;
  * Desc:
  */
 
-public class FeedBackActivity extends AppCompatActivity implements FeedbackTask.OnFeedbackListener {
+public class FeedBackActivity extends BaseActivity implements FeedbackTask.OnFeedbackListener {
 
     @BindView(R.id.etFeedback)
     EditText mEtFeedback;
