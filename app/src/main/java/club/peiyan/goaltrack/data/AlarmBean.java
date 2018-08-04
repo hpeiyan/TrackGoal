@@ -15,6 +15,7 @@ import java.util.Random;
 
 public class AlarmBean {
     private View parentView;
+    private String title;
     private int hour = 9;
     private int minute = 0;
     private int requestCode = new Random().nextInt(100000);//每天模式的RequestCode
@@ -67,5 +68,13 @@ public class AlarmBean {
 
     public void setRequestCode(int mRequestCode) {
         requestCode = mRequestCode;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String mTitle) {
+        title = mTitle;
     }
 }

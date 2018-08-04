@@ -1,5 +1,7 @@
 package club.peiyan.goaltrack;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,6 +32,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,10 +40,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import club.peiyan.goaltrack.data.AlarmBean;
 import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
@@ -53,6 +59,7 @@ import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
+import club.peiyan.goaltrack.utils.LogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
 import club.peiyan.goaltrack.utils.UIThread;
@@ -61,6 +68,8 @@ import club.peiyan.goaltrack.utils.ViewUtil;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
 import static android.view.animation.Animation.INFINITE;
+import static club.peiyan.goaltrack.AlarmBroadcastReceiver.CONTENT;
+import static club.peiyan.goaltrack.AlarmBroadcastReceiver.TITLE;
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
@@ -180,6 +189,53 @@ public class MainActivity extends BaseActivity
             startSync(this);
         }
         setDownCountListener(this);
+        initAlarm();
+    }
+
+    private void initAlarm() {
+        ArrayList<AlarmBean> mAlarmBeanList = mDBHelper.getAllAlarm();
+        if (mAlarmBeanList.size() > 0) {
+            for (AlarmBean bean : mAlarmBeanList) {
+                List<CalendarDay> mDates = bean.getSelectedDates();
+                List<Integer> mRequestCodes = bean.getRequestCodes();
+                if (mDates != null && mDates.size() > 0) {
+                    //自由选择的情况
+                    if (mRequestCodes != null && mRequestCodes.size() > 0 && mRequestCodes.size() == mDates.size()) {
+                        for (int i = 0; i < mDates.size(); i++) {
+                            CalendarDay day = mDates.get(i);
+                            Calendar mCalendar = Calendar.getInstance();
+                            mCalendar.set(day.getYear(), day.getMonth(), day.getDay(),
+                                    bean.getHour(), bean.getMinute());
+                            alarm(mCalendar.getTimeInMillis(), mRequestCodes.get(i), bean.getTitle());
+                        }
+                    }
+                } else {
+                    // TODO: 2018/7/19 每天的情况，只开启当天的提醒，太多天也会被Kill掉
+                    Calendar mCalendar = Calendar.getInstance();
+                    mCalendar.set(mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DATE),
+                            bean.getHour(), bean.getMinute());
+                    alarm(mCalendar.getTimeInMillis(), bean.getRequestCode(), bean.getTitle());
+                }
+            }
+        }
+    }
+
+    private void alarm(long timeInMillis, int requestCode, String mTitle) {
+        if (timeInMillis > System.currentTimeMillis()) {
+            LogUtil.logi("Start Alarm!!!");
+            Intent intent = new Intent(this, AlarmBroadcastReceiver.class);
+            Bundle mBundle = new Bundle();
+            if (!TextUtils.isEmpty(mTitle)) {
+                mBundle.putString(TITLE, mTitle);
+            }
+            mBundle.putString(CONTENT, String.format("\uD83D\uDE00 千里之行，始于足下，行动吧", mTitle));
+            intent.putExtras(mBundle);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    GoalApplication.getContext(), requestCode, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent);
+            //在未来的某段时间发起通知。
+        }
     }
 
     private void setSyncPBVisible(final boolean isShow) {

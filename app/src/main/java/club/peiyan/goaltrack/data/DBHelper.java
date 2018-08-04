@@ -516,7 +516,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /* Alarm Database */
-    public boolean insertAlarm(int hour, int minute, int requestCode, String title,String parent, String select_dates, String request_codes) {
+    public boolean insertAlarm(int hour, int minute, int requestCode, String title, String parent, String select_dates, String request_codes) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(GOAL_ALARM_HOUR, hour);
@@ -530,13 +530,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public ArrayList<AlarmBean> getAlarmByTitle(String title,String parent) {
+    public ArrayList<AlarmBean> getAlarmByTitle(String title, String parent) {
         if (title == null || TextUtils.isEmpty(title)) return null;
 
         ArrayList<AlarmBean> array_list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor res = db.rawQuery("select * from goal_alarm where title=? and parent=?", new String[]{title,parent});
+        Cursor res = db.rawQuery("select * from goal_alarm where title=? and parent=?", new String[]{title, parent});
         res.moveToFirst();
 
         while (res.isAfterLast() == false) {
@@ -554,6 +554,53 @@ public class DBHelper extends SQLiteOpenHelper {
             }
             mBean.setRequestCodes(codeList);
 
+            String dates = res.getString(res.getColumnIndex(GOAL_ALARM_SELECT_DATES));
+            List<CalendarDay> dateList = new ArrayList<>();
+            if (!TextUtils.isEmpty(dates)) {
+                String[] mSplit = dates.split("\n");
+                if (mSplit.length > 0) {
+                    for (String dateString : mSplit) {
+                        String[] mStrings = dateString.split("/");
+                        if (mStrings.length == 3) {
+                            int year = Integer.parseInt(mStrings[0]);
+                            int month = Integer.parseInt(mStrings[1]);
+                            int day = Integer.parseInt(mStrings[2]);
+                            CalendarDay mCalendarDay = CalendarDay.from(year, month, day);
+                            dateList.add(mCalendarDay);
+                        }
+                    }
+                }
+            }
+            mBean.setSelectedDates(dateList);
+            array_list.add(mBean);
+            res.moveToNext();
+        }
+        return array_list;
+    }
+
+    public ArrayList<AlarmBean> getAllAlarm() {
+        ArrayList<AlarmBean> array_list = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor res = db.rawQuery("select * from goal_alarm", null);
+        res.moveToFirst();
+
+        while (res.isAfterLast() == false) {
+            AlarmBean mBean = new AlarmBean();
+            mBean.setHour(res.getInt(res.getColumnIndex(GOAL_ALARM_HOUR)));
+            mBean.setMinute(res.getInt(res.getColumnIndex(GOAL_ALARM_MINUTE)));
+            mBean.setRequestCode(res.getInt(res.getColumnIndex(GOAL_ALARM_REQUEST_CODE)));
+            String codes = res.getString(res.getColumnIndex(GOAL_ALARM_REQUEST_CODES));
+            String title = res.getString(res.getColumnIndex(GOAL_ALARM_TITLE));
+            List<Integer> codeList = new ArrayList<>();
+            if (!TextUtils.isEmpty(codes)) {
+                String[] mSplit = codes.split("\n");
+                for (String code : mSplit) {
+                    codeList.add(Integer.parseInt(code));
+                }
+            }
+            mBean.setRequestCodes(codeList);
+            mBean.setTitle(title);
             String dates = res.getString(res.getColumnIndex(GOAL_ALARM_SELECT_DATES));
             List<CalendarDay> dateList = new ArrayList<>();
             if (!TextUtils.isEmpty(dates)) {

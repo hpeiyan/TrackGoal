@@ -18,7 +18,8 @@ import android.support.v4.app.NotificationManagerCompat;
  */
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
-    private static final String CHANNEL_ID = "CHANNEL_ID";
+    private static final String CHANNEL_ID = "Goal_Alarm";
+    private static final int NOTIFICATION_ID = 10086;
     public static final java.lang.String TITLE = "title";
     public static final java.lang.String CONTENT = "content";
 
@@ -35,7 +36,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
     private void notice(Context mContext, String title, String content) {
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(mContext, ReLoginActivity.class);
+        Intent intent = new Intent(mContext, LoadingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
 
@@ -50,7 +51,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
         createNotificationChannel(mContext);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
-        notificationManager.notify(Integer.parseInt(CHANNEL_ID), mBuilder.build());
+        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
     private void createNotificationChannel(Context mContext) {
