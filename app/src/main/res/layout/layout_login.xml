@@ -2,22 +2,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="40dp">
+    >
 
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_above="@+id/tiUserName"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp"
         android:src="@mipmap/logo"/>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/tiUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivLogo"
-        android:layout_marginTop="80dp">
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        >
 
         <AutoCompleteTextView
             android:id="@+id/etName"
@@ -36,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tiUserName"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         >
 
         <AutoCompleteTextView
@@ -53,21 +58,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal">
-
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="注册"/>
+        android:layout_below="@+id/tiPass"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="9dp">
 
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="wrap_content"
+            android:layout_width="190dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="3dp"
+            android:background="@drawable/selector_register_login"
             android:text="登录"/>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/selector_register_login"
+            android:text="注册"/>
+
 
     </LinearLayout>
 

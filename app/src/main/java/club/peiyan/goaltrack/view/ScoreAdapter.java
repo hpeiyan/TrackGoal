@@ -40,7 +40,6 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.data.ScoreList;
-import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ShareUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -217,7 +216,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
         });
 
-        mChart.setOnLongClickListener(v -> {
+       /* mChart.setOnLongClickListener(v -> {
             DialogUtil.showSingleDialog(mActivity, "保存图片", "项目报表将保存到手机相册", "不要", "保存", new DialogUtil.DialogListener() {
                 @Override
                 public void onNegClickListener() {
@@ -235,7 +234,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
             });
             return false;
-        });
+        });*/
     }
 
     private void initPieChart(PieChart mChart, ScoreList mScoreBeans) {
