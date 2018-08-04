@@ -212,7 +212,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.MyViewHolder
                     for (int i = 0; i < mDates.size(); i++) {
                         CalendarDay mDate = mDates.get(i);
                         Date mDateDate = mDate.getDate();
-                        mStringBuilder.append(i == mDates.size() - 1 ? String.format("%tF", mDateDate) : String.format("%tF%n", mDateDate));
+                        String mDateResult = String.format("%tF\n", mDateDate);
+                        if (i == mDates.size() - 1) {
+                            mDateResult = String.format("%tF", mDateDate);
+                        }
+                        mStringBuilder.append(mDateResult);
                     }
                     tvNotionDate.setText(mStringBuilder.toString());
                 } else {

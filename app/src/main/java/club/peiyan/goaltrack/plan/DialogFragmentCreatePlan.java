@@ -374,7 +374,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
         if (!ListUtil.isEmpty(mAlarmBean.getSelectedDates())) {
             List<CalendarDay> mDates = mAlarmBean.getSelectedDates();
             int mYear = mDates.get(0).getYear();
-            int mMonth = mDates.get(0).getMonth();
+            int mMonth = mDates.get(0).getMonth() + 1;
             int mDay = mDates.get(0).getDay();
             notionDate.setText(mYear + "/" + mMonth + "/" + mDay + "...");
         }
@@ -489,7 +489,7 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
                         StringBuilder mStringBuilder = new StringBuilder();
                         for (CalendarDay day : mSelectedDates) {
                             int mYear = day.getYear();
-                            int mMonth = day.getMonth() + 1;
+                            int mMonth = day.getMonth();
                             int mDay = day.getDay();
                             mStringBuilder.append(mYear + "/" + mMonth + "/" + mDay + "\n");
                         }
