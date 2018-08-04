@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -39,6 +40,7 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.data.ScoreList;
+import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ShareUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -92,12 +94,15 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     File extBaseDir = Environment.getExternalStorageDirectory();
                     File file = new File(extBaseDir.getAbsolutePath() + "/DCIM");
                     String filePath = file.getAbsolutePath() + "/" + mFileName;
-                    String mContent = mShow + "一览表——GoalTrack";
+                    String mContent = mShow + "一览表\n——GoalTrack";
                     ShareUtil.shareImg(mActivity, mContent, "", "Hi there，我在用Goal Track，\n这是我的" + mContent, Uri.parse(filePath));
                 }
             });
         } else {
             ViewHolder mHolder = (ViewHolder) holder;
+            if (position == mPastScoreList.size()) {
+                mHolder.mView.setVisibility(View.GONE);
+            }
             ScoreList mScoreBeans = mPastScoreList.get(position - 1);
             initPieChart(mHolder.pieChart, mScoreBeans);
             mHolder.ivShare.setOnClickListener(v -> {
@@ -113,7 +118,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (mDate.length() > 0) {
                         String[] mStrings = mDate.split("/");
                         if (mStrings.length == 3) {
-                            dateShow = String.format("%s年%s月%s日", mStrings[0], mStrings[1], mStrings[2]) + "项目——GoalTrack";
+                            dateShow = String.format("%s年%s月%s日", mStrings[0], mStrings[1], mStrings[2]) + "项目\n——GoalTrack";
                         }
                     }
                     ShareUtil.shareImg(mActivity, dateShow, "", "Hi there，我在用Goal Track，\n这是我的" + dateShow, Uri.parse(filePath));
@@ -210,6 +215,26 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             public void onNothingSelected() {
 
             }
+        });
+
+        mChart.setOnLongClickListener(v -> {
+            DialogUtil.showSingleDialog(mActivity, "保存图片", "项目报表将保存到手机相册", "不要", "保存", new DialogUtil.DialogListener() {
+                @Override
+                public void onNegClickListener() {
+
+                }
+
+                @Override
+                public void onPosClickListener() {
+                    String mFileName = String.format("GoalTrack%tF.jpg", new Date(System.currentTimeMillis()));
+                    if (mChart.saveToGallery(mFileName, 100)) {
+                        ToastUtil.toast("保存成功");
+                    } else {
+                        ToastUtil.toast("保存失败");
+                    }
+                }
+            });
+            return false;
         });
     }
 
@@ -347,6 +372,10 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         PieChart pieChart;
         @BindView(R.id.ivShare)
         ImageView ivShare;
+        @BindView(R.id.viewLine)
+        View mView;
+        @BindView(R.id.rlParent)
+        RelativeLayout rlParent;
 
         ViewHolder(View view) {
             super(view);

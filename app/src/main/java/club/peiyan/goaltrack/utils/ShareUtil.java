@@ -1,8 +1,12 @@
 package club.peiyan.goaltrack.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
+
+import java.io.FileNotFoundException;
 
 /**
  * Created by HPY.
@@ -40,5 +44,15 @@ public class ShareUtil {
         } else { // 系统默认标题
             mActivity.startActivity(intent);
         }
+    }
+
+    public static String insertImageToSystem(Context context, String imagePath,String picName) {
+        String url = "";
+        try {
+            url = MediaStore.Images.Media.insertImage(context.getContentResolver(), imagePath, picName, "All Right Goal Track Reserved");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 }
