@@ -23,8 +23,9 @@
         android:layout_above="@+id/lineDivider"
         android:background="@null"
         android:drawableLeft="@mipmap/ic_email_black_24dp"
-        android:drawablePadding="8dp"
+        android:drawablePadding="12dp"
         android:gravity="start"
+        android:layout_marginBottom="6dp"
         android:hint="我会通过邮箱回复您"
         android:padding="8dp"
         android:textSize="@dimen/text_input_dimen"/>
@@ -43,10 +44,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_goal_item"
+        android:background="@drawable/selector_register_login"
         android:gravity="center"
         android:padding="16dp"
         android:text="提交建议"
-        android:textColor="@color/primaryTextColor"
+        android:textColor="@color/textColor"
         android:textSize="@dimen/text_show_dimen"/>
 </RelativeLayout>

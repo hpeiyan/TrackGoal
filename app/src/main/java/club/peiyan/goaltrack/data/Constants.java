@@ -16,6 +16,8 @@ public class Constants {
     public static final String REGISTER = "register";
     /*Setting Config */
     public static final String SCORE_SHOW_DAY = "SCORE_SHOW_DAY";
+    public static final String ALARM_ON = "ALARM_ON";
+
 
     /** 支付宝支付业务：入参app_id */
     public static final String APPID = "2018080460967172";

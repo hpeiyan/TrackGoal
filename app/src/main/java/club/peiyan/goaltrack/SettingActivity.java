@@ -1,12 +1,22 @@
 package club.peiyan.goaltrack;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import club.peiyan.goaltrack.data.Constants;
+import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.LogUtil;
 
 /**
  * Created by HPY.
@@ -17,6 +27,12 @@ import butterknife.ButterKnife;
 public class SettingActivity extends BaseActivity {
 
 
+    @BindView(R.id.tvFinishTry)
+    TextView mTvFinishTry;
+    @BindView(R.id.swFinish)
+    Switch mSwFinish;
+    @BindView(R.id.edtDays)
+    EditText mEtScoreDays;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -29,6 +45,40 @@ public class SettingActivity extends BaseActivity {
         setContentView(R.layout.setting_layout);
         ButterKnife.bind(this);
         getSupportActionBar().setTitle("设置");
+        initView();
+    }
+
+    private void initView() {
+        mTvFinishTry.setOnClickListener(v -> {
+            MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
+            mPlayer.start();
+        });
+
+        mSwFinish.setChecked(AppSp.getBoolean(Constants.ALARM_ON, true));
+        mSwFinish.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppSp.putBoolean(Constants.ALARM_ON, isChecked);
+        });
+
+        mEtScoreDays.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String mDays = s.toString().trim();
+                if (mDays.length() > 0) {
+                    LogUtil.logi(mDays);
+                    Constants.setScoreShowDay(Integer.parseInt(mDays));
+                }
+            }
+        });
     }
 
 

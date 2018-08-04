@@ -14,7 +14,9 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
+import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.LogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
@@ -120,8 +122,10 @@ public class DownCountService extends Service {
                 mBuilder.setProgress(0, 0, false)
                         .setContentText("祝贺你，完成任务！！！");
                 notificationManager.notify(DOWN_COUNT_NOTION_ID, mBuilder.build());
-                MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
-                mPlayer.start();
+                if (AppSp.getBoolean(Constants.ALARM_ON, true)) {
+                    MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
+                    mPlayer.start();
+                }
 
             }
         }.start();
