@@ -11,6 +11,12 @@
     <item name="level" type="id"/>
     <item name="startDate" type="id"/>
     <item name="overDate" type="id"/>
+    <item name="appSetting" type="id"/>
+
+    <item name="setting" type="id"/>
+    <item name="feedback" type="id"/>
+    <item name="qa" type="id"/>
+    <item name="aboutApp" type="id"/>
 
     <item name="year" type="id"/>
     <item name="month" type="id"/>

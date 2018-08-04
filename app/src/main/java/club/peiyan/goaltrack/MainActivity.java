@@ -129,7 +129,7 @@ public class MainActivity extends BaseActivity
             R.mipmap.ic_beenhere_black_24dp, R.mipmap.ic_local_offer_black_24dp,
             R.mipmap.ic_content_paste_black_24dp, R.mipmap.ic_send_black_24dp};
     private TextView mTvUserName;
-    private SubMenu mAppSubMenu;
+//    private SubMenu mAppSubMenu;
     private DownCountService mService;
     private ArrayList<DownCountListener> mListenerList = new ArrayList<>();
 
@@ -252,7 +252,7 @@ public class MainActivity extends BaseActivity
         getSupportActionBar().setTitle(titleRes[1]);
         mNavView.setNavigationItemSelectedListener(this);
         mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
-        mAppSubMenu = mNavView.getMenu().addSubMenu("App");
+//        mAppSubMenu = mNavView.getMenu().addSubMenu("App");
         initMenuItem("");
         mDownCountFragment = new DownCountFragment();
         showGoalPage();
@@ -310,11 +310,11 @@ public class MainActivity extends BaseActivity
         }
         MenuItem mItem = mGoalSubMenu.add(R.id.add_goal, ADD_GOAL_ID, ADD_GOAL_ID, "创建计划");
         mItem.setIcon(R.mipmap.ic_add_black_24dp);
-        mAppSubMenu.clear();
-        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
-        mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
-        MenuItem mAlarmItem = mAppSubMenu.add(R.id.app, ALARM_SETTING_ID, 2, getString(R.string.alarm_setting));
-        mAlarmItem.setIcon(R.drawable.ic_menu_manage);
+//        mAppSubMenu.clear();
+//        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
+//        mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
+//        MenuItem mAlarmItem = mAppSubMenu.add(R.id.app, ALARM_SETTING_ID, 2, getString(R.string.alarm_setting));
+//        mAlarmItem.setIcon(R.drawable.ic_menu_manage);
     }
 
     public SubMenu getGoalSubMenu() {
@@ -346,7 +346,7 @@ public class MainActivity extends BaseActivity
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
         if (ViewUtil.isVisible(mRlDownCount)) {
-            DialogUtil.showSingleDialog(this, "最小化吗？", "任务还在进行\n保持专注是第一生产力", "否", "是的", new DialogUtil.DialogListener() {
+            DialogUtil.showSingleDialog(this, "最小化窗口", "保持专注是第一生产力", "否", "是的", new DialogUtil.DialogListener() {
                 @Override
                 public void onNegClickListener() {
 
@@ -387,14 +387,6 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.action_score:
-//                ArrayList<ScoreList> mPastScoreList = new ArrayList();
-//                for (int i = 0; i < Constants.getScoreShowDay(); i++) {
-//                    ArrayList<ScoreBean> mBeans = mDBHelper.getScoreByTime(CalendarUtils.getDate(i));
-//                    if (mBeans != null && mBeans.size() > 0) {
-//                        mPastScoreList.add(new ScoreList(mBeans));
-//                    }
-//                }
-//                ScoreActivity.startScoreActivity(this, mPastScoreList);
                 ScoreActivity.startScoreActivity(this);
                 break;
             case R.id.action_sync:
@@ -415,11 +407,11 @@ public class MainActivity extends BaseActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case FEEDBACKID:
-                FeedBackActivity.startFeedbackActivity(MainActivity.this);
+            case R.id.feedback:
+                UIThread.postDelay(() -> FeedBackActivity.startFeedbackActivity(MainActivity.this), 200);
                 break;
-            case ALARM_SETTING_ID:
-                PushQAActivity.startPushActivity(MainActivity.this);
+            case R.id.setting:
+                UIThread.postDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
                 break;
             case ADD_GOAL_ID:
                 createParentPlan();

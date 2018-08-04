@@ -15,6 +15,6 @@
         android:checked="true"
         android:icon="@mipmap/ic_trending_up_white_24dp"
         android:orderInCategory="100"
-        android:title="编辑模式"
+        android:title="报表"
         app:showAsAction="ifRoom"/>
 </menu>
