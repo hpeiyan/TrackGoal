@@ -51,7 +51,6 @@ import club.peiyan.goaltrack.plan.DialogFragmentCreatePlan;
 import club.peiyan.goaltrack.plan.DownCountFragment;
 import club.peiyan.goaltrack.plan.GoalFragment;
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
@@ -479,7 +478,9 @@ public class MainActivity extends BaseActivity
         registerReceiver(mReceiver, new IntentFilter(
                 DownCountService.NOTIFICATION));
         MobclickAgent.onResume(this);
-        MobclickAgent.onPause(this);
+        if (getService() == null || !getService().isDownCountServiceRun()) {
+            onRefreshAfterFinish();
+        }
     }
 
     @Override
@@ -487,6 +488,7 @@ public class MainActivity extends BaseActivity
         super.onPause();
         unbindService(this);
         unregisterReceiver(mReceiver);
+        MobclickAgent.onPause(this);
     }
 
     public void setDownCountListener(DownCountListener mListener) {
@@ -541,27 +543,22 @@ public class MainActivity extends BaseActivity
     @Override
     public void onFinish(boolean isFinish, String[] tags) {
         if (isFinish) {
-            mIsForceClosePage = !mIsForceClosePage;
-            if (ViewUtil.isVisible(mFlDownCount)) {
-                hideDownCountPage();
-            }
-            if (ViewUtil.isVisible(mRlDownCount)) {
-                mRlDownCount.setVisibility(View.GONE);
-                getSupportActionBar().show();
-            }
-            if (tags != null
-                    && tags.length == 3) {
-//                if (mCostTimeMills > 15 * 60 * 1000) {
-                if (mCostTimeMills > 15) {
-                    // TODO: 2018/7/21 后续改成15分钟
-                    mDBHelper.updateScore(Integer.parseInt(tags[2]), tags[1], tags[0], CalendarUtils.getCurrntDate(),
-                            mCostTimeMills, System.currentTimeMillis());
-                }
-            }
-            notifyDataSetChange(null);
-            mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
-            isPause = false;
+            onRefreshAfterFinish();
         }
+    }
+
+    private void onRefreshAfterFinish() {
+        mIsForceClosePage = !mIsForceClosePage;
+        if (ViewUtil.isVisible(mFlDownCount)) {
+            hideDownCountPage();
+        }
+        if (ViewUtil.isVisible(mRlDownCount)) {
+            mRlDownCount.setVisibility(View.GONE);
+            getSupportActionBar().show();
+        }
+        notifyDataSetChange(null);
+        mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
+        isPause = false;
     }
 
     private void hideDownCountPage() {

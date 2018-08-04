@@ -14,6 +14,9 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import club.peiyan.goaltrack.data.DBHelper;
+import club.peiyan.goaltrack.utils.CalendarUtils;
+import club.peiyan.goaltrack.utils.LogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 
 
@@ -38,6 +41,9 @@ public class DownCountService extends Service {
     private CountDownTimer mDownTimer;
     private boolean mIsStop;
     private boolean isDownCountServiceRun = false;
+    private DBHelper mDBHelper = new DBHelper(this);
+
+    private long costTime;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -89,6 +95,8 @@ public class DownCountService extends Service {
                 intent.putExtra(DOWN_COUNT_TAG, mTags);
                 sendBroadcast(intent);
 
+                costTime = mTime - millisUntilFinished;
+
                 int mProgress = (int) ((100 * (mTime - millisUntilFinished) / (mTime - TimeUtil.THRESHOLD)));
                 mBuilder.setProgress(100, mProgress, false);
                 notificationManager.notify(DOWN_COUNT_NOTION_ID, mBuilder.build());
@@ -101,11 +109,20 @@ public class DownCountService extends Service {
                 intent.putExtra(COUNT_FINISH, true);
                 intent.putExtra(DOWN_COUNT_TAG, mTags);
                 sendBroadcast(intent);
+                //                if (mCostTimeMills > 15 * 60 * 1000) {
+                if (costTime > 15) {
+                    // TODO: 2018/7/21 后续改成15分钟
+                    mDBHelper.updateScore(Integer.parseInt(mTags[2]), mTags[1], mTags[0], CalendarUtils.getCurrntDate(),
+                            costTime, System.currentTimeMillis());
+                }
+                LogUtil.logi(costTime + "");
+                costTime = 0;
                 mBuilder.setProgress(0, 0, false)
                         .setContentText("祝贺你，完成任务！！！");
                 notificationManager.notify(DOWN_COUNT_NOTION_ID, mBuilder.build());
                 MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
                 mPlayer.start();
+
             }
         }.start();
 
