@@ -81,4 +81,5 @@ dependencies {
     compile 'com.umeng.sdk:analytics:latest.integration'
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+    compile files('libs/alipaySdk-20180601.jar')
 }
