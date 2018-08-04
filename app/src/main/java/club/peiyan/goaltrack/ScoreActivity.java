@@ -9,8 +9,12 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
+import club.peiyan.goaltrack.data.Constants;
+import club.peiyan.goaltrack.data.DBHelper;
+import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.data.ScoreList;
 import club.peiyan.goaltrack.plan.ScoreFragment;
+import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.LogUtil;
 
 /**
@@ -22,7 +26,7 @@ import club.peiyan.goaltrack.utils.LogUtil;
 public class ScoreActivity extends BaseActivity {
 
 
-    private ArrayList<ScoreList> mListExtra;
+    private ArrayList<ScoreList> mListExtra = new ArrayList();
 
     public static void startScoreActivity(MainActivity mMainActivity, ArrayList<ScoreList> mPastScoreList) {
         Intent mIntent = new Intent(mMainActivity, ScoreActivity.class);
@@ -30,12 +34,25 @@ public class ScoreActivity extends BaseActivity {
         mMainActivity.startActivity(mIntent);
     }
 
+    public static void startScoreActivity(MainActivity mMainActivity) {
+        Intent mIntent = new Intent(mMainActivity, ScoreActivity.class);
+        mMainActivity.startActivity(mIntent);
+    }
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.score_layout);
         Intent mIntent = getIntent();
-        mListExtra = mIntent.getParcelableArrayListExtra("data");
+        DBHelper mDBHelper = new DBHelper(this);
+        for (int i = 0; i < Constants.getScoreShowDay(); i++) {
+            ArrayList<ScoreBean> mBeans = mDBHelper.getScoreByTime(CalendarUtils.getDate(i));
+            if (mBeans != null && mBeans.size() > 0) {
+                mListExtra.add(new ScoreList(mBeans));
+            }
+        }
+//        mListExtra = mIntent.getParcelableArrayListExtra("data");
         ButterKnife.bind(this);
         getSupportActionBar().hide();
         if (savedInstanceState != null) return;
@@ -60,7 +77,7 @@ public class ScoreActivity extends BaseActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("test",1);
+        outState.putInt("test", 1);
         LogUtil.logi("onSaveInstanceState");
         super.onSaveInstanceState(outState);
     }
@@ -69,8 +86,9 @@ public class ScoreActivity extends BaseActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         int mInt = savedInstanceState.getInt("test");
-        LogUtil.logi("onRestoreInstanceState: "+mInt);
+        LogUtil.logi("onRestoreInstanceState: " + mInt);
     }
+
 
     //
 //    @Override

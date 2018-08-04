@@ -18,15 +18,26 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/tvDownCount"
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:maxWidth="200dp"
-            android:text="@string/app_name"
+            android:maxWidth="90dp"
+            android:ellipsize="end"
+            android:textColor="@color/md_white_1000"
+            />
+        <TextView
+            android:id="@+id/tvDownCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:maxLines="1"
             android:textColor="@color/md_white_1000"
             />
 

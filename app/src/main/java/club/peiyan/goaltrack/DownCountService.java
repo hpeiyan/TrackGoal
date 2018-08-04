@@ -56,8 +56,8 @@ public class DownCountService extends Service {
             return Service.START_NOT_STICKY;
         }
 
-        Intent notionIntent = new Intent(getApplicationContext(), ReLoginActivity.class);
-        notionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        Intent notionIntent = new Intent(getApplicationContext(), ScoreActivity.class);
+//        notionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notionIntent, Intent.FILL_IN_ACTION);
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), DOWN_COUNT_CHANNEL);

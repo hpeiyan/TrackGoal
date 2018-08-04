@@ -161,10 +161,13 @@ public class DownCountFragment extends Fragment implements DownCountListener {
             case R.id.ivPausePlay:
                 if (isPause) {
                     mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
-                    continueDownCount();
+//                    continueDownCount();
+                    mMainActivity.continueDownCount();
                 } else {
                     mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
-                    pauseDownCount();
+//                    pauseDownCount();
+                    mMainActivity.pauseDownCount();
+                    EventBus.getDefault().post(new PauseEvent());
                     UIThread.postDelay(() -> mMainActivity.notifyDataSetChange(null), 200);
                 }
                 isPause = !isPause;
@@ -178,7 +181,8 @@ public class DownCountFragment extends Fragment implements DownCountListener {
 
                     @Override
                     public void onPosClickListener() {
-                        finishDownCount();
+//                        finishDownCount();
+                        mMainActivity.finishDownCount();
                     }
                 });
                 break;

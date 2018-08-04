@@ -44,8 +44,6 @@ import butterknife.OnClick;
 import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.data.GoalBean;
-import club.peiyan.goaltrack.data.ScoreBean;
-import club.peiyan.goaltrack.data.ScoreList;
 import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.netTask.SyncDataTask;
@@ -99,6 +97,8 @@ public class MainActivity extends BaseActivity
     FrameLayout mFlDownCount;
     @BindView(R.id.flGoal)
     FrameLayout mFlGoal;
+    @BindView(R.id.tvTitle)
+    TextView mTvTitle;
     @BindView(R.id.tvDownCount)
     TextView mTvDownCount;
     @BindView(R.id.ivPausePlay)
@@ -332,14 +332,15 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.action_score:
-                ArrayList<ScoreList> mPastScoreList = new ArrayList();
-                for (int i = 0; i < Constants.getScoreShowDay(); i++) {
-                    ArrayList<ScoreBean> mBeans = mDBHelper.getScoreByTime(CalendarUtils.getDate(i));
-                    if (mBeans != null && mBeans.size() > 0) {
-                        mPastScoreList.add(new ScoreList(mBeans));
-                    }
-                }
-                ScoreActivity.startScoreActivity(this, mPastScoreList);
+//                ArrayList<ScoreList> mPastScoreList = new ArrayList();
+//                for (int i = 0; i < Constants.getScoreShowDay(); i++) {
+//                    ArrayList<ScoreBean> mBeans = mDBHelper.getScoreByTime(CalendarUtils.getDate(i));
+//                    if (mBeans != null && mBeans.size() > 0) {
+//                        mPastScoreList.add(new ScoreList(mBeans));
+//                    }
+//                }
+//                ScoreActivity.startScoreActivity(this, mPastScoreList);
+                ScoreActivity.startScoreActivity(this);
                 break;
             case R.id.action_sync:
         }
@@ -516,7 +517,8 @@ public class MainActivity extends BaseActivity
             mTitle = tags[0];
         }
         mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_pause_circle_outline_white_24dp));
-        String countHtml = mTitle + ":    " + "<big><big><big>" + TimeUtil.formatDownTime(count) + "</big></big></big>";
+        String countHtml = "<big><big><big>" + TimeUtil.formatDownTime(count) + "</big></big></big>";
+        mTvTitle.setText(mTitle + "：");
         mTvDownCount.setText(Html.fromHtml(countHtml));
         if (!ViewUtil.isVisible(mRlDownCount)) {
             mRlDownCount.setVisibility(View.VISIBLE);
@@ -606,7 +608,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    private void pauseDownCount() {
+    public void pauseDownCount() {
         Intent mIntent = new Intent(this, DownCountService.class);
         mIntent.putExtra(COUNT_STOP, true);
         mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
@@ -615,7 +617,7 @@ public class MainActivity extends BaseActivity
         startService(mIntent);
     }
 
-    private void finishDownCount() {
+    public void finishDownCount() {
         Intent mIntent = new Intent(this, DownCountService.class);
         mIntent.putExtra(COUNT_FINISH, true);
         mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
@@ -624,7 +626,7 @@ public class MainActivity extends BaseActivity
         startService(mIntent);
     }
 
-    private void continueDownCount() {
+    public void continueDownCount() {
         Intent mIntent = new Intent(this, DownCountService.class);
         mIntent.putExtra(DOWN_COUNT, mCount);
         mIntent.putExtra(DOWN_COUNT_TAG, new String[]{mTags[0],
@@ -635,7 +637,7 @@ public class MainActivity extends BaseActivity
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPauseEvent(PauseEvent event) {
-        mIvPausePlay.setImageDrawable(getResources()
+        this.mIvPausePlay.setImageDrawable(getResources()
                 .getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
     }
 
