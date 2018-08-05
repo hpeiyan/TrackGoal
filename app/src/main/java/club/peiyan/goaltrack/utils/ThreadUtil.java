@@ -9,13 +9,17 @@ import android.os.Looper;
  * Desc:
  */
 
-public class UIThread {
+public class ThreadUtil {
 
-    public static void postDelay(Runnable mRunnable, long time) {
+    public static void uiPostDelay(Runnable mRunnable, long time) {
         new Handler(Looper.getMainLooper()).postDelayed(mRunnable, time);
     }
 
-    public static void post(Runnable mRunnable) {
+    public static void uiPost(Runnable mRunnable) {
         new Handler(Looper.getMainLooper()).post(mRunnable);
+    }
+
+    public static void ioThread(Runnable mRunnable) {
+        new Thread(mRunnable).start();
     }
 }

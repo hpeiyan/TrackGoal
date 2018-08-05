@@ -32,7 +32,7 @@ import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
-import club.peiyan.goaltrack.utils.UIThread;
+import club.peiyan.goaltrack.utils.ThreadUtil;
 
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
@@ -168,7 +168,7 @@ public class DownCountFragment extends Fragment implements DownCountListener {
 //                    pauseDownCount();
                     mMainActivity.pauseDownCount();
                     EventBus.getDefault().post(new PauseEvent());
-                    UIThread.postDelay(() -> mMainActivity.notifyDataSetChange(null), 200);
+                    ThreadUtil.uiPostDelay(() -> mMainActivity.notifyDataSetChange(null), 200);
                 }
                 isPause = !isPause;
                 break;

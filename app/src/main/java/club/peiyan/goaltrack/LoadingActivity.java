@@ -2,17 +2,24 @@ package club.peiyan.goaltrack;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import com.umeng.analytics.MobclickAgent;
 
-import club.peiyan.goaltrack.utils.ToastUtil;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
-import static android.content.pm.PackageManager.PERMISSION_DENIED;
+import club.peiyan.goaltrack.utils.LogUtil;
+import club.peiyan.goaltrack.utils.ThreadUtil;
+import club.peiyan.goaltrack.utils.ToastUtil;
 
 /**
  * Created by HPY.
@@ -24,23 +31,76 @@ public class LoadingActivity extends BaseActivity {
 
     private static final int REQUEST_CODE = 1028;
 
+    private final static String[] mPermissionList = new String[]{
+//            Manifest.permission.WRITE_CALENDAR
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+//            , Manifest.permission.ACCESS_FINE_LOCATION
+//            , Manifest.permission.CALL_PHONE
+//            , Manifest.permission.READ_LOGS
+            , Manifest.permission.READ_PHONE_STATE
+//            , Manifest.permission.READ_EXTERNAL_STORAGE
+//            , Manifest.permission.SET_DEBUG_APP
+//            , Manifest.permission.SYSTEM_ALERT_WINDOW
+//            , Manifest.permission.GET_ACCOUNTS
+//            , Manifest.permission.WRITE_APN_SETTINGS
+    };
+    private static final java.lang.String TAG = "LoadingActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loading);
+        copyDB();
         getSupportActionBar().hide();
         checkAppPermission();
     }
 
-    private void checkAppPermission() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_CALENDAR);
-        if (permissionCheck == PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
-        } else {
-            ReLoginActivity.startReLoginActivity(this);
+    private void copyDB() {
+        ThreadUtil.ioThread(() -> {
+            File mDBFile = getDatabasePath("UserTrackGoal.db");
+            if (mDBFile == null || !mDBFile.exists()) {
+                LogUtil.logi(TAG, "start copy database");
+                initData();
+            }
+        });
+    }
+
+    /**
+     * 拷贝数据库
+     */
+    private void initData() {
+        AssetManager assetManager = getAssets();
+        InputStream in;
+        OutputStream out;
+        try {
+            in = assetManager.open("UserTrackGoal.db");
+            String mS = getFilesDir().getAbsolutePath();
+            String mDatabasePath = mS.substring(0, mS.length() - 5) + "databases";
+            File outFile = new File(mDatabasePath, "UserTrackGoal.db");
+            LogUtil.logi(mS);
+            LogUtil.logi(outFile.getAbsolutePath());
+            out = new FileOutputStream(outFile);
+            copyFile(in, out);
+            in.close();
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            Log.e("tag", "Failed to copy asset UserTrackGoal.db ", e);
         }
+    }
+
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
+    private void checkAppPermission() {
+        ActivityCompat.requestPermissions(this,
+                mPermissionList, REQUEST_CODE);
+
     }
 
     @Override
@@ -48,12 +108,14 @@ public class LoadingActivity extends BaseActivity {
         switch (requestCode) {
             case REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    ToastUtil.toast("无法获得权限，部分功能将受到影响");
+                for (int result :
+                        grantResults) {
+                    if (result == PackageManager.PERMISSION_DENIED) {
+                        ToastUtil.toast("部分权限受限，相关功能将受到影响");
+                        break;
+                    }
                 }
+
             }
             ReLoginActivity.startReLoginActivity(this);
         }

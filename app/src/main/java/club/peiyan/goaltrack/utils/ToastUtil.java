@@ -13,7 +13,7 @@ import club.peiyan.goaltrack.GoalApplication;
 public class ToastUtil {
 
     public static void toast(final String message) {
-        UIThread.post(new Runnable() {
+        ThreadUtil.uiPost(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(GoalApplication.getContext(), message, Toast.LENGTH_SHORT).show();

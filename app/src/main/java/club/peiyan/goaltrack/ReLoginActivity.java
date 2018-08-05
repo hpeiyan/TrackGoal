@@ -17,7 +17,7 @@ import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.netTask.RegisterTask;
 import club.peiyan.goaltrack.netTask.VerifyTask;
 import club.peiyan.goaltrack.utils.AppSp;
-import club.peiyan.goaltrack.utils.UIThread;
+import club.peiyan.goaltrack.utils.ThreadUtil;
 
 /**
  * Created by HPY.
@@ -37,7 +37,7 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
 
     public static void startReLoginActivity(LoadingActivity mActivity) {
         Intent mIntent = new Intent(mActivity, ReLoginActivity.class);
-        UIThread.postDelay(() -> {
+        ThreadUtil.uiPostDelay(() -> {
             mActivity.startActivity(mIntent);
             if (!mActivity.isDestroyed()) {
                 mActivity.finish();

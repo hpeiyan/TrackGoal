@@ -62,7 +62,7 @@ import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.LogUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
-import club.peiyan.goaltrack.utils.UIThread;
+import club.peiyan.goaltrack.utils.ThreadUtil;
 import club.peiyan.goaltrack.utils.ViewUtil;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
@@ -408,19 +408,19 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.feedback:
-                UIThread.postDelay(() -> FeedBackActivity.startFeedbackActivity(MainActivity.this), 200);
+                ThreadUtil.uiPostDelay(() -> FeedBackActivity.startFeedbackActivity(MainActivity.this), 200);
                 break;
             case R.id.setting:
-                UIThread.postDelay(() -> SettingActivity.startSettingActivity(MainActivity.this), 200);
+                ThreadUtil.uiPostDelay(() -> SettingActivity.startSettingActivity(MainActivity.this), 200);
                 break;
             case R.id.qa:
-                UIThread.postDelay(() -> QAActivity.startQAActivity(MainActivity.this), 200);
+                ThreadUtil.uiPostDelay(() -> QAActivity.startQAActivity(MainActivity.this), 200);
                 break;
             case R.id.aboutApp:
-                UIThread.postDelay(() -> AboutActivity.startAboutActivity(MainActivity.this), 200);
+                ThreadUtil.uiPostDelay(() -> AboutActivity.startAboutActivity(MainActivity.this), 200);
                 break;
             case R.id.notification:
-                UIThread.postDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
+                ThreadUtil.uiPostDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
                 break;
             case ADD_GOAL_ID:
                 createParentPlan();
@@ -637,7 +637,7 @@ public class MainActivity extends BaseActivity
                 } else {
                     mIvPausePlay.setImageDrawable(getResources().getDrawable(R.mipmap.ic_play_circle_outline_white_24dp));
                     pauseDownCount();
-                    UIThread.postDelay(() -> notifyDataSetChange(null), 200);
+                    ThreadUtil.uiPostDelay(() -> notifyDataSetChange(null), 200);
                 }
                 isPause = !isPause;
                 break;
