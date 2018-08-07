@@ -4,7 +4,8 @@
     >
     <item
         android:id="@+id/action_sync"
-        android:icon="@mipmap/ic_autorenew_white_24dp"
+        android:icon="@mipmap/ic_autorenew_black_24dp"
+        android:iconTint="@color/secondTextColor"
         android:orderInCategory="100"
         android:title="同步"
         app:actionViewClass="android.widget.ImageView"
@@ -13,7 +14,9 @@
     <item
         android:id="@+id/action_score"
         android:checked="true"
-        android:icon="@mipmap/ic_trending_up_white_24dp"
+        android:iconTintMode="src_atop"
+        android:icon="@mipmap/ic_trending_up_black_24dp"
+        android:iconTint="@color/secondTextColor"
         android:orderInCategory="100"
         android:title="报表"
         app:showAsAction="ifRoom"/>

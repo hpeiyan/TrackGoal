@@ -26,7 +26,12 @@
         <item
             android:id="@+id/aboutApp"
             android:icon="@mipmap/ic_whatshot_black_24dp"
-            android:title="Goal Track"
+            android:title="关于"
+            />
+        <item
+            android:id="@+id/addPlan"
+            android:icon="@mipmap/ic_add_black_24dp"
+            android:title="创建"
             />
     </group>
 </menu>

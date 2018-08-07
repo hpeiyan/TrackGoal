@@ -8,12 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -60,9 +63,9 @@ import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.LogUtil;
+import club.peiyan.goaltrack.utils.ThreadUtil;
 import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
-import club.peiyan.goaltrack.utils.ThreadUtil;
 import club.peiyan.goaltrack.utils.ViewUtil;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
@@ -86,7 +89,6 @@ public class MainActivity extends BaseActivity
     private static final String SYNC_DATA = "sync_data";
     private static final int FEEDBACKID = 1024;
     private static final int ALARM_SETTING_ID = 1026;
-    private static final int ADD_GOAL_ID = 1086;
     private static final String CHANNEL_ID = "CHANNEL_ID";
     private static final String ACTION_SNOOZE = "ACTION_SNOOZE";
     @BindView(R.id.toolbar)
@@ -301,15 +303,15 @@ public class MainActivity extends BaseActivity
                 MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
                 mItem.setIcon(imgRes[i % 6]);
                 if (bean.getTitle().equals(mGoalTitle)) {
-                    mItem.setChecked(true);
+//                    mItem.setChecked(true);
                 }
                 if (i == 0 && TextUtils.isEmpty(mGoalTitle)) {
-                    mItem.setChecked(true);
+//                    mItem.setChecked(true);
                 }
             }
         }
-        MenuItem mItem = mGoalSubMenu.add(R.id.add_goal, ADD_GOAL_ID, ADD_GOAL_ID, "创建计划");
-        mItem.setIcon(R.mipmap.ic_add_black_24dp);
+//        MenuItem mItem = mGoalSubMenu.add(R.id.add_goal, ADD_GOAL_ID, ADD_GOAL_ID, "创建计划");
+//        mItem.setIcon(R.mipmap.ic_add_black_24dp);
 //        mAppSubMenu.clear();
 //        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
 //        mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
@@ -367,12 +369,20 @@ public class MainActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        Drawable drawable = DrawableCompat.wrap(menu.findItem(R.id.action_sync).getIcon());
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.secondTextColor));
+        menu.findItem(R.id.action_sync).setIcon(drawable);
+
+        Drawable drawableScore = DrawableCompat.wrap(menu.findItem(R.id.action_score).getIcon());
+        DrawableCompat.setTint(drawableScore, ContextCompat.getColor(this,R.color.secondTextColor));
+        menu.findItem(R.id.action_score).setIcon(drawableScore);
+
         ImageView syncIv = (ImageView) menu.findItem(R.id.action_sync).getActionView();
         mAnimation = AnimationUtils.loadAnimation(this, R.anim.sync);
         mAnimation.setRepeatMode(INFINITE);
         mAnimation.setRepeatCount(Integer.MAX_VALUE);
         if (syncIv != null) {
-            syncIv.setImageResource(R.mipmap.ic_autorenew_white_24dp);
+            syncIv.setImageResource(R.mipmap.ic_autorenew_black_24dp);
             syncIv.setOnClickListener(view -> {
                 view.startAnimation(mAnimation);
                 setSyncPBVisible(true);
@@ -422,13 +432,12 @@ public class MainActivity extends BaseActivity
             case R.id.notification:
                 ThreadUtil.uiPostDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
                 break;
-            case ADD_GOAL_ID:
+            case R.id.addPlan:
                 createParentPlan();
                 break;
             default:
                 for (GoalBean bean : mParentGoals) {
                     if (item.getTitle().equals(bean.getTitle())) {
-                        item.setChecked(true);
                         AppSp.putString(LATEST_GOAL, bean.getTitle());
                         notifyDataSetChange(bean.getTitle());
                         break;
