@@ -42,7 +42,7 @@
                     android:layout_alignParentLeft="true"
                     android:text="32天"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="40sp"
+                    android:textSize="30sp"
                     />
 
                 <TextView
@@ -70,7 +70,7 @@
                     android:layout_alignParentRight="true"
                     android:text="32天"
                     android:textColor="@color/secondTextColor"
-                    android:textSize="40sp"
+                    android:textSize="30sp"
                     android:textStyle=""/>
 
             </RelativeLayout>
@@ -87,7 +87,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryLight"
             android:text="编辑"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/secondTextColor"/>
 
         <Button
             android:id="@+id/btnDelete"
@@ -95,7 +95,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryDark"
             android:text="删除"
-            android:textColor="@color/md_white_1000"/>
+            android:textColor="@color/secondTextColor"/>
     </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
 
     <RelativeLayout

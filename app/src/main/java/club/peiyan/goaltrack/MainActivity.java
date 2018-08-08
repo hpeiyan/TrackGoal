@@ -326,7 +326,7 @@ public class MainActivity extends BaseActivity
     public void initDataBase() {
         if (mParentGoals != null) mParentGoals.clear();
         mParentGoals = mDBHelper.getGoalByLevel(1);
-        setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, ""), "rootParent"));
+        setLatestParentGoal(mDBHelper.getGoalByTitle(AppSp.getString(LATEST_GOAL, "下半年计划(范例)"), "rootParent"));
         if (mLatestParentGoal == null) {
             setLatestParentGoal(mDBHelper.getNearestParentGoal());
         }
@@ -370,11 +370,11 @@ public class MainActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         Drawable drawable = DrawableCompat.wrap(menu.findItem(R.id.action_sync).getIcon());
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.secondTextColor));
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this, R.color.secondTextColor));
         menu.findItem(R.id.action_sync).setIcon(drawable);
 
         Drawable drawableScore = DrawableCompat.wrap(menu.findItem(R.id.action_score).getIcon());
-        DrawableCompat.setTint(drawableScore, ContextCompat.getColor(this,R.color.secondTextColor));
+        DrawableCompat.setTint(drawableScore, ContextCompat.getColor(this, R.color.secondTextColor));
         menu.findItem(R.id.action_score).setIcon(drawableScore);
 
         ImageView syncIv = (ImageView) menu.findItem(R.id.action_sync).getActionView();

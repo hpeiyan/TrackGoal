@@ -94,7 +94,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryLight"
             android:text="编辑"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/secondTextColor"/>
 
         <Button
             android:id="@+id/btnDelete"
@@ -102,7 +102,7 @@
             android:layout_height="match_parent"
             android:background="@color/colorPrimaryDark"
             android:text="删除"
-            android:textColor="@color/md_white_1000"/>
+            android:textColor="@color/secondTextColor"/>
     </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
 
     <RelativeLayout
