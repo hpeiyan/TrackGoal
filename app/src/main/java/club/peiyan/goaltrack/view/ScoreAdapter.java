@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -40,6 +39,7 @@ import butterknife.ButterKnife;
 import club.peiyan.goaltrack.R;
 import club.peiyan.goaltrack.data.ScoreBean;
 import club.peiyan.goaltrack.data.ScoreList;
+import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.ListUtil;
 import club.peiyan.goaltrack.utils.ShareUtil;
 import club.peiyan.goaltrack.utils.ToastUtil;
@@ -93,8 +93,8 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     File extBaseDir = Environment.getExternalStorageDirectory();
                     File file = new File(extBaseDir.getAbsolutePath() + "/DCIM");
                     String filePath = file.getAbsolutePath() + "/" + mFileName;
-                    String mContent = mShow + "一览表\n——GoalTrack";
-                    ShareUtil.shareImg(mActivity, mContent, "", "Hi there，我在用Goal Track，\n这是我的" + mContent, Uri.parse(filePath));
+                    View mView = mActivity.getLayoutInflater().inflate(R.layout.layout_share_dialog, null);
+                    DialogUtil.showDialogWithView(mActivity, mView, null, null, null);
                 }
             });
         } else {
@@ -112,15 +112,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     File extBaseDir = Environment.getExternalStorageDirectory();
                     File file = new File(extBaseDir.getAbsolutePath() + "/DCIM");
                     String filePath = file.getAbsolutePath() + "/" + mFileName;
-                    String mDate = mScoreBeans.getScoreBeans().get(0).getDate();
-                    String dateShow = "项目一览表——GoalTrack";
-                    if (mDate.length() > 0) {
-                        String[] mStrings = mDate.split("/");
-                        if (mStrings.length == 3) {
-                            dateShow = String.format("%s年%s月%s日", mStrings[0], mStrings[1], mStrings[2]) + "项目\n——GoalTrack";
-                        }
-                    }
-                    ShareUtil.shareImg(mActivity, dateShow, "", "Hi there，我在用Goal Track，\n这是我的" + dateShow, Uri.parse(filePath));
+                    ShareUtil.shareToWeChat(mActivity, filePath);
                 }
             });
         }

@@ -52,10 +52,14 @@ public class DialogUtil {
         mBuilder.setView(mV);
         AlertDialog mAlertDialog = mBuilder
                 .setNegativeButton(negBtn, (dialog, which) -> {
-                    mListener.onNegClickListener();
+                    if (mListener != null) {
+                        mListener.onNegClickListener();
+                    }
                     dialog.dismiss();
                 }).setPositiveButton(posBtn, (dialog, which) -> {
-                    mListener.onPosClickListener();
+                    if (mListener != null) {
+                        mListener.onPosClickListener();
+                    }
                     dialog.dismiss();
                 }).create();
         if (mAlertDialog != null) {

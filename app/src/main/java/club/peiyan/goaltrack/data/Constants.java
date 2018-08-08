@@ -19,6 +19,7 @@ public class Constants {
     public static final String ALARM_ON = "ALARM_ON";
 
     public static final String CHECK_MODE = "CHECK_MODE";
+    public static final java.lang.String APP_ID = "wx6f57947f90e59f97";
 
     /**
      * 分数显示的天数

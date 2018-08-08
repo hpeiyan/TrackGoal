@@ -1,12 +1,16 @@
 package club.peiyan.goaltrack.utils;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.provider.MediaStore;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
-import java.io.FileNotFoundException;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXImageObject;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import club.peiyan.goaltrack.data.Constants;
 
 /**
  * Created by HPY.
@@ -15,44 +19,38 @@ import java.io.FileNotFoundException;
  */
 
 public class ShareUtil {
-    /**
-     * 分享图片和文字内容
-     *
-     * @param dlgTitle 分享对话框标题
-     * @param subject  主题
-     * @param content  分享内容（文字）
-     * @param uri      图片资源URI
-     */
-    public static void shareImg(Activity mActivity,String dlgTitle, String subject, String content,
-                                Uri uri) {
-        if (uri == null) {
-            return;
-        }
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("image/*");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        if (subject != null && !"".equals(subject)) {
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        }
-        if (content != null && !"".equals(content)) {
-            intent.putExtra(Intent.EXTRA_TEXT, content);
-        }
 
-        // 设置弹出框标题
-        if (dlgTitle != null && !"".equals(dlgTitle)) { // 自定义标题
-            mActivity.startActivity(Intent.createChooser(intent, dlgTitle));
-        } else { // 系统默认标题
-            mActivity.startActivity(intent);
-        }
+    private static final int THUMB_SIZE = 150;
+
+
+
+
+    public static void shareToWeChat(Context mContext, String path) {
+        IWXAPI api = WXAPIFactory.createWXAPI(mContext, Constants.APP_ID);
+
+        int mTargetScene = SendMessageToWX.Req.WXSceneSession;
+//        int  mTargetScene = SendMessageToWX.Req.WXSceneTimeline;
+//        int mTargetScene = SendMessageToWX.Req.WXSceneFavorite;
+
+        WXImageObject imgObj = new WXImageObject();
+        imgObj.setImagePath(path);
+
+        WXMediaMessage msg = new WXMediaMessage();
+        msg.mediaObject = imgObj;
+
+        Bitmap bmp = BitmapFactory.decodeFile(path);
+        Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, THUMB_SIZE, THUMB_SIZE, true);
+        bmp.recycle();
+        msg.thumbData = WeChatUtil.bmpToByteArray(thumbBmp, true);
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction("img");
+        req.message = msg;
+        req.scene = mTargetScene;
+        api.sendReq(req);
     }
 
-    public static String insertImageToSystem(Context context, String imagePath,String picName) {
-        String url = "";
-        try {
-            url = MediaStore.Images.Media.insertImage(context.getContentResolver(), imagePath, picName, "All Right Goal Track Reserved");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return url;
+    private static String buildTransaction(final String type) {
+        return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
 }

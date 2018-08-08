@@ -29,7 +29,7 @@
             android:id="@+id/tvUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:gravity="center"
             android:text="Goal Track"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -40,7 +40,7 @@
             android:id="@+id/swConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:background="@null"
             android:checked="true"/>
 
@@ -48,7 +48,7 @@
             android:id="@+id/tvConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
+            android:layout_marginLeft="5dp"
             android:gravity="center"
             android:text="我的目标"
             android:textColor="@color/secondTextColor"
