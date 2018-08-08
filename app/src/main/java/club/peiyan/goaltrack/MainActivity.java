@@ -25,7 +25,6 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -33,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -123,7 +123,7 @@ public class MainActivity extends BaseActivity
     private ArrayList<GoalBean> mSingleAllGoals = new ArrayList<>();
     private GoalBean mLatestParentGoal;
     private ArrayList<GoalBean> mParentGoals;
-    private SubMenu mGoalSubMenu;
+    //    private SubMenu mGoalSubMenu;
     private GoalFragment mGoalFragment;
 
     private static final int[] titleRes = new int[]{R.string.score, R.string.goal};
@@ -164,6 +164,7 @@ public class MainActivity extends BaseActivity
     private Animation mAnimation;
     private DownCountFragment mDownCountFragment;
     private boolean mIsForceClosePage;
+    private Switch mSwConfig;
 
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
@@ -253,8 +254,23 @@ public class MainActivity extends BaseActivity
         getSupportActionBar().show();
         getSupportActionBar().setTitle(titleRes[1]);
         mNavView.setNavigationItemSelectedListener(this);
-        mGoalSubMenu = mNavView.getMenu().addSubMenu("目标");
-//        mAppSubMenu = mNavView.getMenu().addSubMenu("App");
+        TextView mTvConfig = mNavView.getHeaderView(0).findViewById(R.id.tvConfig);
+        mSwConfig = mNavView.getHeaderView(0).findViewById(R.id.swConfig);
+        mSwConfig.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppSp.putBoolean(Constants.CHECK_MODE, isChecked);
+            if (isChecked) {
+                mNavView.getMenu().setGroupVisible(R.id.goal, true);
+                mNavView.getMenu().setGroupVisible(R.id.appSetting, false);
+                mTvConfig.setText("我的目标");
+            } else {
+                mNavView.getMenu().setGroupVisible(R.id.goal, false);
+                mNavView.getMenu().setGroupVisible(R.id.appSetting, true);
+                mTvConfig.setText("应用设置");
+            }
+        });
+
+        mSwConfig.setChecked(AppSp.getBoolean(Constants.CHECK_MODE, true));
+
         initMenuItem("");
         mDownCountFragment = new DownCountFragment();
         showGoalPage();
@@ -296,22 +312,26 @@ public class MainActivity extends BaseActivity
     }
 
     private void initMenuItem(String mGoalTitle) {
-        mGoalSubMenu.clear();
+        getGoalMenu().removeGroup(R.id.goal);
+        MenuItem mAddItem = getGoalMenu().add(R.id.goal, R.id.addPlan, 1, "创建计划");
+        mAddItem.setIcon(R.mipmap.ic_add_black_24dp);
+
         if (mParentGoals != null && mParentGoals.size() > 0) {
             for (int i = 0; i < mParentGoals.size(); i++) {
                 GoalBean bean = mParentGoals.get(i);
-                MenuItem mItem = mGoalSubMenu.add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
+                MenuItem mItem = getGoalMenu().add(R.id.goal, bean.getId(), bean.getId(), bean.getTitle());
                 mItem.setIcon(imgRes[i % 6]);
-                if (bean.getTitle().equals(mGoalTitle)) {
-//                    mItem.setChecked(true);
-                }
-                if (i == 0 && TextUtils.isEmpty(mGoalTitle)) {
-//                    mItem.setChecked(true);
-                }
+//                if (bean.getTitle().equals(mGoalTitle)) {
+////                    mItem.setChecked(true) ;
+//                }
+//                if (i == 0 && TextUtils.isEmpty(mGoalTitle)) {
+////                    mItem.setChecked(true);
+//                }
+            }
+            if (!mSwConfig.isChecked()) {
+                mNavView.getMenu().setGroupVisible(R.id.goal, false);
             }
         }
-//        MenuItem mItem = mGoalSubMenu.add(R.id.add_goal, ADD_GOAL_ID, ADD_GOAL_ID, "创建计划");
-//        mItem.setIcon(R.mipmap.ic_add_black_24dp);
 //        mAppSubMenu.clear();
 //        MenuItem mMenuItem = mAppSubMenu.add(R.id.app, FEEDBACKID, 1, getString(R.string.feedback));
 //        mMenuItem.setIcon(R.mipmap.ic_send_black_24dp);
@@ -319,8 +339,8 @@ public class MainActivity extends BaseActivity
 //        mAlarmItem.setIcon(R.drawable.ic_menu_manage);
     }
 
-    public SubMenu getGoalSubMenu() {
-        return mGoalSubMenu;
+    public Menu getGoalMenu() {
+        return mNavView.getMenu();
     }
 
     public void initDataBase() {
@@ -399,7 +419,6 @@ public class MainActivity extends BaseActivity
             case R.id.action_score:
                 ScoreActivity.startScoreActivity(this);
                 break;
-            case R.id.action_sync:
         }
         return super.onOptionsItemSelected(item);
     }

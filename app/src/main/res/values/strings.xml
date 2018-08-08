@@ -24,7 +24,7 @@
     <item name="day" type="id"/>
     <item name="hour" type="id"/>
     <item name="minute" type="id"/>
-    <item name="goal" type="id"/>
+    <!--<item name="goal" type="id"/>-->
     <item name="add_goal" type="id"/>
     <item name="app" type="id"/>
     <item name="about" type="id"/>

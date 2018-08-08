@@ -15,8 +15,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
@@ -458,13 +458,13 @@ public class DialogFragmentCreatePlan extends DialogFragment implements Compound
             ToastUtil.toast("已保存");
             if (mLevel == 1) {
                 AppSp.putString(LATEST_GOAL, title);
-                SubMenu mSubMenu = mMainActivity.getGoalSubMenu();
-                if (mSubMenu != null) {
+                Menu mMenu = mMainActivity.getGoalMenu();
+                if (mMenu != null) {
                     GoalBean mBean = mDBHelper.getGoalByTitle(title, "rootParent");
                     if (mBean != null) {
-                        MenuItem mMenuItem = mSubMenu.findItem(mBean.getId());
+                        MenuItem mMenuItem = mMenu.findItem(mBean.getId());
                         if (mMenuItem == null) {
-                            MenuItem mItem = mSubMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
+                            MenuItem mItem = mMenu.add(R.id.goal, mBean.getId(), mBean.getId(), title);
                             mItem.setIcon(R.mipmap.ic_attach_file_black_24dp);
                         }
                     }

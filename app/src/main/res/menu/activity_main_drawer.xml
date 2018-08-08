@@ -2,7 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
-    <group android:id="@+id/appSetting"
+    <group
+        android:id="@+id/appSetting"
+        android:visible="false"
         >
         <item
             android:id="@+id/setting"
@@ -28,6 +30,9 @@
             android:icon="@mipmap/ic_whatshot_black_24dp"
             android:title="关于"
             />
+    </group>
+
+    <group android:id="@+id/goal">
         <item
             android:id="@+id/addPlan"
             android:icon="@mipmap/ic_add_black_24dp"
