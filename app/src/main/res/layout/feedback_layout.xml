@@ -34,7 +34,7 @@
             android:layout_marginBottom="15dp"
             android:background="@null"
             android:gravity="start"
-            android:hint="吐槽、建议，可能还有感谢"
+            android:hint="吐槽、建议、申请邀请码，可能还有感谢。"
             android:padding="10dp"
             android:textSize="@dimen/text_input_dimen"/>
 
@@ -63,9 +63,10 @@
 
         <TextView
             android:id="@+id/tvUpload"
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:background="@drawable/selector_register_login"
             android:gravity="center"
             android:padding="16dp"

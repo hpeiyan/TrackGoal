@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
             app:srcCompat="@mipmap/logo"/>
 
         <TextView
@@ -30,7 +30,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="1"
+            android:maxWidth="70dp"
             android:text="Goal Track"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@color/primaryTextColor"
@@ -40,7 +43,7 @@
             android:id="@+id/swConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:background="@null"
             android:checked="true"/>
 

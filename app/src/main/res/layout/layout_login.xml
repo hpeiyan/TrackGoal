@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:hint="密码"
+            android:hint="邀请码"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:singleLine="true"/>
@@ -58,27 +58,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tiPass"
-        android:layout_marginTop="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="9dp">
+        android:orientation="horizontal"
+        android:padding="50dp"
+        >
 
         <Button
             android:id="@+id/btnLogin"
-            android:layout_width="190dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
+            android:layout_weight="1"
             android:background="@drawable/selector_register_login"
             android:text="登录"/>
 
         <Button
             android:id="@+id/btnRegister"
-            android:layout_width="190dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_weight="1"
             android:background="@drawable/selector_register_login"
-            android:text="注册"/>
+            android:text="注册"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/btnVisitor"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:drawableRight="@mipmap/ic_arrow_forward_black_24dp"
+            android:gravity="center"
+            android:text="离线使用"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_show_dimen"/>
 
 
     </LinearLayout>

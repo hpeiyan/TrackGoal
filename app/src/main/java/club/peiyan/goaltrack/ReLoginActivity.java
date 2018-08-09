@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
@@ -33,6 +34,8 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
     EditText mEtPass;
     @BindView(R.id.btnRegister)
     Button mBtnRegister;
+    @BindView(R.id.btnVisitor)
+    TextView mBtnVisitor;
     private String mName;
 
     public static void startReLoginActivity(LoadingActivity mActivity) {
@@ -57,28 +60,39 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
     }
 
 
-    @OnClick({R.id.btnRegister, R.id.btnLogin})
+    @OnClick({R.id.btnRegister, R.id.btnLogin, R.id.btnVisitor})
     public void onViewClicked(View view) {
         mName = mEtName.getText().toString().trim();
         String mPass = mEtPass.getText().toString().trim();
-        if (mName.isEmpty() || mPass.isEmpty()) {
-            Toast.makeText(this, "信息缺失", Toast.LENGTH_SHORT).show();
-            return;
-        }
         switch (view.getId()) {
             case R.id.btnRegister:
+                if (mName.isEmpty() || mPass.isEmpty()) {
+                    Toast.makeText(this, "信息缺失", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 RegisterTask mTask = new RegisterTask(ReLoginActivity.this);
                 mTask.setRegisterListener(this);
                 mTask.setUserName(mName);
                 mTask.setPassword(mPass);
                 new Thread(mTask).start();
+                AppSp.putBoolean(Constants.IS_REGISTER,true);
                 break;
             case R.id.btnLogin:
+                if (mName.isEmpty() || mPass.isEmpty()) {
+                    Toast.makeText(this, "信息缺失", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 VerifyTask mVerifyTask = new VerifyTask(ReLoginActivity.this);
                 mVerifyTask.setOnVerifyListener(this);
                 mVerifyTask.setUserName(mName);
                 mVerifyTask.setPassword(mPass);
                 new Thread(mVerifyTask).start();
+                AppSp.putBoolean(Constants.IS_REGISTER,true);
+                break;
+            case R.id.btnVisitor:
+                MobclickAgent.onProfileSignIn("Visitor");
+                MainActivity.startMainActivity(ReLoginActivity.this, "Goal Track", false);
+                AppSp.putBoolean(Constants.IS_REGISTER,false);
                 break;
         }
     }

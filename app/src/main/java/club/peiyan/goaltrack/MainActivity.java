@@ -372,8 +372,8 @@ public class MainActivity extends BaseActivity
         if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
-        if (ViewUtil.isVisible(mRlDownCount)) {
-            DialogUtil.showSingleDialog(this, "最小化窗口", "保持专注是第一生产力", "否", "是的", new DialogUtil.DialogListener() {
+        if (mIsShowDownCount) {
+            DialogUtil.showSingleDialog(this, "最小化窗口", "将在后台倒计时\n保持专注是第一生产力", "保持", "是的", new DialogUtil.DialogListener() {
                 @Override
                 public void onNegClickListener() {
 
@@ -409,9 +409,23 @@ public class MainActivity extends BaseActivity
         if (syncIv != null) {
             syncIv.setImageResource(R.mipmap.ic_autorenew_black_24dp);
             syncIv.setOnClickListener(view -> {
-                view.startAnimation(mAnimation);
-                setSyncPBVisible(true);
-                startSync(this);
+                if (AppSp.getBoolean(Constants.IS_REGISTER, false)) {
+                    view.startAnimation(mAnimation);
+                    setSyncPBVisible(true);
+                    startSync(this);
+                } else {
+                    DialogUtil.showSingleDialog(this, "同步说明", "登陆的用户才能同步数据\n是否跳转申请？", "不要", "申请", new DialogUtil.DialogListener() {
+                        @Override
+                        public void onNegClickListener() {
+
+                        }
+
+                        @Override
+                        public void onPosClickListener() {
+                            FeedBackActivity.startFeedbackActivity(MainActivity.this);
+                        }
+                    });
+                }
             });
         }
         return true;

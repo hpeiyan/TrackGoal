@@ -20,8 +20,11 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import club.peiyan.goaltrack.MainActivity;
 import club.peiyan.goaltrack.R;
+import club.peiyan.goaltrack.data.Constants;
 import club.peiyan.goaltrack.data.GoalBean;
 import club.peiyan.goaltrack.netTask.SyncDataTask;
+import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.ThreadUtil;
 import club.peiyan.goaltrack.view.GoalsAdapter;
 import club.peiyan.goaltrack.view.MyRecycleView;
 
@@ -73,6 +76,8 @@ public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         initRecycleView();
         mConstraintLayout.setColorSchemeResources(R.color.colorAccent);
         mConstraintLayout.setOnRefreshListener(this);
+        mConstraintLayout.setClickable(false);
+
     }
 
     private void initRecycleView() {
@@ -121,7 +126,14 @@ public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     @Override
     public void onRefresh() {
-        mActivity.startSync(this);
+        if (AppSp.getBoolean(Constants.IS_REGISTER, false)) {
+            mActivity.startSync(this);
+        } else {
+            mActivity.notifyDataSetChange("");
+            ThreadUtil.uiPostDelay(() -> {
+                setPullStatus(false);
+            }, 2000);
+        }
     }
 
     @Override
@@ -146,6 +158,7 @@ public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         super.onResume();
         MobclickAgent.onPageStart("GoalFragment"); //统计页面("MainScreen"为页面名称，可自定义)
     }
+
     public void onPause() {
         super.onPause();
         MobclickAgent.onPageEnd("GoalFragment");
