@@ -1,53 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="15dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
 
-    <EditText
-        android:id="@+id/etFeedback"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="反馈"
+            app:titleTextColor="@color/secondTextColor"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/etEmail"
-        android:layout_marginBottom="15dp"
-        android:background="@null"
-        android:gravity="start"
-        android:hint="吐槽、建议，可能还有感谢"
-        android:padding="10dp"
-        android:textSize="@dimen/text_input_dimen"/>
+        android:padding="10dp">
 
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/lineDivider"
-        android:background="@null"
-        android:drawableLeft="@mipmap/ic_email_black_24dp"
-        android:drawablePadding="12dp"
-        android:gravity="start"
-        android:layout_marginBottom="6dp"
-        android:hint="我会通过邮箱回复您"
-        android:padding="8dp"
-        android:textSize="@dimen/text_input_dimen"/>
+        <EditText
+            android:id="@+id/etFeedback"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/etEmail"
+            android:layout_marginBottom="15dp"
+            android:background="@null"
+            android:gravity="start"
+            android:hint="吐槽、建议，可能还有感谢"
+            android:padding="10dp"
+            android:textSize="@dimen/text_input_dimen"/>
 
-    <View
-        android:id="@+id/lineDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_above="@+id/tvUpload"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="40dp"
-        android:background="@color/dividerColor"/>
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lineDivider"
+            android:layout_marginBottom="6dp"
+            android:background="@null"
+            android:drawableLeft="@mipmap/ic_email_black_24dp"
+            android:drawablePadding="12dp"
+            android:gravity="start"
+            android:hint="我会通过邮箱回复您"
+            android:padding="8dp"
+            android:textSize="@dimen/text_input_dimen"/>
 
-    <TextView
-        android:id="@+id/tvUpload"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/selector_register_login"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="提交建议"
-        android:textColor="@color/textColor"
-        android:textSize="@dimen/text_show_dimen"/>
-</RelativeLayout>
+        <View
+            android:id="@+id/lineDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_above="@+id/tvUpload"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:background="@color/dividerColor"/>
+
+        <TextView
+            android:id="@+id/tvUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/selector_register_login"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="提交建议"
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/text_show_dimen"/>
+    </RelativeLayout>
+
+</LinearLayout>

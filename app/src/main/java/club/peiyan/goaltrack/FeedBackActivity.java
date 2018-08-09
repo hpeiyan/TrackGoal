@@ -3,6 +3,7 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class FeedBackActivity extends BaseActivity implements FeedbackTask.OnFee
     TextView mTvUpload;
     @BindView(R.id.etEmail)
     EditText mEtEmail;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public static void startFeedbackActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, FeedBackActivity.class);
@@ -43,7 +46,7 @@ public class FeedBackActivity extends BaseActivity implements FeedbackTask.OnFee
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feedback_layout);
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("畅所欲言");
+        setSupportActionBar(mToolbar);
     }
 
     @OnClick(R.id.tvUpload)

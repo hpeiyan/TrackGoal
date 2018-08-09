@@ -3,6 +3,7 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 
 import com.umeng.analytics.MobclickAgent;
@@ -21,6 +22,8 @@ public class PushQAActivity extends BaseActivity {
 
     @BindView(R.id.webview)
     WebView mWebview;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public static void startPushActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, PushQAActivity.class);
@@ -32,7 +35,7 @@ public class PushQAActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.push_qa_layout);
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("设置提醒");
+        setSupportActionBar(mToolbar);
         mWebview.loadUrl("file:///android_asset/push.html");
     }
 

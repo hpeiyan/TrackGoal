@@ -3,9 +3,11 @@ package club.peiyan.goaltrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 
 import com.umeng.analytics.MobclickAgent;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -17,6 +19,9 @@ import butterknife.ButterKnife;
 public class QAActivity extends BaseActivity {
 
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     public static void startQAActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, QAActivity.class);
         mMainActivity.startActivity(mIntent);
@@ -27,7 +32,7 @@ public class QAActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.qa_layout);
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("Goal Track");
+        setSupportActionBar(mToolbar);
     }
 
 

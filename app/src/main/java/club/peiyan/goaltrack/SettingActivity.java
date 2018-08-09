@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
@@ -35,6 +36,8 @@ public class SettingActivity extends BaseActivity {
     EditText mEtScoreDays;
     @BindView(R.id.swAddGoal)
     Switch mSwAddGoal;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -46,7 +49,7 @@ public class SettingActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting_layout);
         ButterKnife.bind(this);
-        getSupportActionBar().setTitle("设置");
+        setSupportActionBar(mToolbar);
         initView();
     }
 
