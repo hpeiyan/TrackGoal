@@ -33,6 +33,8 @@ public class SettingActivity extends BaseActivity {
     Switch mSwFinish;
     @BindView(R.id.edtDays)
     EditText mEtScoreDays;
+    @BindView(R.id.swAddGoal)
+    Switch mSwAddGoal;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -57,6 +59,11 @@ public class SettingActivity extends BaseActivity {
         mSwFinish.setChecked(AppSp.getBoolean(Constants.ALARM_ON, true));
         mSwFinish.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppSp.putBoolean(Constants.ALARM_ON, isChecked);
+        });
+
+        mSwAddGoal.setChecked(AppSp.getBoolean(Constants.SHOW_ADD, false));
+        mSwAddGoal.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppSp.putBoolean(Constants.SHOW_ADD, isChecked);
         });
 
         mEtScoreDays.setText(Constants.getScoreShowDay() + "");

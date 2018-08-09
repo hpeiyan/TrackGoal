@@ -259,6 +259,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColor(Color.WHITE);
+        mChart.setEntryLabelColor(R.color.md_black_1000);
 
         mChart.setTransparentCircleColor(Color.WHITE);
         mChart.setTransparentCircleAlpha(110);

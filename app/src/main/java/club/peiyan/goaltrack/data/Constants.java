@@ -20,6 +20,7 @@ public class Constants {
 
     public static final String CHECK_MODE = "CHECK_MODE";
     public static final java.lang.String APP_ID = "wx6f57947f90e59f97";
+    public static final String SHOW_ADD = "SHOW_ADD";
 
     /**
      * 分数显示的天数

@@ -4,8 +4,8 @@
     android:id="@+id/rlParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
     android:clickable="true"
+    android:focusable="true"
     android:padding="5dp"
     android:translationZ="3dp"
     >
@@ -19,10 +19,11 @@
     <ImageView
         android:id="@+id/ivShare"
         android:layout_width="wrap_content"
-        android:src="@mipmap/ic_share_black_24dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:padding="6dp"
-        android:layout_height="wrap_content"/>
+        android:src="@mipmap/ic_share_black_24dp"
+        android:visibility="gone"/>
 
     <View
         android:id="@+id/viewLine"

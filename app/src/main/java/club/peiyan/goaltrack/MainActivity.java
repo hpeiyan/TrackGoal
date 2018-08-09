@@ -70,6 +70,8 @@ import club.peiyan.goaltrack.utils.ViewUtil;
 
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
 import static android.support.v4.widget.DrawerLayout.LOCK_MODE_UNLOCKED;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static android.view.animation.Animation.INFINITE;
 import static club.peiyan.goaltrack.AlarmBroadcastReceiver.CONTENT;
 import static club.peiyan.goaltrack.AlarmBroadcastReceiver.TITLE;
@@ -185,7 +187,6 @@ public class MainActivity extends BaseActivity
         mDBHelper = new DBHelper(this);
         initDataBase();
         initView();
-        mFab.setOnClickListener(view -> createParentPlan());
         boolean isSyncData = getIntent().getBooleanExtra(SYNC_DATA, false);
         if (isSyncData) {
             setSyncPBVisible(true);
@@ -250,6 +251,8 @@ public class MainActivity extends BaseActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
+        mFab.setOnClickListener(view -> createParentPlan());
+        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
         toggle.syncState();
         getSupportActionBar().show();
         getSupportActionBar().setTitle(titleRes[1]);
@@ -648,7 +651,7 @@ public class MainActivity extends BaseActivity
 
     private void hideDownCountPage() {
         ViewUtil.setVisible(mFlGoal);
-        ViewUtil.setVisible(mFab);
+        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
         ViewUtil.setGone(mFlDownCount);
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED);
     }

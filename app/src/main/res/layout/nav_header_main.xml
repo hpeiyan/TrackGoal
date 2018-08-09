@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             app:srcCompat="@mipmap/logo"/>
 
         <TextView
@@ -40,7 +40,7 @@
             android:id="@+id/swConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="15dp"
             android:background="@null"
             android:checked="true"/>
 
