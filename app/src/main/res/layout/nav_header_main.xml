@@ -20,7 +20,7 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/ivUserIcon"
             android:layout_width="46dp"
             android:layout_height="46dp"
             app:srcCompat="@mipmap/logo"/>

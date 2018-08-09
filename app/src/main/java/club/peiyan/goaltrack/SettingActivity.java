@@ -28,6 +28,7 @@ import club.peiyan.goaltrack.utils.LogUtil;
 public class SettingActivity extends BaseActivity {
 
 
+    public static final int SETTING_REQUEST_CODE = 10086;
     @BindView(R.id.tvFinishTry)
     TextView mTvFinishTry;
     @BindView(R.id.swFinish)
@@ -41,7 +42,7 @@ public class SettingActivity extends BaseActivity {
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
-        mMainActivity.startActivity(mIntent);
+        mMainActivity.startActivityForResult(mIntent,SETTING_REQUEST_CODE);
     }
 
     @Override

@@ -81,6 +81,7 @@ import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_ORIGIN;
 import static club.peiyan.goaltrack.DownCountService.DOWN_COUNT_TAG;
+import static club.peiyan.goaltrack.SettingActivity.SETTING_REQUEST_CODE;
 import static club.peiyan.goaltrack.data.Constants.LATEST_GOAL;
 
 public class MainActivity extends BaseActivity
@@ -760,5 +761,13 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().unregister(this);
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SETTING_REQUEST_CODE:
+                mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
