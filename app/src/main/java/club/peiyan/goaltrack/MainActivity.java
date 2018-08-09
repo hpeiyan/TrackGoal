@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -165,8 +166,9 @@ public class MainActivity extends BaseActivity
     };
     private Animation mAnimation;
     private DownCountFragment mDownCountFragment;
-    private boolean mIsForceClosePage;
+    private boolean mIsForceClosePage = false;
     private Switch mSwConfig;
+    private boolean mIsShowDownCount = false;
 
 
     public static void startMainActivity(ReLoginActivity mActivity, String mName, boolean isSyncData) {
@@ -615,17 +617,20 @@ public class MainActivity extends BaseActivity
             getSupportActionBar().hide();
         }
 
-        if (!ViewUtil.isVisible(mFlDownCount) && !mIsForceClosePage) {
+        if (!mIsShowDownCount && !mIsForceClosePage) {
             setVisibleDownCountPage();
         }
     }
 
     private void setVisibleDownCountPage() {
+        mIsShowDownCount = true;
         ViewUtil.setVisible(mFlDownCount);
         ViewUtil.setGone(mFlGoal);
         ViewUtil.setGone(mFab);
         getSupportActionBar().hide();
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -636,7 +641,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void onRefreshAfterFinish() {
-        mIsForceClosePage = !mIsForceClosePage;
+        mIsForceClosePage = false;
         if (ViewUtil.isVisible(mFlDownCount)) {
             hideDownCountPage();
         }
@@ -650,10 +655,13 @@ public class MainActivity extends BaseActivity
     }
 
     private void hideDownCountPage() {
+        mIsShowDownCount = false;
         ViewUtil.setVisible(mFlGoal);
         mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
         ViewUtil.setGone(mFlDownCount);
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private boolean isPause = false;// now status
@@ -686,7 +694,7 @@ public class MainActivity extends BaseActivity
                 });
                 break;
             case R.id.rlDownCount:
-                if (!ViewUtil.isVisible(mFlDownCount)) {
+                if (!mIsShowDownCount) {
                     setVisibleDownCountPage();
                 }
                 break;

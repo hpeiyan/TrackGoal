@@ -91,10 +91,10 @@ public class DownCountFragment extends Fragment implements DownCountListener {
         mCircleView.setTextScale(0.9f);
         mCircleView.setTextColorAuto(true);
         mCircleView.setAutoTextSize(true);
-        mCircleView.setFillCircleColor(getResources().getColor(R.color.colorPrimaryLight));
+        mCircleView.setFillCircleColor(getResources().getColor(R.color.md_white_1000));
         mCircleView.setRimColor(getResources().getColor(R.color.md_grey_700));
-        mCircleView.setBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        mCircleView.setInnerContourColor(getResources().getColor(R.color.md_grey_700));
+        mCircleView.setBarColor(getResources().getColor(R.color.md_blue_600));
+        mCircleView.setInnerContourColor(getResources().getColor(R.color.md_blue_600));
         mCircleView.setOuterContourColor(getResources().getColor(R.color.md_grey_700));
     }
 
