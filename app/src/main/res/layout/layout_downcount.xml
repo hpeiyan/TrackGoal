@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/tvCostTime"
             android:text="今日用时："
-            android:textColor="@color/secondTextColor"
+            android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/text_show_dimen"/>
 
         <TextView
@@ -57,7 +57,7 @@
             android:layout_centerInParent="true"
             android:padding="8dp"
             android:text="@string/start_downcount"
-            android:textColor="@color/secondTextColor"
+            android:textColor="@color/primaryTextColor"
             android:textSize="@dimen/text_show_dimen"
             />
 

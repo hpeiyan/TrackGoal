@@ -202,14 +202,19 @@ public class DownCountView {
     private void showTimePickerDialog() {
         DownCountService mService = mActivity.getService();
         if (mService == null || !mService.isDownCountServiceRun()) {
-            int hour = Calendar.getInstance().get(Calendar.HOUR);
-            int minute = Calendar.getInstance().get(Calendar.MINUTE);
+
             TimePickerDialog mDialog = new TimePickerDialog(mActivity, (view, hourOfDay, minute1) -> {
                 int mCurrentHours = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
                 int mCurrentMinutes = Calendar.getInstance().get(Calendar.MINUTE);
-                mOriginStartTime = ((hourOfDay + 16 - mCurrentHours) * 60 + (minute1 - mCurrentMinutes)) * 60 * 1000;
+                int totalCurrent = (mCurrentHours * 60 + mCurrentMinutes) * 60 * 1000;
+                int totalSetting = (hourOfDay * 60 + minute1) * 60 * 1000;
+                if (totalSetting < totalCurrent) {
+                    mOriginStartTime = 16 * 60 * 60 * 1000 + 24 * 60 * 60 * 1000 - totalCurrent + totalSetting;
+                } else {
+                    mOriginStartTime = 16 * 60 * 60 * 1000 + totalSetting - totalCurrent;
+                }
                 startDownCountService(mOriginStartTime);
-            }, hour, minute, true);
+            }, Calendar.getInstance().get(Calendar.HOUR), Calendar.getInstance().get(Calendar.MINUTE), true);
             mDialog.show();
         } else {
             ToastUtil.toast("任务进行中，请保持专注！");
