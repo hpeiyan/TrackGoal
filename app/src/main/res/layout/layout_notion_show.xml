@@ -4,7 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,11 +16,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="3"
             android:padding="2dp"
-            android:text="每天"/>
+            android:text="每天"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_show_dimen"/>
 
         <TextView
             android:id="@+id/tvNotionTime"
@@ -29,7 +31,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:padding="2dp"
-            android:text="9：00"/>
+            android:text="9：00"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_show_dimen"/>
     </LinearLayout>
 
 </LinearLayout>
