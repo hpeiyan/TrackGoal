@@ -255,7 +255,7 @@ public class MainActivity extends BaseActivity
                 this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.addDrawerListener(toggle);
         mFab.setOnClickListener(view -> createParentPlan());
-        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
+        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, true) ? VISIBLE : GONE);
         toggle.syncState();
         getSupportActionBar().show();
         getSupportActionBar().setTitle(titleRes[1]);
@@ -550,14 +550,18 @@ public class MainActivity extends BaseActivity
     public void onSuccess() {
         ToastUtil.toast("同步成功");
         setSyncPBVisible(false);
-        mAnimation.cancel();
+        if (mAnimation != null) {
+            mAnimation.cancel();
+        }
     }
 
     @Override
     public void onFail() {
         ToastUtil.toast("同步失败");
         setSyncPBVisible(false);
-        mAnimation.cancel();
+        if (mAnimation != null) {
+            mAnimation.cancel();
+        }
     }
 
     public GoalFragment getGoalFragment() {
@@ -672,7 +676,7 @@ public class MainActivity extends BaseActivity
     private void hideDownCountPage() {
         mIsShowDownCount = false;
         ViewUtil.setVisible(mFlGoal);
-        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
+        mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, true) ? VISIBLE : GONE);
         ViewUtil.setGone(mFlDownCount);
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -765,7 +769,7 @@ public class MainActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SETTING_REQUEST_CODE:
-                mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, false) ? VISIBLE : GONE);
+                mFab.setVisibility(AppSp.getBoolean(Constants.SHOW_ADD, true) ? VISIBLE : GONE);
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);

@@ -14,12 +14,18 @@ public class ViewUtil {
     }
 
     public static void setVisible(View mView) {
-        if (mView.getVisibility() != View.VISIBLE)
-            mView.setVisibility(View.VISIBLE);
+        ThreadUtil.uiPost(() -> {
+            if (mView.getVisibility() != View.VISIBLE)
+                mView.setVisibility(View.VISIBLE);
+        });
+
     }
 
     public static void setGone(View mView) {
-        if (mView.getVisibility() != View.GONE || mView.getVisibility() != View.INVISIBLE)
-            mView.setVisibility(View.GONE);
+        ThreadUtil.uiPost(() -> {
+            if (mView.getVisibility() != View.GONE || mView.getVisibility() != View.INVISIBLE)
+                mView.setVisibility(View.GONE);
+        });
+
     }
 }

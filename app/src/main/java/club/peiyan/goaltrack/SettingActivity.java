@@ -42,7 +42,7 @@ public class SettingActivity extends BaseActivity {
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
-        mMainActivity.startActivityForResult(mIntent,SETTING_REQUEST_CODE);
+        mMainActivity.startActivityForResult(mIntent, SETTING_REQUEST_CODE);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SettingActivity extends BaseActivity {
             AppSp.putBoolean(Constants.ALARM_ON, isChecked);
         });
 
-        mSwAddGoal.setChecked(AppSp.getBoolean(Constants.SHOW_ADD, false));
+        mSwAddGoal.setChecked(AppSp.getBoolean(Constants.SHOW_ADD, true));
         mSwAddGoal.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppSp.putBoolean(Constants.SHOW_ADD, isChecked);
         });

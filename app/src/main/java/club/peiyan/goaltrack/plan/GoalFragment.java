@@ -37,14 +37,12 @@ import club.peiyan.goaltrack.view.MyRecycleView;
 public class GoalFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SyncDataTask.OnSyncListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
+    Unbinder unbinder;
+
     @BindView(R.id.rvGoal)
     MyRecycleView mRvGoal;
-
     @BindView(R.id.createData)
     View mCreatePromp;
-    Unbinder unbinder;
-    @BindView(R.id.tvArrowUp)
-    TextView mTvArrowUp;
     @BindView(R.id.tvArrowDown)
     TextView mTvArrowDown;
     @BindView(R.id.constraintLayout)

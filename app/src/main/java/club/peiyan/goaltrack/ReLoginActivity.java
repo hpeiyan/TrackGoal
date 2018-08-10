@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import club.peiyan.goaltrack.netTask.RegisterTask;
 import club.peiyan.goaltrack.netTask.VerifyTask;
 import club.peiyan.goaltrack.utils.AppSp;
 import club.peiyan.goaltrack.utils.ThreadUtil;
+import club.peiyan.goaltrack.utils.ViewUtil;
 
 /**
  * Created by HPY.
@@ -36,6 +38,8 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
     Button mBtnRegister;
     @BindView(R.id.btnVisitor)
     TextView mBtnVisitor;
+    @BindView(R.id.rlLogin)
+    RelativeLayout mRlLogin;
     private String mName;
 
     public static void startReLoginActivity(LoadingActivity mActivity) {
@@ -75,7 +79,8 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
                 mTask.setUserName(mName);
                 mTask.setPassword(mPass);
                 new Thread(mTask).start();
-                AppSp.putBoolean(Constants.IS_REGISTER,true);
+                AppSp.putBoolean(Constants.IS_REGISTER, true);
+                ViewUtil.setVisible(mRlLogin);
                 break;
             case R.id.btnLogin:
                 if (mName.isEmpty() || mPass.isEmpty()) {
@@ -87,29 +92,32 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
                 mVerifyTask.setUserName(mName);
                 mVerifyTask.setPassword(mPass);
                 new Thread(mVerifyTask).start();
-                AppSp.putBoolean(Constants.IS_REGISTER,true);
+                AppSp.putBoolean(Constants.IS_REGISTER, true);
+                ViewUtil.setVisible(mRlLogin);
                 break;
             case R.id.btnVisitor:
                 MobclickAgent.onProfileSignIn("Visitor");
                 MainActivity.startMainActivity(ReLoginActivity.this, "Goal Track", false);
-                AppSp.putBoolean(Constants.IS_REGISTER,false);
+                AppSp.putBoolean(Constants.IS_REGISTER, false);
                 break;
         }
     }
 
     @Override
     public void onVerifySuccess() {
+        ViewUtil.setGone(mRlLogin);
         MobclickAgent.onProfileSignIn(mName);
         MainActivity.startMainActivity(ReLoginActivity.this, mName, true);
     }
 
     @Override
     public void onVerifyFail() {
-
+        ViewUtil.setGone(mRlLogin);
     }
 
     @Override
     public void onRegisterSuccess() {
+        ViewUtil.setGone(mRlLogin);
         MobclickAgent.onProfileSignIn(mName);
 //        //登出
 //        MobclickAgent.onProfileSignOff();
@@ -118,7 +126,7 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
 
     @Override
     public void onRegisterFail() {
-
+        ViewUtil.setGone(mRlLogin);
     }
 
     @Override

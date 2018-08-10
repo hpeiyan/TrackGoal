@@ -97,4 +97,32 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/rlLogin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/md_grey_900_alpha"
+        android:gravity="center"
+        android:visibility="gone"
+        >
+
+        <ProgressBar
+            android:id="@+id/pbLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/pbLogin"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="登录中..."
+            android:textColor="@color/textColor"
+            android:textSize="@dimen/text_show_dimen"/>
+
+    </RelativeLayout>
+
+
 </RelativeLayout>
