@@ -39,6 +39,8 @@ public class SettingActivity extends BaseActivity {
     Switch mSwAddGoal;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.swScreenOn)
+    Switch mSwScreenOn;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -68,6 +70,11 @@ public class SettingActivity extends BaseActivity {
         mSwAddGoal.setChecked(AppSp.getBoolean(Constants.SHOW_ADD, true));
         mSwAddGoal.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppSp.putBoolean(Constants.SHOW_ADD, isChecked);
+        });
+
+        mSwScreenOn.setChecked(AppSp.getBoolean(Constants.SCREEN_ON, true));
+        mSwScreenOn.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppSp.putBoolean(Constants.SCREEN_ON, isChecked);
         });
 
         mEtScoreDays.setText(Constants.getScoreShowDay() + "");

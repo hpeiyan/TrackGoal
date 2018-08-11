@@ -649,7 +649,9 @@ public class MainActivity extends BaseActivity
         getSupportActionBar().hide();
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_LOCKED_CLOSED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (AppSp.getBoolean(Constants.SCREEN_ON, true)) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
     @Override
@@ -680,7 +682,9 @@ public class MainActivity extends BaseActivity
         ViewUtil.setGone(mFlDownCount);
         mDrawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (AppSp.getBoolean(Constants.SCREEN_ON, true)) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
     private boolean isPause = false;// now status

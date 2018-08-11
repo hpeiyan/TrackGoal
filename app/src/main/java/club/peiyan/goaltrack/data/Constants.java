@@ -22,6 +22,7 @@ public class Constants {
     public static final java.lang.String APP_ID = "wx6f57947f90e59f97";
     public static final String SHOW_ADD = "SHOW_ADD";
     public static final String IS_REGISTER = "IS_REGISTER";
+    public static final String SCREEN_ON = "SCREEN_ON";
 
     /**
      * 分数显示的天数
