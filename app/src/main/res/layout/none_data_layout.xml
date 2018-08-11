@@ -10,7 +10,7 @@
         android:drawablePadding="50dp"
         android:drawableTop="@mipmap/logo"
         android:gravity="center"
-        android:text="@string/non_data"
+        android:text="Woops，no pain, no gain."
         android:textColor="@color/primaryTextColor"
         android:textSize="@dimen/text_show_dimen"/>
 

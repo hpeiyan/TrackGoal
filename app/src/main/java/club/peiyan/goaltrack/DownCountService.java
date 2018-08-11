@@ -130,8 +130,7 @@ public class DownCountService extends Service {
 
                 if (AppSp.getBoolean(Constants.VIBRATOR_ON, true)) {
                     Vibrator vib = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
-                    long[] pattern = {500, 1000};
-                    vib.vibrate(pattern, 1);
+                    vib.vibrate(400);//只震动一秒，一次
                 }
 
             }

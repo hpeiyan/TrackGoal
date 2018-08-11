@@ -101,4 +101,9 @@ public class TeachActivity extends BaseActivity {
         }
         stepIndex++;
     }
+
+    @Override
+    public void onBackPressed() {
+        return;
+    }
 }

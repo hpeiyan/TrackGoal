@@ -157,6 +157,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:padding="10dp"
         android:text="下一步"
