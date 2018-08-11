@@ -83,7 +83,7 @@ public class SettingActivity extends BaseActivity {
 
         mSwVibratorOn.setChecked(AppSp.getBoolean(Constants.VIBRATOR_ON, true));
         mSwVibratorOn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            AppSp.putBoolean(Constants.ALARM_ON, isChecked);
+            AppSp.putBoolean(Constants.VIBRATOR_ON, isChecked);
         });
 
         mSwAddGoal.setChecked(AppSp.getBoolean(Constants.SHOW_ADD, true));
