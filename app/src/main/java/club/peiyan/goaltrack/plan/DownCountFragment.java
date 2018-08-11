@@ -31,8 +31,8 @@ import club.peiyan.goaltrack.event.PauseEvent;
 import club.peiyan.goaltrack.listener.DownCountListener;
 import club.peiyan.goaltrack.utils.CalendarUtils;
 import club.peiyan.goaltrack.utils.DialogUtil;
-import club.peiyan.goaltrack.utils.TimeUtil;
 import club.peiyan.goaltrack.utils.ThreadUtil;
+import club.peiyan.goaltrack.utils.TimeUtil;
 
 import static club.peiyan.goaltrack.DownCountService.COUNT_FINISH;
 import static club.peiyan.goaltrack.DownCountService.COUNT_STOP;
@@ -70,7 +70,6 @@ public class DownCountFragment extends Fragment implements DownCountListener {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mMainActivity = (MainActivity) getActivity();
-        mMainActivity.setDownCountListener(this);
     }
 
     @Nullable
@@ -79,6 +78,7 @@ public class DownCountFragment extends Fragment implements DownCountListener {
         View mView = inflater.inflate(R.layout.fragment_down_count, null);
         unbinder = ButterKnife.bind(this, mView);
         initView();
+        mMainActivity.setDownCountListener(this);
         return mView;
     }
 

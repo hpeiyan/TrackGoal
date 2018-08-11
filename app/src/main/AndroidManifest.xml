@@ -28,6 +28,7 @@
         <activity android:name=".ScoreActivity"/>
         <activity
             android:name=".SettingActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
@@ -38,7 +39,10 @@
             android:name=".QAActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name=".ReLoginActivity"/>
+        <activity
+            android:name=".ReLoginActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".LoadingActivity"
             android:screenOrientation="portrait"

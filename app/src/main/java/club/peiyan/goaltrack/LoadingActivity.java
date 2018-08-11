@@ -117,7 +117,7 @@ public class LoadingActivity extends BaseActivity {
                 }
 
             }
-            ReLoginActivity.startReLoginActivity(this);
+            ReLoginActivity.startReLoginActivity(this,500);
         }
     }
 

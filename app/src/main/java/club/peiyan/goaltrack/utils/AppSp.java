@@ -42,4 +42,14 @@ public class AppSp {
     public static boolean getBoolean(String key, boolean defaultValue) {
         return mSP.getBoolean(key, defaultValue);
     }
+
+    public static void clear(String[] keys) {
+        if (keys != null && keys.length > 0) {
+            for (String key : keys) {
+                if (mSP.contains(key)) {
+                    mEditor.remove(key).commit();
+                }
+            }
+        }
+    }
 }

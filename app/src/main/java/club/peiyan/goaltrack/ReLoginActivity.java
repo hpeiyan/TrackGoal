@@ -1,5 +1,6 @@
 package club.peiyan.goaltrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,14 +43,20 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
     RelativeLayout mRlLogin;
     private String mName;
 
-    public static void startReLoginActivity(LoadingActivity mActivity) {
+    public static void startReLoginActivity(Activity mActivity, int delay) {
         Intent mIntent = new Intent(mActivity, ReLoginActivity.class);
         ThreadUtil.uiPostDelay(() -> {
             mActivity.startActivity(mIntent);
-            if (!mActivity.isDestroyed()) {
-                mActivity.finish();
-            }
-        }, 500);
+            mActivity.finish();
+        }, delay);
+    }
+
+    public static void startReLoginActivityForce(Activity mActivity) {
+        Intent mIntent = new Intent(mActivity, ReLoginActivity.class);
+        mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        mIntent.putExtra(Constants.FORCE_RELOGIN, true);
+        mActivity.startActivity(mIntent);
+        mActivity.finish();
     }
 
     @Override
@@ -58,7 +65,9 @@ public class ReLoginActivity extends BaseActivity implements RegisterTask.OnRegi
         setContentView(R.layout.layout_login);
         getSupportActionBar().hide();
         ButterKnife.bind(this);
-        if (!AppSp.getString(Constants.USER_NAME, "").isEmpty()) {
+
+        boolean isForceLogin = getIntent().getBooleanExtra(Constants.FORCE_RELOGIN, false);
+        if (!isForceLogin && !AppSp.getString(Constants.USER_NAME, "").isEmpty()) {
             MainActivity.startMainActivity(ReLoginActivity.this, AppSp.getString(Constants.USER_NAME, ""), false);
         }
     }

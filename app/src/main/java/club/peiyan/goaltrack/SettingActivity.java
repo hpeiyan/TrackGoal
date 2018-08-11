@@ -1,5 +1,6 @@
 package club.peiyan.goaltrack;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -7,16 +8,22 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import club.peiyan.goaltrack.data.Constants;
+import club.peiyan.goaltrack.data.DBHelper;
 import club.peiyan.goaltrack.utils.AppSp;
+import club.peiyan.goaltrack.utils.DialogUtil;
 import club.peiyan.goaltrack.utils.LogUtil;
 
 /**
@@ -41,6 +48,8 @@ public class SettingActivity extends BaseActivity {
     Toolbar mToolbar;
     @BindView(R.id.swScreenOn)
     Switch mSwScreenOn;
+    @BindView(R.id.rlUser)
+    RelativeLayout mRlUser;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -75,6 +84,38 @@ public class SettingActivity extends BaseActivity {
         mSwScreenOn.setChecked(AppSp.getBoolean(Constants.SCREEN_ON, true));
         mSwScreenOn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppSp.putBoolean(Constants.SCREEN_ON, isChecked);
+        });
+
+        mRlUser.setOnClickListener(v -> {
+            if (AppSp.getBoolean(Constants.IS_REGISTER, false)) {
+                View mView = getLayoutInflater().inflate(R.layout.layout_quite_login, null);
+                AlertDialog mDialog = DialogUtil.showDialogWithViewWithoutListener(this, mView);
+                mView.findViewById(R.id.tvQuite).setOnClickListener(v1 -> {
+                    new DBHelper(SettingActivity.this).deleteAllGoal();
+                    AppSp.clear(new String[]{Constants.IS_REGISTER, Constants.USER_NAME});
+                    File mDBFile = getDatabasePath("UserTrackGoal.db");
+                    mDBFile.delete();
+                    ReLoginActivity.startReLoginActivityForce(SettingActivity.this);
+                    if (mDialog != null) mDialog.dismiss();
+                });
+                mView.findViewById(R.id.tvDismiss).setOnClickListener(v1 -> {
+                    if (mDialog != null) mDialog.dismiss();
+                });
+            } else {
+                View mView = getLayoutInflater().inflate(R.layout.layout_login_apply, null);
+                AlertDialog mDialog = DialogUtil.showDialogWithViewWithoutListener(this, mView);
+                mView.findViewById(R.id.tvLogin).setOnClickListener(v1 -> {
+                    ReLoginActivity.startReLoginActivityForce(SettingActivity.this);
+                    if (mDialog != null) mDialog.dismiss();
+                });
+                mView.findViewById(R.id.tvApply).setOnClickListener(v1 -> {
+                    FeedBackActivity.startFeedbackActivity(SettingActivity.this);
+                    if (mDialog != null) mDialog.dismiss();
+                });
+                mView.findViewById(R.id.tvDismiss).setOnClickListener(v1 -> {
+                    if (mDialog != null) mDialog.dismiss();
+                });
+            }
         });
 
         mEtScoreDays.setText(Constants.getScoreShowDay() + "");

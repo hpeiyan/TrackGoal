@@ -46,6 +46,15 @@ public class DialogUtil {
         mAlertDialog.show();
     }
 
+    public static AlertDialog showDialogWithViewWithoutListener(Activity mActivity, View mV) {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);
+        mBuilder.setView(mV);
+        AlertDialog mAlertDialog = mBuilder.create();
+        if (mAlertDialog != null) {
+            mAlertDialog.show();
+        }
+        return mAlertDialog;
+    }
 
     public static void showDialogWithView(Activity mActivity, View mV, String negBtn, String posBtn, final DialogListener mListener) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(mActivity);

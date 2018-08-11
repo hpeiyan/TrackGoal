@@ -1,5 +1,6 @@
 package club.peiyan.goaltrack;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,9 +37,9 @@ public class FeedBackActivity extends BaseActivity implements FeedbackTask.OnFee
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    public static void startFeedbackActivity(MainActivity mMainActivity) {
-        Intent mIntent = new Intent(mMainActivity, FeedBackActivity.class);
-        mMainActivity.startActivity(mIntent);
+    public static void startFeedbackActivity(Activity mActivity) {
+        Intent mIntent = new Intent(mActivity, FeedBackActivity.class);
+        mActivity.startActivity(mIntent);
     }
 
     @Override

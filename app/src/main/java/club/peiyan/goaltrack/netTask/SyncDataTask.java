@@ -83,8 +83,9 @@ public class SyncDataTask implements Runnable {
                 if (mCode == 200) {
                     List<GoalBean> mGoalBeans = mSyncBean.getData();
                     if (mGoalBeans != null && mGoalBeans.size() > 0) {
+                        mDBHelper.deleteAllGoal();
                         for (GoalBean mBean : mGoalBeans) {
-                            mDBHelper.deleteGoal(mBean.getTitle());
+//                            mDBHelper.deleteGoal(mBean.getTitle());
                             mDBHelper.insertGoal(mBean);
                         }
                         mMainActivity.runOnUiThread(() -> mMainActivity.notifyDataSetChange(null));

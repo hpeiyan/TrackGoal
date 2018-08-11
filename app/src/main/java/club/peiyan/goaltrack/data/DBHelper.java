@@ -197,6 +197,12 @@ public class DBHelper extends SQLiteOpenHelper {
                 new String[]{mTitle});
     }
 
+    public Integer deleteAllGoal() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TRACK_GOAL_TABLE,
+                "", null);
+    }
+
     public ArrayList<GoalBean> getAllGoals() {
         ArrayList<GoalBean> array_list = new ArrayList<>();
 
