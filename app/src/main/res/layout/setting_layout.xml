@@ -56,6 +56,30 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="倒计时结束震动"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="@dimen/text_show_dimen"/>
+
+        <Switch
+            android:id="@+id/swVibratorOn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:checked="true"
+            />
+
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

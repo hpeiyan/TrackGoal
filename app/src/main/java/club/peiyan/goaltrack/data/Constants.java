@@ -24,6 +24,8 @@ public class Constants {
     public static final String IS_REGISTER = "IS_REGISTER";
     public static final String SCREEN_ON = "SCREEN_ON";
     public static final String FORCE_RELOGIN = "FORCE_RELOGIN";
+    public static final String HAD_TEACHERS = "HAD_TEACHERS";
+    public static final String VIBRATOR_ON = "VIBRATOR_ON";
 
     /**
      * 分数显示的天数

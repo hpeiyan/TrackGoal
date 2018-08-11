@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              xmlns:app="http://schemas.android.com/apk/res-auto">
+              android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,5 +20,80 @@
             app:titleTextColor="@color/secondTextColor"/>
 
     </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="12dp">
+
+            <LinearLayout
+                android:id="@+id/llLogo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@mipmap/logo"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:gravity="center"
+                    android:text="Goal Track"
+                    android:textColor="@color/primaryTextColor"
+                    android:textSize="@dimen/text_title_dimen"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvVersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/llLogo"
+                android:layout_centerHorizontal="true"
+                android:padding="12dp"
+                android:text="当前版本：1.0.0"
+                android:textSize="@dimen/text_show_dimen"/>
+
+            <View
+                android:id="@+id/lineView"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_below="@+id/tvVersion"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:background="@color/dividerColor"/>
+
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lineView"
+                android:padding="12dp"
+                android:text=""
+                android:textColor="@color/primaryTextColor"
+                android:textSize="@dimen/text_show_dimen"/>
+
+            <ImageView
+                android:id="@+id/tvPay"
+                android:layout_width="154dp"
+                android:layout_height="154dp"
+                android:layout_below="@+id/tvMessage"
+                android:layout_centerHorizontal="true"
+                android:src="@mipmap/we_chat_pay"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
 
 </LinearLayout>

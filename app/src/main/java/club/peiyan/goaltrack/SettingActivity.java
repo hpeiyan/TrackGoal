@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -50,6 +51,10 @@ public class SettingActivity extends BaseActivity {
     Switch mSwScreenOn;
     @BindView(R.id.rlUser)
     RelativeLayout mRlUser;
+    @BindView(R.id.swVibratorOn)
+    Switch mSwVibratorOn;
+    @BindView(R.id.ivUser)
+    ImageView mIvUser;
 
     public static void startSettingActivity(MainActivity mMainActivity) {
         Intent mIntent = new Intent(mMainActivity, SettingActivity.class);
@@ -73,6 +78,11 @@ public class SettingActivity extends BaseActivity {
 
         mSwFinish.setChecked(AppSp.getBoolean(Constants.ALARM_ON, true));
         mSwFinish.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppSp.putBoolean(Constants.ALARM_ON, isChecked);
+        });
+
+        mSwVibratorOn.setChecked(AppSp.getBoolean(Constants.VIBRATOR_ON, true));
+        mSwVibratorOn.setOnCheckedChangeListener((buttonView, isChecked) -> {
             AppSp.putBoolean(Constants.ALARM_ON, isChecked);
         });
 

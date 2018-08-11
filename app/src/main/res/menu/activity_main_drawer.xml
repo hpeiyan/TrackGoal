@@ -18,7 +18,7 @@
         <item
             android:id="@+id/qa"
             android:icon="@mipmap/ic_sentiment_very_satisfied_black_24dp"
-            android:title="Q&amp;A"
+            android:title="教程"
             />
         <item
             android:id="@+id/notification"

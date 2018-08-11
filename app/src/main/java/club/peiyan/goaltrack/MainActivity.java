@@ -457,19 +457,24 @@ public class MainActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.feedback:
-                ThreadUtil.uiPostDelay(() -> FeedBackActivity.startFeedbackActivity(MainActivity.this), 200);
+                FeedBackActivity.startFeedbackActivity(MainActivity.this);
                 break;
             case R.id.setting:
-                ThreadUtil.uiPostDelay(() -> SettingActivity.startSettingActivity(MainActivity.this), 200);
+                SettingActivity.startSettingActivity(MainActivity.this);
                 break;
             case R.id.qa:
-                ThreadUtil.uiPostDelay(() -> QAActivity.startQAActivity(MainActivity.this), 200);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                TeachActivity.startTeachActivity(this);
                 break;
             case R.id.aboutApp:
-                ThreadUtil.uiPostDelay(() -> AboutActivity.startAboutActivity(MainActivity.this), 200);
+                AboutActivity.startAboutActivity(this);
+//                AboutView mAboutView = new AboutView(this);
+//                View mView = mAboutView.getView();
+//                AlertDialog mDialog = DialogUtil.showDialogWithViewWithoutListener(this, mView);
+//                mAboutView.setAlertDialog(mDialog);
                 break;
             case R.id.notification:
-                ThreadUtil.uiPostDelay(() -> PushQAActivity.startPushActivity(MainActivity.this), 200);
+                PushQAActivity.startPushActivity(MainActivity.this);
                 break;
             case R.id.addPlan:
                 createParentPlan();
@@ -479,11 +484,11 @@ public class MainActivity extends BaseActivity
                     if (item.getTitle().equals(bean.getTitle())) {
                         AppSp.putString(LATEST_GOAL, bean.getTitle());
                         notifyDataSetChange(bean.getTitle());
+                        mDrawerLayout.closeDrawer(GravityCompat.START);
                         break;
                     }
                 }
         }
-        mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -553,6 +558,9 @@ public class MainActivity extends BaseActivity
         if (mAnimation != null) {
             mAnimation.cancel();
         }
+        if (!AppSp.getBoolean(Constants.HAD_TEACHERS, false)) {
+            TeachActivity.startTeachActivity(this);
+        }
     }
 
     @Override
@@ -589,6 +597,10 @@ public class MainActivity extends BaseActivity
         MobclickAgent.onResume(this);
         if (getService() == null || !getService().isDownCountServiceRun()) {
             onRefreshAfterFinish();
+        }
+        if (!AppSp.getBoolean(Constants.IS_REGISTER, false) &&
+                !AppSp.getBoolean(Constants.HAD_TEACHERS, false)) {
+            TeachActivity.startTeachActivity(this);
         }
     }
 

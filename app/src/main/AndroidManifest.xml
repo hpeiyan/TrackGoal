@@ -31,6 +31,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             />
+
+        <activity
+            android:name=".TeachActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparent"
+            />
+
         <activity
             android:name=".AboutActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -94,5 +101,6 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
 </manifest>

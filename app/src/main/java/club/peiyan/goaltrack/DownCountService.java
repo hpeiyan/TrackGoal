@@ -11,6 +11,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
@@ -125,6 +126,12 @@ public class DownCountService extends Service {
                 if (AppSp.getBoolean(Constants.ALARM_ON, true)) {
                     MediaPlayer mPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
                     mPlayer.start();
+                }
+
+                if (AppSp.getBoolean(Constants.VIBRATOR_ON, true)) {
+                    Vibrator vib = (Vibrator) getSystemService(Service.VIBRATOR_SERVICE);
+                    long[] pattern = {500, 1000};
+                    vib.vibrate(pattern, 1);
                 }
 
             }
